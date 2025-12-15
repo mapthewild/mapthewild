@@ -1,0 +1,47 @@
+---
+title: "Artifact Embedding Demo"
+date: 2024-12-13
+description: "Comparing two ways to embed Claude artifacts in posts"
+---
+
+This post demonstrates two approaches to embedding Claude artifacts.
+
+---
+
+## Option A: Direct iframe embed (full-width)
+
+Just paste the Claude embed code directly in your MDX. This one breaks out of the content width for a full desktop experience:
+
+<div style={{marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)', width: '100vw', padding: '0 2rem'}}>
+  <iframe
+    src="https://claude.site/public/artifacts/2a378267-bc36-4858-942d-bf0815fdff85/embed"
+    width="100%"
+    height="700"
+    style={{border: '1px solid #e5e7eb', borderRadius: '8px', maxWidth: '1400px', margin: '0 auto', display: 'block'}}
+    title="Interactive Artifact"
+    frameBorder="0"
+    allow="clipboard-write"
+    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+  />
+</div>
+
+**Pros:** Fully visible, interactive right in the page, full-width on desktop
+**Cons:** Takes up space, can't read around it
+
+---
+
+## Option B: Bracket syntax with registry
+
+Using the bracket system: click [[Interactive Tool:demo-artifact]] to open in a fullscreen panel.
+
+The bracket syntax keeps your content clean and readable. Click to expand.
+
+**Pros:** Clean content, fullscreen panel experience
+**Cons:** Requires a click to see
+
+---
+
+## Which to use?
+
+- **Option A** for hero artifacts you want front-and-center
+- **Option B** for supplementary tools readers can explore optionally
