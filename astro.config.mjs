@@ -7,6 +7,8 @@ import { bracketParser } from './src/lib/bracketParser.ts';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://mapthewild.github.io',
+  base: '/mapthewild',
   markdown: {
     remarkPlugins: [bracketParser],
   },
