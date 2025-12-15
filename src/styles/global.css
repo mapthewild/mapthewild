@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-dark-bg text-gray-100;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.2;
+    font-weight: 600;
+  }
+
+  p {
+    line-height: 1.5;
+  }
+
+  a {
+    color: #667eea;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  a:hover {
+    color: #764ba2;
+  }
+}
+
+@layer components {
+  /* Andy Matuschak-style bracket links - blue, hoverable, expandable */
+  .bracket-link {
+    color: #58a6ff;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    border-radius: 2px;
+  }
+
+  .bracket-link:hover {
+    color: #79c0ff;
+    text-decoration: underline;
+  }
+
+  .bracket-link:focus {
+    outline: 2px solid #58a6ff;
+    outline-offset: 2px;
+  }
+
+  .bracket-link:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  .bracket-link:focus-visible {
+    outline: 2px solid #58a6ff;
+    outline-offset: 2px;
+  }
+}
