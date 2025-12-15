@@ -1,126 +1,73 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import StackingPanes from '../components/StackingPanes';
-
-const posts = await getCollection('posts');
-const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-
-// Concept notes for the ideas section
-const conceptNotes = sortedPosts.filter(p =>
-  ['tools-for-thinking', 'ritual-design', 'metacognitive-tools', 'contemplative-pause', 'phone-passing'].includes(p.slug)
-);
 ---
 
 <Layout title="Map the Wild">
-  <div class="min-h-screen">
-    <header class="max-w-4xl mx-auto px-6 py-16 md:py-24">
-      <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">
+  <div class="min-h-screen stars">
+    <main class="max-w-2xl mx-auto px-6 py-16 md:py-24">
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-12">
         Map the Wild
       </h1>
-      <div class="prose prose-invert text-xl text-gray-400 max-w-2xl space-y-4">
+
+      <article class="prose prose-invert space-y-6 text-gray-300 leading-relaxed">
         <p>
-          This is an experiment in building
-          <span class="bracket-link" data-content="tools-for-thinking" data-trigger="tools for thinking" data-type="artifact" role="button" tabindex="0">tools for thinking</span>—software that changes how you think, not just what you capture.
+          I've been building things for a while now—prototypes, mostly. Tools that help people think differently about their relationships, their careers, their own minds. Not productivity tools. Not apps that capture more. Tools that change how you see.
         </p>
+
         <p>
-          The blue links expand into other notes. Click to open. Click more to stack. This is how ideas connect.
+          This site is where those experiments live. Or will live. Right now it's mostly a place for me to think out loud about what I'm building and why.
         </p>
-      </div>
-    </header>
 
-    <main class="max-w-4xl mx-auto px-6 pb-24">
-      <!-- Main Tools Section -->
-      <section class="mb-16">
-        <h2 class="text-sm uppercase tracking-wider text-gray-500 mb-8">
-          The Tools
-        </h2>
+        <p>
+          The name comes from an idea I keep returning to: that knowledge isn't a database you query, it's a territory you explore. Some parts are well-mapped. Most aren't. The interesting stuff happens at the edges, where the paths run out and you have to make your own.
+        </p>
 
-        <div class="space-y-6">
-          <div class="p-6 rounded-xl bg-gray-900/50 border border-gray-800">
-            <h3 class="text-xl font-semibold text-white mb-3">
-              <span class="bracket-link" data-content="death-to-divorce" data-trigger="Death to Divorce" data-type="artifact" role="button" tabindex="0">Death to Divorce</span>
-            </h3>
-            <p class="text-gray-400 leading-relaxed mb-4">
-              A couples
-              <span class="bracket-link" data-content="ritual-design" data-trigger="ritual" data-type="artifact" role="button" tabindex="0">ritual</span>
-              built on
-              <span class="bracket-link" data-content="phone-passing" data-trigger="phone passing" data-type="artifact" role="button" tabindex="0">phone passing</span>.
-              Fifteen minutes a week to see your relationship more clearly.
-            </p>
-            <span class="bracket-link text-sm" data-content="dtd-app" data-trigger="Try the tool →" data-type="artifact" role="button" tabindex="0">Try the tool →</span>
-          </div>
+        <p>
+          I'm interested in:
+        </p>
 
-          <div class="p-6 rounded-xl bg-gray-900/50 border border-gray-800">
-            <h3 class="text-xl font-semibold text-white mb-3">
-              <span class="bracket-link" data-content="seven-year-career-navigator" data-trigger="Seven Year Navigator" data-type="artifact" role="button" tabindex="0">Seven Year Navigator</span>
-            </h3>
-            <p class="text-gray-400 leading-relaxed mb-4">
-              A
-              <span class="bracket-link" data-content="metacognitive-tools" data-trigger="metacognitive" data-type="artifact" role="button" tabindex="0">metacognitive</span>
-              career tool that surfaces the signals you've been ignoring. Built on research showing careers move in seven-year cycles.
-            </p>
-            <span class="bracket-link text-sm" data-content="7year-app" data-trigger="Try the tool →" data-type="artifact" role="button" tabindex="0">Try the tool →</span>
-          </div>
+        <ul class="list-disc list-inside space-y-2 text-gray-400">
+          <li>Metacognitive tools—software that shows you how you think, not what to think</li>
+          <li>Ritual design—structured experiences that create space for reflection</li>
+          <li>The gap between what AI can generate and what's actually useful</li>
+          <li>Building in public, slowly, without a particular destination</li>
+        </ul>
 
-          <div class="p-6 rounded-xl bg-gray-900/50 border border-gray-800">
-            <h3 class="text-xl font-semibold text-white mb-3">
-              <span class="bracket-link" data-content="archetypal-reflection-tool" data-trigger="Archetype Tool" data-type="artifact" role="button" tabindex="0">Archetype Tool</span>
-            </h3>
-            <p class="text-gray-400 leading-relaxed mb-4">
-              Shows you how you think, not what to think. Three rounds of archetypal lenses, then a synthesis with a
-              <span class="bracket-link" data-content="contemplative-pause" data-trigger="contemplative pause" data-type="artifact" role="button" tabindex="0">contemplative pause</span>
-              before the reveal.
-            </p>
-            <span class="bracket-link text-sm" data-content="archetype-app" data-trigger="Try the tool →" data-type="artifact" role="button" tabindex="0">Try the tool →</span>
-          </div>
-        </div>
-      </section>
+        <p>
+          If any of that resonates, stick around. I'll be posting prototypes, half-formed ideas, and the occasional coherent thought.
+        </p>
 
-      <!-- Concept Notes Section -->
-      <section>
-        <h2 class="text-sm uppercase tracking-wider text-gray-500 mb-8">
-          The Ideas Behind Them
-        </h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {conceptNotes.map((post) => (
-            <div class="p-4 rounded-lg bg-gray-900/30 border border-gray-800/50">
-              <h3 class="font-medium text-white mb-2">
-                <span
-                  class="bracket-link"
-                  data-content={post.slug}
-                  data-trigger={post.data.title}
-                  data-type="artifact"
-                  role="button"
-                  tabindex="0"
-                >
-                  {post.data.title}
-                </span>
-              </h3>
-              <p class="text-sm text-gray-500">
-                {post.data.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
+        <p class="text-gray-500 text-sm pt-8">
+          December 2024
+        </p>
+      </article>
     </main>
-
-    <footer class="max-w-4xl mx-auto px-6 py-8 border-t border-gray-800">
-      <p class="text-gray-500 text-sm">
-        Built with Astro. Click any
-        <span class="bracket-link" data-content="tools-for-thinking" data-trigger="blue link" data-type="artifact" role="button" tabindex="0">blue link</span>
-        to explore.
-      </p>
-    </footer>
   </div>
-
-  <StackingPanes client:load />
 </Layout>
 
 <style>
+  .stars {
+    background-color: #0f1419;
+    background-image:
+      radial-gradient(2px 2px at 20px 30px, #ffffff15, transparent),
+      radial-gradient(2px 2px at 40px 70px, #ffffff10, transparent),
+      radial-gradient(1px 1px at 90px 40px, #ffffff15, transparent),
+      radial-gradient(2px 2px at 160px 120px, #ffffff10, transparent),
+      radial-gradient(1px 1px at 230px 80px, #ffffff08, transparent),
+      radial-gradient(2px 2px at 300px 150px, #ffffff12, transparent),
+      radial-gradient(1px 1px at 370px 50px, #ffffff10, transparent),
+      radial-gradient(2px 2px at 440px 180px, #ffffff08, transparent),
+      radial-gradient(1px 1px at 520px 90px, #ffffff15, transparent),
+      radial-gradient(2px 2px at 600px 200px, #ffffff10, transparent);
+    background-size: 650px 250px;
+  }
+
   .prose p {
-    margin-bottom: 1rem;
+    margin-bottom: 0;
+  }
+
+  .prose ul {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
   }
 </style>
