@@ -5,7 +5,8 @@ import StackingPanes from '../../components/StackingPanes';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
-  return posts.map(post => ({
+  const publishedPosts = posts.filter(post => !post.data.draft);
+  return publishedPosts.map(post => ({
     params: { slug: post.slug },
     props: { post },
   }));
