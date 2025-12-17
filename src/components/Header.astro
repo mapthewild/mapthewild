@@ -1,0 +1,32 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<header class="max-w-2xl mx-auto px-6 py-8">
+  <nav class="flex items-center justify-between">
+    <a href="/mapthewild/" class="text-xl font-bold text-white hover:text-gray-300 transition-colors">
+      Map the Wild
+    </a>
+
+    <div class="flex gap-6">
+      <a
+        href="/mapthewild/"
+        class={`text-sm transition-colors ${currentPath === '/mapthewild/' ? 'text-white' : 'text-gray-400 hover:text-gray-300'}`}
+      >
+        Home
+      </a>
+      <a
+        href="/mapthewild/posts"
+        class={`text-sm transition-colors ${currentPath.startsWith('/mapthewild/posts') ? 'text-white' : 'text-gray-400 hover:text-gray-300'}`}
+      >
+        Posts
+      </a>
+      <a
+        href="/mapthewild/about"
+        class={`text-sm transition-colors ${currentPath === '/mapthewild/about' ? 'text-white' : 'text-gray-400 hover:text-gray-300'}`}
+      >
+        About
+      </a>
+    </div>
+  </nav>
+</header>

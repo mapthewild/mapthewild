@@ -1,8 +1,20 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const posts = await getCollection('posts');
+const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+}
 ---
 
-<Layout title="Map the Wild">
+<Layout title="Posts - Map the Wild">
   <div class="min-h-screen bg-space">
     <div class="stars"></div>
     <div class="stars2"></div>
@@ -10,45 +22,26 @@ import Layout from '../layouts/Layout.astro';
 
     <main class="relative z-10 max-w-2xl mx-auto px-6 py-16 md:py-24">
       <h1 class="text-3xl md:text-4xl font-bold text-white mb-12">
-        Map the Wild
+        All Posts
       </h1>
 
-      <article class="prose prose-invert space-y-6 text-gray-300 leading-relaxed">
-        <p>
-          I make prototypes. Mostly things that mess with how people see their relationships, careers, or their own thinking. Not productivity stuff. Not capture-more-data stuff.
-        </p>
-
-        <p>
-          This is where I put them. Along with some writing about why I made them and what I learned.
-        </p>
-
-        <p>
-          The name: I like the idea that knowledge is territory, not a database. You walk around in it. Most of it is unmapped. The good parts are usually off the path.
-        </p>
-
-        <p>
-          Things I'm working on:
-        </p>
-
-        <ul class="list-disc list-inside space-y-2 text-gray-400">
-          <li>Tools that show you how you think (not what to think)</li>
-          <li>Structured rituals for couples and individuals</li>
-          <li>Figuring out what's actually useful vs what AI just generates</li>
-        </ul>
-
-        <div class="pt-8">
-          <a
-            href="/mapthewild/posts"
-            class="inline-block px-6 py-3 border border-gray-600 text-white hover:border-gray-400 hover:bg-gray-900/30 transition-all rounded"
-          >
-            View All Posts
-          </a>
-        </div>
-
-        <p class="text-gray-500 text-sm pt-8">
-          December 2025
-        </p>
-      </article>
+      <div class="space-y-12">
+        {sortedPosts.map((post) => (
+          <article class="group">
+            <time class="text-sm text-gray-500 mb-2 block">
+              {formatDate(post.data.date)}
+            </time>
+            <h2 class="text-2xl font-bold text-white mb-3 group-hover:text-gray-300 transition-colors">
+              <a href={`/mapthewild/posts/${post.slug}`}>
+                {post.data.title}
+              </a>
+            </h2>
+            <p class="text-gray-400 leading-relaxed">
+              {post.data.description}
+            </p>
+          </article>
+        ))}
+      </div>
     </main>
   </div>
 </Layout>
@@ -192,14 +185,5 @@ import Layout from '../layouts/Layout.astro';
     to {
       transform: translateY(-2000px);
     }
-  }
-
-  .prose p {
-    margin-bottom: 0;
-  }
-
-  .prose ul {
-    margin-top: 0.5rem;
-    margin-bottom: 0;
   }
 </style>
