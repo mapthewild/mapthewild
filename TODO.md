@@ -1,6 +1,15 @@
-# Map the Wild - TODO List
+# Map the Wild - TODO
 
-Last updated: December 12, 2024
+Last updated: December 14, 2025
+
+---
+
+## Current State
+
+- ✅ Site live at https://mapthewild.github.io/mapthewild/
+- ✅ GitHub Actions auto-deploy working
+- ✅ Simple single-page intro
+- ✅ Workflow documented in WORKFLOW.md
 
 ---
 
@@ -12,147 +21,144 @@ Last updated: December 12, 2024
 
 ## P1 - HIGH
 
-*All P1 items completed!*
+### [CONTENT] Write first real post
+**Description:** Pick a prototype (Lumina, 7year, archetype, dtd) and write about it
+**Why:** Site needs content
+**What to include:**
+- What it does
+- Why I built it
+- How it works
+- What I learned
+- Embed the prototype (claude.site iframe)
+**Estimated effort:** M
+**Created:** Dec 14, 2025
+
+### [FEATURE] Posts listing page
+**Description:** Create `/posts` page that lists all posts
+**Why:** Need way to navigate to posts once they exist
+**Acceptance criteria:**
+- Simple list of post titles + dates
+- Link to each post
+- Chronological order (newest first)
+**Estimated effort:** S
+**Created:** Dec 14, 2025
 
 ---
 
 ## P2 - MEDIUM
 
-### [FEATURE] - P2 - TODO
-**Description:** Add hover previews on bracketed words
-**Why:** Andy Matuschak pattern - see snippet before clicking
+### [FEATURE] RSS feed
+**Description:** Auto-generate RSS feed from posts
+**Why:** Needed for Substack automation, subscribers
 **Acceptance criteria:**
-- Hover shows tooltip with preview
-- Small screenshot or first 100 chars of content
-- Doesn't interfere with click behavior
-**Estimated effort:** L
-**Created:** Dec 11, 2024
-
-### [FEATURE] - P2 - TODO
-**Description:** Multiple artifacts open simultaneously
-**Why:** Compare/contrast different concepts side-by-side
-**Acceptance criteria:**
-- Stack up to 3 panels horizontally
-- Each independently scrollable
-- Close individual panels or all at once
-**Estimated effort:** L
-**Created:** Dec 11, 2024
-
-### [FEATURE] - P2 - TODO
-**Description:** Backlinks system
-**Why:** Show which posts reference the same artifact/site
-**Acceptance criteria:**
-- At bottom of each post, show "Referenced in: [Post A, Post B]"
-- Automatically generated from bracket usage
-- Links are clickable
-**Estimated effort:** M
-**Created:** Dec 11, 2024
-
-### [CONTENT] - P2 - TODO
-**Description:** About page explaining Map the Wild concept
-**Why:** New visitors need context for what this site is
-**Acceptance criteria:**
-- Explain "a blog that's not a blog"
-- Show the [[bracket]] system in action
-- Philosophical foundation (exploration, digressions)
-- Author bio
-**Estimated effort:** M
-**Created:** Dec 11, 2024
-
-### [FEATURE] - P2 - TODO
-**Description:** RSS feed generation
-**Why:** Allow people to subscribe to new posts
-**Acceptance criteria:**
-- Auto-generate from Astro content collection
-- Include full post content
-- Update on build
+- Astro generates RSS automatically
+- Full post content included
+- Updates on each build
 **Estimated effort:** S
-**Created:** Dec 11, 2024
+**Created:** Dec 14, 2025
+
+### [SETUP] Custom domain
+**Description:** Point mapthewild.com to GitHub Pages
+**Why:** Professional URL instead of github.io subdomain
+**Steps:**
+- Add CNAME in GitHub Pages settings
+- Update Namecheap DNS records
+- Update astro.config.mjs (remove /mapthewild base)
+**Estimated effort:** S
+**Created:** Dec 14, 2025
+
+### [CONTENT] About page
+**Description:** Simple about/bio page
+**Why:** People want to know who's behind this
+**Keep it short:**
+- Who I am
+- What this site is
+- How to reach me
+**Estimated effort:** S
+**Created:** Dec 14, 2025
+
+### [WORKFLOW] Easier content editing
+**Description:** Set up simpler way to edit content than raw Astro files
+**Options:**
+- Obsidian Git plugin
+- github.dev editor
+- Custom /edit slash command
+**Estimated effort:** M
+**Created:** Dec 14, 2025
 
 ---
 
 ## P3 - LOW
 
-### [FEATURE] - P3 - BACKLOG
-**Description:** Analytics integration
+### [FEATURE] Analytics
+**Description:** Privacy-respecting analytics (Plausible or similar)
 **Why:** Understand what content resonates
-**Acceptance criteria:**
-- Privacy-respecting analytics (Plausible or similar)
-- Track: page views, bracket clicks, artifact loads
-- No cookies, GDPR compliant
 **Estimated effort:** S
-**Created:** Dec 11, 2024
+**Created:** Dec 14, 2025
 
-### [FEATURE] - P3 - BACKLOG
-**Description:** Social sharing meta tags
-**Why:** Make posts look good when shared on Twitter/LinkedIn
-**Acceptance criteria:**
-- OpenGraph tags
-- Twitter cards
-- Custom images per post (optional)
+### [FEATURE] Social meta tags
+**Description:** OpenGraph and Twitter cards
+**Why:** Posts look good when shared
 **Estimated effort:** S
-**Created:** Dec 11, 2024
+**Created:** Dec 14, 2025
 
-### [FEATURE] - P3 - BACKLOG
-**Description:** Search functionality
-**Why:** As content grows, need to find specific posts/concepts
-**Acceptance criteria:**
-- Client-side search (Pagefind or similar)
-- Search post titles, descriptions, content
-- Search bracketed concepts
-**Estimated effort:** M
-**Created:** Dec 11, 2024
-
-### [CONTENT] - P3 - BACKLOG
-**Description:** Locate and document Wallfly project
-**Why:** Complete the case study series
-**Acceptance criteria:**
-- Find original conversation
-- Extract problem/solution/learnings
-- Write post following template
+### [AUTOMATION] Substack cross-posting
+**Description:** Automate blog → Substack newsletter
+**Why:** Reuse content for email subscribers
+**Needs:** Multiple posts + RSS feed first
 **Estimated effort:** L
-**Created:** Dec 11, 2024
+**Created:** Dec 14, 2025
+
+### [FEATURE] Email signup
+**Description:** Collect emails for updates on prototypes
+**Options:** Google Forms, Tally, GitHub Issues
+**Estimated effort:** S
+**Created:** Dec 14, 2025
 
 ---
 
-## DONE
+## BACKLOG / FUTURE
 
-### [BUG] - P0 - DONE
-**Description:** End-to-end bracket system untested
-**Fix:** Added global.css import to Layout.astro (styles weren't loading)
-**Completed:** Dec 12, 2024
+### Fogmap integration
+Merge fog-of-war explorer into blog (see MAP-THE-WILD-ARCHITECTURE-ANALYSIS.md)
 
-### [FEATURE] - P1 - DONE
-**Description:** Extend bracket parser to support websites
-**Implementation:**
-- Updated bracketParser.ts to detect URLs vs artifact IDs
-- Added support for explicit type declaration: `[[word:site:url]]` or `[[word:artifact:id]]`
-- Updated ArtifactPanel.tsx to handle both content types
-- Added "Open in new tab" button and iframe error fallback UI
-- URLs are encoded/decoded to handle special characters
-**Completed:** Dec 12, 2024
+### Post templates
+Consistent format for prototype posts
 
-### [FEATURE] - P1 - DONE
-**Description:** Create homepage with post listing
-**Completed:** Dec 12, 2024
+### Search
+Client-side search when content grows
 
-### [CONTENT] - P1 - DONE
-**Description:** Write "Death to Divorce" case study post
-**Completed:** Dec 12, 2024
+---
 
-### [CONTENT] - P1 - DONE
-**Description:** Write "Seven Year Career Navigator" case study post
-**Completed:** Dec 12, 2024
+## DONE (Recent)
 
-### [CONTENT] - P1 - DONE
-**Description:** Write "Archetypal Reflection Tool" case study post
-**Completed:** Dec 12, 2024
+### Site deployed to GitHub Pages
+**Completed:** Dec 14, 2025
+
+### Simplified to single-page intro
+**Completed:** Dec 14, 2025
+**Details:** Removed stacking panes, bracket links, all complexity
+
+### Workflow documentation
+**Completed:** Dec 14, 2025
+**File:** WORKFLOW.md
+
+### Architecture analysis
+**Completed:** Dec 14, 2025
+**File:** docs/MAP-THE-WILD-ARCHITECTURE-ANALYSIS.md
 
 ---
 
 ## WONTFIX
 
-*Items move here when explicitly decided against*
+### Stacking panes feature
+**Reason:** Too complex, didn't match desired simplicity
+
+### Hover previews
+**Reason:** Removed with bracket link system
+
+### Backlinks system
+**Reason:** Not needed without bracket links
 
 ---
 
@@ -163,16 +169,8 @@ Last updated: December 12, 2024
 - **M (Medium):** 2-6 hours
 - **L (Large):** 6+ hours
 
-### Priority Guidelines
-- **P0:** Blocking core functionality
-- **P1:** Critical for MVP/launch
-- **P2:** Important but not blocking
-- **P3:** Nice to have / future enhancements
-
-### Workflow
-1. Pick highest priority unblocked item
-2. Move to "In Progress" (update status in item)
-3. Create feature branch if using git
-4. Complete acceptance criteria
-5. Test thoroughly
-6. Move to DONE section with completion date
+### Priority
+- **P0:** Site is broken
+- **P1:** Needed before site is useful
+- **P2:** Important improvements
+- **P3:** Nice to have
