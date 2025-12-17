@@ -24,6 +24,11 @@ const INTERNAL_POSTS = [
   'metacognitive-tools',
   'contemplative-pause',
   'phone-passing',
+  'nowbrary-living-constellation',
+  'starting-your-nowbrary',
+  'nowbrary-architecture',
+  'what-nowbrary-isnt',
+  'sharing-your-nowbrary',
 ];
 
 interface StackedPage {
