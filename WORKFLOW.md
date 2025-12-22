@@ -58,10 +58,64 @@ The system prompt includes today's date in `<env>`. When creating posts, I use t
 
 Current date format: `YYYY-MM-DD` (e.g., 2025-12-14)
 
+## Post Types
+
+### Standard Posts
+Use regular MDX frontmatter (see Post Format above).
+
+### Prototype Posts
+Use the `PrototypePost` component for consistent prototype/tool showcase format:
+
+```mdx
+---
+title: "Your Prototype Name"
+date: 2025-12-20
+description: "One-sentence description"
+draft: false
+---
+
+import PrototypePost from '../../components/PrototypePost.astro'
+
+<PrototypePost
+  title="Your Prototype Name"
+  tagline="A compelling one-liner about what it does"
+  artifactId="your-artifact-id"
+  artifactLabel="Tool Name"
+  builtDate="December 2024"
+  status="Complete"
+  projectUrl="https://github.com/username/project"
+>
+
+## What It Does
+[Content here...]
+
+## Why I Built It
+[Content here...]
+
+## What I Learned
+[Content here...]
+
+</PrototypePost>
+```
+
+**Template available:** `src/content/posts/_prototype-template.mdx`
+
+**PrototypePost Props:**
+- `title` - Prototype name (required)
+- `tagline` - One-sentence description (required)
+- `artifactId` - Claude artifact ID (optional)
+- `artifactLabel` - Display text for artifact link (optional)
+- `builtDate` - When built, e.g. "December 2024" (optional)
+- `status` - "Complete", "In Progress", or "Experimental" (optional)
+- `projectUrl` - GitHub repo or live URL (optional)
+
 ## Embedding Artifacts
 
-### Claude Artifacts (interactive, needs API)
-Keep on claude.site. Embed via iframe:
+### Via PrototypePost Component
+Use `artifactId` and `artifactLabel` props - automatically creates bracket link.
+
+### Direct Embedding (Advanced)
+Keep artifacts on claude.site. Embed via iframe:
 ```html
 <iframe
   src="https://claude.site/artifacts/ID/embed"
@@ -83,13 +137,27 @@ Automatic via GitHub Actions:
 
 Build time: ~60 seconds
 
-## Future: Substack Cross-posting
+## RSS Feed
 
-When you have a backlog of posts:
-1. Posts have RSS feed (Astro generates this)
-2. Script can pull recent posts from RSS
-3. Format for Substack newsletter
-4. Copy-paste or automate
+The blog has an RSS feed at `/rss.xml`:
+- **Local dev:** http://localhost:4321/mapthewild/rss.xml
+- **Production:** https://mapthewild.github.io/mapthewild/rss.xml
+
+The feed includes all published posts (drafts excluded) with:
+- Title
+- Description
+- Publication date
+- Full post link
+
+Updates automatically on each build.
+
+## Substack Cross-posting
+
+With RSS feed in place, you can:
+1. Subscribe to RSS feed in feed readers
+2. Use RSS-to-email services
+3. Manually pull recent posts for newsletters
+4. Automate cross-posting to Substack (future)
 
 For now: manual copy-paste from live site to Substack when ready.
 
@@ -116,4 +184,5 @@ mapthewild/
 | New post | Create `.mdx` in `src/content/posts/` |
 | Deploy | `git push` (auto-deploys) |
 | View site | https://mapthewild.github.io/mapthewild/ |
+| RSS feed | https://mapthewild.github.io/mapthewild/rss.xml |
 | Local dev | `npm run dev` (port 4321) |

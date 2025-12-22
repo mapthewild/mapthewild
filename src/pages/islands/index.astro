@@ -1,0 +1,127 @@
+---
+import { getCollection } from 'astro:content'
+import Layout from '../../layouts/Layout.astro'
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+
+const islandMeta: Record<string, { name: string; description: string }> = {
+  nowbrary: {
+    name: 'Nowbrary',
+    description: 'Living constellation of books'
+  },
+  map: {
+    name: 'Map',
+    description: 'Working things out — exploratory, unformed, questioning'
+  },
+  territory: {
+    name: 'Territory',
+    description: 'Developed work — established, complete, structured'
+  }
+}
+
+const posts = await getCollection('posts')
+const publishedPosts = posts.filter(post => !post.data.draft)
+
+// Count posts per island
+const islandCounts: Record<string, number> = {}
+publishedPosts.forEach(post => {
+  post.data.islands?.forEach(island => {
+    islandCounts[island] = (islandCounts[island] || 0) + 1
+  })
+})
+
+// Get islands that have posts, ordered by count
+const activeIslands = Object.entries(islandCounts)
+  .sort((a, b) => b[1] - a[1])
+  .map(([id, count]) => ({
+    id,
+    count,
+    ...islandMeta[id] || { name: id, description: '' }
+  }))
+---
+
+<Layout title="Territories - Map the Wild">
+  <div class="min-h-screen bg-space">
+    <div class="stars"></div>
+    <div class="stars2"></div>
+    <div class="stars3"></div>
+
+    <main class="relative z-10 max-w-2xl mx-auto px-6 py-16 md:py-24">
+      <Breadcrumbs
+        items={[
+          { label: 'Home', href: '/mapthewild/' },
+          { label: 'Territories' }
+        ]}
+      />
+
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">
+        Territories
+      </h1>
+      <p class="text-gray-400 mb-12">
+        Different zones for different kinds of thinking.
+      </p>
+
+      <div class="space-y-8">
+        {activeIslands.map((island) => (
+          <a
+            href={`/mapthewild/islands/${island.id}`}
+            class="block group p-6 border border-gray-800 rounded-lg hover:border-purple-400/50 transition-colors"
+          >
+            <h2 class="text-2xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">
+              {island.name}
+              <span class="text-gray-500 text-lg font-normal ml-2">({island.count})</span>
+            </h2>
+            <p class="text-gray-400">{island.description}</p>
+          </a>
+        ))}
+      </div>
+    </main>
+  </div>
+</Layout>
+
+<style>
+  .bg-space {
+    background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .stars, .stars2, .stars3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: transparent;
+  }
+
+  .stars {
+    width: 1px;
+    height: 1px;
+    box-shadow:
+      1780px 1456px #FFF, 1547px 1060px #FFF, 1411px 1473px #FFF,
+      351px 1061px #FFF, 1522px 1287px #FFF, 1530px 1651px #FFF,
+      943px 1044px #FFF, 1561px 1246px #FFF, 1695px 1654px #FFF;
+    animation: animStar 50s linear infinite;
+  }
+
+  .stars2 {
+    width: 2px;
+    height: 2px;
+    box-shadow:
+      779px 1041px #FFF, 1129px 1618px #FFF, 1018px 1502px #FFF,
+      927px 1756px #FFF, 1443px 1873px #FFF, 505px 1167px #FFF;
+    animation: animStar 100s linear infinite;
+  }
+
+  .stars3 {
+    width: 3px;
+    height: 3px;
+    box-shadow:
+      1351px 1413px #FFF, 641px 1264px #FFF, 226px 1686px #FFF,
+      1698px 945px #FFF, 990px 1748px #FFF;
+    animation: animStar 150s linear infinite;
+  }
+
+  @keyframes animStar {
+    from { transform: translateY(0px); }
+    to { transform: translateY(-2000px); }
+  }
+</style>
