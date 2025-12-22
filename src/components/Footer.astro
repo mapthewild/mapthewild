@@ -1,0 +1,31 @@
+---
+const currentYear = new Date().getFullYear()
+---
+
+<footer class="relative z-10 border-t border-gray-800 mt-16">
+  <div class="max-w-4xl mx-auto px-6 py-8">
+    <nav class="flex flex-wrap justify-center gap-6 mb-4">
+      <a
+        href="/mapthewild/"
+        class="text-gray-400 hover:text-purple-400 transition-colors"
+      >
+        Home
+      </a>
+      <a
+        href="/mapthewild/posts"
+        class="text-gray-400 hover:text-purple-400 transition-colors"
+      >
+        Posts
+      </a>
+      <a
+        href="/mapthewild/about"
+        class="text-gray-400 hover:text-purple-400 transition-colors"
+      >
+        About
+      </a>
+    </nav>
+    <p class="text-center text-sm text-gray-500">
+      © {currentYear} Map the Wild
+    </p>
+  </div>
+</footer>

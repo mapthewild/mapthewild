@@ -1,0 +1,58 @@
+---
+title: "Well Log POC: First Steps"
+date: 2025-01-26
+description: "A solution architecture for automating well log document processing with OCR and Python"
+islands: ["map"]
+---
+
+Here's a solution architecture for automating your workflow:
+
+## 1. PDF Processing Layer
+
+- Use Tesseract OCR + PDF.js for basic setup
+- Azure Form Recognizer or AWS Textract for production (better accuracy with form documents)
+- Alternative: ABBYY FlexiCapture if high volume/accuracy needed
+
+## 2. Data Processing
+
+- Python backend with FastAPI/Flask
+- Regular expressions to extract fields
+- Database: PostgreSQL with JSON support for flexibility
+- Store both raw OCR text and structured data
+
+## 3. Report Generation
+
+- ReportLab or WeasyPrint for PDF generation
+- Alternative: Jupyter notebooks for quick prototyping
+
+## For POC
+
+```python
+from pdf2image import convert_from_path
+import pytesseract
+from fastapi import FastAPI
+import re
+import json
+
+def extract_well_data(pdf_path):
+    images = convert_from_path(pdf_path)
+    text = pytesseract.image_to_string(images[0])
+
+    # Extract key fields
+    data = {
+        'notice_no': re.search(r'Notice of Intent No\.\s*(\w+)', text).group(1),
+        'owner': re.search(r'Property Owner Name\s*(.+)', text).group(1),
+        'address': re.search(r'Well Street Address\s*(.+)', text).group(1),
+        # Add other fields
+    }
+    return data
+```
+
+## SaaS Evolution
+
+1. Start with streamlit dashboard for POC
+2. Add user authentication/multi-tenancy
+3. Implement API endpoints
+4. Add batch processing
+5. Include validation rules engine
+6. Add template management for reports
