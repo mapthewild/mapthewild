@@ -1,0 +1,170 @@
+---
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  const publishedPosts = posts.filter(post => !post.data.draft);
+  return publishedPosts.map(post => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{post.data.title}</title>
+    <link rel="stylesheet" href="/src/styles/global.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 2rem;
+        font-family: system-ui, -apple-system, sans-serif;
+        background: #0a0a0f;
+        color: #d1d5db;
+      }
+
+      article {
+        max-width: 65ch;
+        margin: 0 auto;
+      }
+
+      header {
+        margin-bottom: 3rem;
+      }
+
+      time {
+        font-size: 0.875rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: white;
+        margin: 0.75rem 0 1rem;
+        line-height: 1.2;
+      }
+
+      .description {
+        font-size: 1.25rem;
+        color: #9ca3af;
+        line-height: 1.75;
+      }
+
+      .prose {
+        color: #d1d5db;
+        font-family: Georgia, serif;
+        line-height: 1.75;
+      }
+
+      .prose p {
+        margin-bottom: 1.5rem;
+      }
+
+      .prose h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: white;
+        margin-top: 3rem;
+        margin-bottom: 1rem;
+      }
+
+      .prose h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: white;
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .prose ul, .prose ol {
+        margin-left: 1.5rem;
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .prose li {
+        margin-bottom: 0.5rem;
+      }
+
+      .prose a {
+        color: #c084fc;
+        text-decoration: underline;
+        text-decoration-color: rgba(192, 132, 252, 0.5);
+        transition: color 0.2s;
+      }
+
+      .prose a:hover {
+        color: #d8b4fe;
+      }
+
+      .prose code {
+        background: #1f2937;
+        padding: 0.125rem 0.5rem;
+        border-radius: 0.25rem;
+        color: #c084fc;
+        font-size: 0.875em;
+      }
+
+      .prose pre {
+        background: #111827;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+        margin: 1.5rem 0;
+      }
+
+      .prose pre code {
+        background: transparent;
+        padding: 0;
+      }
+
+      .prose strong {
+        color: white;
+        font-weight: 600;
+      }
+
+      .prose blockquote {
+        border-left: 4px solid #a855f7;
+        padding-left: 1rem;
+        font-style: italic;
+        color: #9ca3af;
+        margin: 1.5rem 0;
+      }
+    </style>
+  </head>
+  <body>
+    <article>
+      <header>
+        <time>
+          {post.data.date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })}
+        </time>
+
+        <h1>{post.data.title}</h1>
+
+        {post.data.description && (
+          <p class="description">
+            {post.data.description}
+          </p>
+        )}
+      </header>
+
+      <div class="prose">
+        <Content />
+      </div>
+    </article>
+  </body>
+</html>

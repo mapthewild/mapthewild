@@ -36,12 +36,45 @@ import Layout from '../layouts/Layout.astro';
           <li>Figuring out what's actually useful vs what AI just generates</li>
         </ul>
 
-        <div class="pt-8">
+        <div class="pt-8 space-y-6">
+          <p class="text-gray-500 text-sm uppercase tracking-wide">Territories</p>
+          <div class="grid grid-cols-2 gap-3">
+            <a
+              href="/mapthewild/islands/nowbrary"
+              class="group block overflow-hidden rounded-lg border border-gray-700 hover:border-purple-400 transition-all"
+            >
+              <div class="aspect-[4/3] overflow-hidden">
+                <img
+                  src="/mapthewild/images/territory-nowbrary.jpeg"
+                  alt="Nowbrary - Living constellation of books"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div class="py-2 text-center">
+                <span class="text-white text-sm font-medium">Nowbrary</span>
+              </div>
+            </a>
+            <a
+              href="/mapthewild/islands/map"
+              class="group block overflow-hidden rounded-lg border border-gray-700 hover:border-purple-400 transition-all"
+            >
+              <div class="aspect-[4/3] overflow-hidden">
+                <img
+                  src="/mapthewild/images/territory-map.jpeg"
+                  alt="Map - Working things out"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div class="py-2 text-center">
+                <span class="text-white text-sm font-medium">Map</span>
+              </div>
+            </a>
+          </div>
           <a
             href="/mapthewild/posts"
-            class="inline-block px-6 py-3 border border-gray-600 text-white hover:border-gray-400 hover:bg-gray-900/30 transition-all rounded"
+            class="inline-block text-gray-500 hover:text-gray-300 transition-colors text-sm"
           >
-            View All Posts
+            View all posts →
           </a>
         </div>
 

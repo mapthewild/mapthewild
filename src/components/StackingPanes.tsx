@@ -58,7 +58,7 @@ const resolveContent = (content: string): { url: string; type: ContentType } => 
     return { url: ARTIFACT_REGISTRY[content], type: 'artifact' };
   }
   if (INTERNAL_POSTS.includes(content)) {
-    return { url: `/posts/${content}/`, type: 'post' };
+    return { url: `/posts/${content}/embed`, type: 'post' };
   }
   if (content.startsWith('http://') || content.startsWith('https://')) {
     return { url: content, type: 'site' };
@@ -242,8 +242,8 @@ export default function StackingPanes() {
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && stackedPages.length > 0) {
-        closePage(stackedPages.length - 1);
+      if (event.key === 'Escape' && stackedPagesRef.current.length > 0) {
+        closePage(stackedPagesRef.current.length - 1);
       }
     };
 

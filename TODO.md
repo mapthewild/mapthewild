@@ -1,6 +1,6 @@
 # Map the Wild - TODO
 
-Last updated: December 14, 2025
+Last updated: December 20, 2025
 
 ---
 
@@ -8,8 +8,12 @@ Last updated: December 14, 2025
 
 - ✅ Site live at https://mapthewild.github.io/mapthewild/
 - ✅ GitHub Actions auto-deploy working
-- ✅ Simple single-page intro
-- ✅ Workflow documented in WORKFLOW.md
+- ✅ **Blog navigation complete** (prev/next, breadcrumbs, footer)
+- ✅ **Stacking panes working** (Andy Matuschak-style cascading)
+- ✅ **Bracket link syntax working** `[[text:artifact-id]]`
+- ✅ Posts listing page with count
+- ✅ 5 published posts (Nowbrary series)
+- ✅ 13 draft posts in progress (collating content + artifacts)
 
 ---
 
@@ -21,41 +25,22 @@ Last updated: December 14, 2025
 
 ## P1 - HIGH
 
-### [CONTENT] Write first real post
-**Description:** Pick a prototype (Lumina, 7year, archetype, dtd) and write about it
-**Why:** Site needs content
-**What to include:**
-- What it does
-- Why I built it
-- How it works
-- What I learned
-- Embed the prototype (claude.site iframe)
-**Estimated effort:** M
-**Created:** Dec 14, 2025
-
-### [FEATURE] Posts listing page
-**Description:** Create `/posts` page that lists all posts
-**Why:** Need way to navigate to posts once they exist
-**Acceptance criteria:**
-- Simple list of post titles + dates
-- Link to each post
-- Chronological order (newest first)
-**Estimated effort:** S
-**Created:** Dec 14, 2025
+### [CONTENT] Complete draft posts
+**Description:** Finish collating remaining draft posts with their artifacts
+**Current state:** 13 posts in various stages of completion
+**Inventory:** See `docs/draft-posts-inventory.md` for full breakdown
+**Why:** Main content pipeline
+**What to do:**
+- **Quick wins (7 posts):** Concept posts ready to publish after light review
+- **Needs artifacts (5 posts):** Get embed URLs from Claude, migrate prototypes to PrototypePost
+- **Archive (1 post):** Delete artifact-demo.mdx (was just a test)
+**Estimated effort:** Ongoing
+**Created:** Dec 20, 2025
+**Inventory created:** Dec 20, 2025
 
 ---
 
 ## P2 - MEDIUM
-
-### [FEATURE] RSS feed
-**Description:** Auto-generate RSS feed from posts
-**Why:** Needed for Substack automation, subscribers
-**Acceptance criteria:**
-- Astro generates RSS automatically
-- Full post content included
-- Updates on each build
-**Estimated effort:** S
-**Created:** Dec 14, 2025
 
 ### [SETUP] Custom domain
 **Description:** Point mapthewild.com to GitHub Pages
@@ -67,15 +52,12 @@ Last updated: December 14, 2025
 **Estimated effort:** S
 **Created:** Dec 14, 2025
 
-### [CONTENT] About page
-**Description:** Simple about/bio page
-**Why:** People want to know who's behind this
-**Keep it short:**
-- Who I am
-- What this site is
-- How to reach me
+### [FEATURE] Post embed optimization
+**Description:** Improve how posts load in stacking panes
+**Current:** Posts load full page in iframe
+**Improvement:** Create `/posts/[slug]/embed` endpoint that returns just content
+**Status:** COMPLETED Dec 20, 2025
 **Estimated effort:** S
-**Created:** Dec 14, 2025
 
 ### [WORKFLOW] Easier content editing
 **Description:** Set up simpler way to edit content than raw Astro files
@@ -115,29 +97,81 @@ Last updated: December 14, 2025
 **Estimated effort:** S
 **Created:** Dec 14, 2025
 
+### [FEATURE] Mobile optimization check
+**Description:** Test navigation/panes on real mobile devices
+**Current:** Responsive classes in place, needs testing
+**Estimated effort:** S
+**Created:** Dec 20, 2025
+
 ---
 
 ## BACKLOG / FUTURE
 
-### Fogmap integration
-Merge fog-of-war explorer into blog (see MAP-THE-WILD-ARCHITECTURE-ANALYSIS.md)
+### Interactive fogmap integration
+Embed CivFogMap and WikiFogMap as interactive elements in posts
 
 ### Post templates
-Consistent format for prototype posts
+Consistent format for different post types (prototype, essay, tutorial)
 
 ### Search
-Client-side search when content grows
+Client-side search when content grows (Pagefind or similar)
+
+### Tags/categories
+Organize posts by theme (prototypes, tools for thinking, relationships, etc)
+
+### Related posts
+Show related content at bottom of posts
 
 ---
 
 ## DONE (Recent)
 
+### Prototype showcase template
+**Completed:** Dec 20, 2025
+**Details:**
+- Created PrototypePost.astro component
+- Reusable template for tool/prototype posts
+- Includes: tagline, status badge, artifact embed, project link
+- Consistent structure: What It Does, Why Built, What Learned
+- Template file: _prototype-template.mdx
+- Documented in WORKFLOW.md
+
+### RSS feed
+**Completed:** Dec 20, 2025
+**Details:**
+- Installed @astrojs/rss package
+- Created /rss.xml endpoint
+- Includes all published posts (not drafts)
+- Full post metadata (title, description, date, link)
+- Auto-updates on each build
+- Ready for Substack automation
+
+### Blog navigation system
+**Completed:** Dec 20, 2025
+**Details:**
+- Previous/Next post navigation
+- Breadcrumbs (Home > Posts > Title)
+- Footer with site-wide links
+- Post count on listing page
+- "Back to posts" replaced with breadcrumbs
+
+### Stacking panes fixes
+**Completed:** Dec 20, 2025
+**Details:**
+- Made component global (works on all pages)
+- Fixed stale closure bug (Escape key)
+- Created post embed endpoint
+- System fully functional
+
+### Posts listing page
+**Completed:** Previously
+**Details:** Simple list of post titles + dates, chronological order
+
+### About page
+**Completed:** Previously
+
 ### Site deployed to GitHub Pages
 **Completed:** Dec 14, 2025
-
-### Simplified to single-page intro
-**Completed:** Dec 14, 2025
-**Details:** Removed stacking panes, bracket links, all complexity
 
 ### Workflow documentation
 **Completed:** Dec 14, 2025
@@ -149,16 +183,53 @@ Client-side search when content grows
 
 ---
 
-## WONTFIX
+## RECONSIDERED (Was WONTFIX)
 
-### Stacking panes feature
-**Reason:** Too complex, didn't match desired simplicity
+### ✅ Stacking panes feature
+**Status:** WORKING as of Dec 20, 2025
+**Details:** Fixed and functional, not removed
 
-### Hover previews
-**Reason:** Removed with bracket link system
+### ✅ Hover previews
+**Status:** WORKING as part of stacking panes
 
-### Backlinks system
-**Reason:** Not needed without bracket links
+### ✅ Bracket link system
+**Status:** WORKING with `[[text:id]]` syntax
+
+---
+
+## Project Integration Roadmap
+
+### Prototypes to Feature on Blog
+
+**7year (Career Navigator)**
+- Status: Built, ready to write about
+- Needs: Artifact embed URL or self-host
+- Blog post: Draft in progress
+
+**archetype (Reflection Tool)**
+- Status: Built, ready to write about
+- Needs: Artifact embed URL or self-host
+- Blog post: Draft in progress
+
+**dtd (Death to Divorce)**
+- Status: Built, ready to write about
+- Needs: Artifact embed URL or self-host
+- Blog post: Draft in progress
+
+**wallfly (Voice Recorder)**
+- Status: Built, needs completion
+- Needs: Finish implementation, then write about
+- Blog post: Not started
+
+**fogmap-test (Exploration)**
+- Status: Built, could be embedded
+- Needs: Deploy as standalone or embed
+- Blog post: Thinking Territories draft in progress
+
+**components/ (CivFogMap, WikiFogMap)**
+- Status: Standalone React components
+- Needs: Deploy and get embed URLs
+- Blog posts: Visual Territories draft in progress
 
 ---
 
@@ -174,3 +245,11 @@ Client-side search when content grows
 - **P1:** Needed before site is useful
 - **P2:** Important improvements
 - **P3:** Nice to have
+
+### Content Pipeline
+1. Write/collate post content
+2. Build/publish artifacts to Claude
+3. Get artifact embed URLs
+4. Add to ARTIFACT_REGISTRY in StackingPanes.tsx
+5. Set `draft: false` in post frontmatter
+6. Deploy (automatic on git push)

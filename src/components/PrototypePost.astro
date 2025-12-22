@@ -1,0 +1,168 @@
+---
+/**
+ * Prototype Post Template Component
+ *
+ * Reusable template for showcasing interactive prototypes/tools.
+ * Provides consistent structure for prototype posts.
+ *
+ * Usage in MDX:
+ *
+ * import PrototypePost from '../../components/PrototypePost.astro'
+ *
+ * <PrototypePost
+ *   title="Seven Year Career Navigator"
+ *   artifactId="7year-app"
+ *   artifactLabel="Seven Year Navigator"
+ *   builtDate="December 2024"
+ *   status="Complete"
+ *   tagline="A career assessment tool built on Peter Weddle's research about career phase transitions"
+ *   projectUrl="https://github.com/yourusername/7year"
+ * />
+ */
+
+interface Props {
+  // Basic info
+  title: string
+  tagline: string
+
+  // Artifact embed (optional - for interactive demos)
+  artifactId?: string
+  artifactLabel?: string
+
+  // Project metadata
+  builtDate?: string
+  status?: 'Complete' | 'In Progress' | 'Experimental'
+  projectUrl?: string
+
+  // Content slots will be passed as children
+}
+
+const {
+  title,
+  tagline,
+  artifactId,
+  artifactLabel,
+  builtDate,
+  status = 'Complete',
+  projectUrl
+} = Astro.props
+---
+
+<div class="prototype-showcase">
+  <!-- Header Section -->
+  <header class="mb-12 pb-8 border-b border-gray-800">
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-500/20 text-purple-300 border border-purple-500/30">
+        Prototype
+      </span>
+      {status && (
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-800 text-gray-400 border border-gray-700">
+          {status}
+        </span>
+      )}
+      {builtDate && (
+        <span class="text-sm text-gray-500">
+          Built {builtDate}
+        </span>
+      )}
+    </div>
+
+    <p class="text-xl text-gray-400 leading-relaxed">
+      {tagline}
+    </p>
+  </header>
+
+  <!-- Interactive Demo Section (if artifact provided) -->
+  {artifactId && artifactLabel && (
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-white mb-4">Try It</h2>
+      <p class="text-gray-400 mb-6">
+        Click to open the [[{artifactLabel}:{artifactId}]] in an interactive panel.
+      </p>
+    </section>
+  )}
+
+  <!-- Main Content (passed as slot) -->
+  <div class="prototype-content prose prose-invert prose-lg max-w-none">
+    <slot />
+  </div>
+
+  <!-- Footer Section -->
+  <footer class="mt-12 pt-8 border-t border-gray-800">
+    <div class="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+      {projectUrl && (
+        <a
+          href={projectUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+          </svg>
+          View Source Code
+        </a>
+      )}
+
+      <div class="text-sm text-gray-500">
+        Part of the <a href="/mapthewild/posts" class="text-purple-400 hover:text-purple-300 transition-colors">Map the Wild</a> prototype series
+      </div>
+    </div>
+  </footer>
+</div>
+
+<style>
+  .prototype-showcase {
+    @apply relative;
+  }
+
+  .prototype-content :global(h2) {
+    @apply text-2xl font-bold text-white mt-12 mb-4;
+  }
+
+  .prototype-content :global(h3) {
+    @apply text-xl font-semibold text-gray-200 mt-8 mb-3;
+  }
+
+  .prototype-content :global(p) {
+    @apply text-gray-300 leading-relaxed mb-6;
+  }
+
+  .prototype-content :global(ul),
+  .prototype-content :global(ol) {
+    @apply text-gray-300 space-y-2 mb-6;
+  }
+
+  .prototype-content :global(li) {
+    @apply leading-relaxed;
+  }
+
+  .prototype-content :global(strong) {
+    @apply text-white font-semibold;
+  }
+
+  .prototype-content :global(blockquote) {
+    @apply border-l-4 border-purple-500 pl-4 italic text-gray-400 my-6;
+  }
+
+  .prototype-content :global(code) {
+    @apply text-purple-300 bg-gray-900 px-1.5 py-0.5 rounded text-sm;
+  }
+
+  .prototype-content :global(pre) {
+    @apply bg-gray-900 p-4 rounded-lg overflow-x-auto my-6;
+  }
+
+  .prototype-content :global(a) {
+    @apply text-purple-400 hover:text-purple-300 transition-colors underline decoration-purple-500/30;
+  }
+
+  /* Section dividers */
+  .prototype-content :global(h2) {
+    @apply border-t border-gray-800 pt-8;
+  }
+
+  .prototype-content :global(h2:first-of-type) {
+    @apply border-t-0 pt-0;
+  }
+</style>
