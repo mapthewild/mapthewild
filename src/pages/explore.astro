@@ -1,0 +1,166 @@
+---
+import Layout from '../layouts/Layout.astro';
+import BlogFogMap from '../components/BlogFogMap.tsx';
+---
+
+<Layout title="Explore - Map the Wild">
+  <div class="relative w-full h-screen bg-space overflow-hidden">
+    <!-- Stars background -->
+    <div class="stars"></div>
+    <div class="stars2"></div>
+    <div class="stars3"></div>
+
+    <!-- Back button -->
+    <a
+      href="/mapthewild/"
+      class="absolute top-6 left-6 z-50 px-4 py-2 bg-gray-900/80 hover:bg-gray-800/90 text-white text-sm rounded-lg border border-gray-700 hover:border-purple-400 transition-all backdrop-blur-sm"
+    >
+      ← Back to Blog
+    </a>
+
+    <!-- Fogmap component -->
+    <div class="absolute inset-0 flex items-center justify-center pt-16">
+      <BlogFogMap client:load />
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .bg-space {
+    background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+  }
+
+  .stars {
+    width: 1px;
+    height: 1px;
+    background: transparent;
+    box-shadow:
+      1780px 1456px #FFF, 1547px 1060px #FFF, 1411px 1473px #FFF,
+      351px 1061px #FFF, 1522px 1287px #FFF, 1530px 1651px #FFF,
+      309px 1824px #FFF, 1419px 627px #FFF, 1418px 1801px #FFF,
+      943px 1044px #FFF, 1561px 1246px #FFF, 1695px 1654px #FFF,
+      1499px 1441px #FFF, 1667px 1223px #FFF, 1137px 1572px #FFF,
+      1669px 1793px #FFF, 1633px 1017px #FFF, 1047px 1726px #FFF,
+      1853px 1040px #FFF, 1446px 812px #FFF, 412px 1687px #FFF,
+      1850px 1697px #FFF, 904px 1651px #FFF, 1675px 1495px #FFF,
+      1738px 1261px #FFF, 660px 1441px #FFF, 1507px 470px #FFF,
+      1582px 895px #FFF, 619px 1863px #FFF, 1331px 1217px #FFF,
+      1804px 1231px #FFF, 934px 1429px #FFF, 1734px 1076px #FFF,
+      1917px 731px #FFF, 1686px 1454px #FFF, 1819px 1646px #FFF,
+      1157px 1399px #FFF, 1744px 1896px #FFF, 1966px 887px #FFF,
+      1897px 1737px #FFF, 1374px 744px #FFF, 1850px 1558px #FFF,
+      1436px 1780px #FFF, 1720px 1679px #FFF, 1171px 1592px #FFF,
+      633px 1108px #FFF, 1308px 1334px #FFF, 1949px 1848px #FFF,
+      1745px 1428px #FFF, 1542px 1965px #FFF, 1364px 1310px #FFF;
+    animation: animStar 50s linear infinite;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .stars:after {
+    content: " ";
+    position: absolute;
+    top: 2000px;
+    width: 1px;
+    height: 1px;
+    background: transparent;
+    box-shadow:
+      1780px 1456px #FFF, 1547px 1060px #FFF, 1411px 1473px #FFF,
+      351px 1061px #FFF, 1522px 1287px #FFF, 1530px 1651px #FFF,
+      309px 1824px #FFF, 1419px 627px #FFF, 1418px 1801px #FFF,
+      943px 1044px #FFF, 1561px 1246px #FFF, 1695px 1654px #FFF,
+      1499px 1441px #FFF, 1667px 1223px #FFF, 1137px 1572px #FFF,
+      1669px 1793px #FFF, 1633px 1017px #FFF, 1047px 1726px #FFF,
+      1853px 1040px #FFF, 1446px 812px #FFF, 412px 1687px #FFF,
+      1850px 1697px #FFF, 904px 1651px #FFF, 1675px 1495px #FFF,
+      1738px 1261px #FFF, 660px 1441px #FFF, 1507px 470px #FFF,
+      1582px 895px #FFF, 619px 1863px #FFF, 1331px 1217px #FFF,
+      1804px 1231px #FFF, 934px 1429px #FFF, 1734px 1076px #FFF,
+      1917px 731px #FFF, 1686px 1454px #FFF, 1819px 1646px #FFF,
+      1157px 1399px #FFF, 1744px 1896px #FFF, 1966px 887px #FFF,
+      1897px 1737px #FFF, 1374px 744px #FFF, 1850px 1558px #FFF,
+      1436px 1780px #FFF, 1720px 1679px #FFF, 1171px 1592px #FFF,
+      633px 1108px #FFF, 1308px 1334px #FFF, 1949px 1848px #FFF,
+      1745px 1428px #FFF, 1542px 1965px #FFF, 1364px 1310px #FFF;
+  }
+
+  .stars2 {
+    width: 2px;
+    height: 2px;
+    background: transparent;
+    box-shadow:
+      779px 1041px #FFF, 1129px 1618px #FFF, 1018px 1502px #FFF,
+      927px 1756px #FFF, 1443px 1873px #FFF, 505px 1167px #FFF,
+      1745px 1444px #FFF, 975px 1115px #FFF, 873px 1785px #FFF,
+      1745px 1341px #FFF, 1134px 1729px #FFF, 1478px 794px #FFF,
+      1025px 1649px #FFF, 1597px 1207px #FFF, 1616px 1730px #FFF,
+      1694px 1133px #FFF, 1543px 1513px #FFF, 449px 1887px #FFF,
+      1226px 602px #FFF, 1344px 1257px #FFF, 1583px 1526px #FFF,
+      1114px 1337px #FFF, 1316px 1595px #FFF, 1637px 1059px #FFF,
+      783px 1582px #FFF, 1693px 1421px #FFF;
+    animation: animStar 100s linear infinite;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .stars2:after {
+    content: " ";
+    position: absolute;
+    top: 2000px;
+    width: 2px;
+    height: 2px;
+    background: transparent;
+    box-shadow:
+      779px 1041px #FFF, 1129px 1618px #FFF, 1018px 1502px #FFF,
+      927px 1756px #FFF, 1443px 1873px #FFF, 505px 1167px #FFF,
+      1745px 1444px #FFF, 975px 1115px #FFF, 873px 1785px #FFF,
+      1745px 1341px #FFF, 1134px 1729px #FFF, 1478px 794px #FFF,
+      1025px 1649px #FFF, 1597px 1207px #FFF, 1616px 1730px #FFF,
+      1694px 1133px #FFF, 1543px 1513px #FFF, 449px 1887px #FFF,
+      1226px 602px #FFF, 1344px 1257px #FFF, 1583px 1526px #FFF,
+      1114px 1337px #FFF, 1316px 1595px #FFF, 1637px 1059px #FFF,
+      783px 1582px #FFF, 1693px 1421px #FFF;
+  }
+
+  .stars3 {
+    width: 3px;
+    height: 3px;
+    background: transparent;
+    box-shadow:
+      1351px 1413px #FFF, 641px 1264px #FFF, 226px 1686px #FFF,
+      1698px 945px #FFF, 990px 1748px #FFF, 1440px 1122px #FFF,
+      1858px 1516px #FFF, 960px 1635px #FFF, 1400px 764px #FFF,
+      572px 1964px #FFF, 1674px 1293px #FFF, 1024px 1076px #FFF,
+      1887px 1857px #FFF;
+    animation: animStar 150s linear infinite;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .stars3:after {
+    content: " ";
+    position: absolute;
+    top: 2000px;
+    width: 3px;
+    height: 3px;
+    background: transparent;
+    box-shadow:
+      1351px 1413px #FFF, 641px 1264px #FFF, 226px 1686px #FFF,
+      1698px 945px #FFF, 990px 1748px #FFF, 1440px 1122px #FFF,
+      1858px 1516px #FFF, 960px 1635px #FFF, 1400px 764px #FFF,
+      572px 1964px #FFF, 1674px 1293px #FFF, 1024px 1076px #FFF,
+      1887px 1857px #FFF;
+  }
+
+  @keyframes animStar {
+    from {
+      transform: translateY(0px);
+    }
+    to {
+      transform: translateY(-2000px);
+    }
+  }
+</style>
