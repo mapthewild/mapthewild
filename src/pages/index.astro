@@ -15,28 +15,10 @@ import Layout from '../layouts/Layout.astro';
 
       <article class="prose prose-invert space-y-6 text-gray-300 leading-relaxed">
         <p>
-          I make prototypes. Mostly things that mess with how people see their relationships, careers, or their own thinking. Not productivity stuff. Not capture-more-data stuff.
+          Brain flickers, farts and finer arts from my towers of sand. See where I've been and where I might be.
         </p>
 
-        <p>
-          This is where I put them. Along with some writing about why I made them and what I learned.
-        </p>
-
-        <p>
-          The name: I like the idea that knowledge is territory, not a database. You walk around in it. Most of it is unmapped. The good parts are usually off the path.
-        </p>
-
-        <p>
-          Things I'm working on:
-        </p>
-
-        <ul class="list-disc list-inside space-y-2 text-gray-400">
-          <li>Tools that show you how you think (not what to think)</li>
-          <li>Structured rituals for couples and individuals</li>
-          <li>Figuring out what's actually useful vs what AI just generates</li>
-        </ul>
-
-        <div class="pt-8 space-y-6">
+        <div class="pt-4 space-y-6">
           <p class="text-gray-500 text-sm uppercase tracking-wide">Territories</p>
           <div class="grid grid-cols-2 gap-3">
             <a
@@ -70,16 +52,27 @@ import Layout from '../layouts/Layout.astro';
               </div>
             </a>
           </div>
-          <a
-            href="/mapthewild/posts"
-            class="inline-block text-gray-500 hover:text-gray-300 transition-colors text-sm"
-          >
-            View all posts →
-          </a>
+          <div class="flex items-center justify-between">
+            <a
+              href="/mapthewild/posts"
+              class="inline-block text-gray-500 hover:text-gray-300 transition-colors text-sm"
+            >
+              View all posts →
+            </a>
+            <a
+              href="/mapthewild/explore"
+              class="inline-flex items-center gap-1 px-3 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 hover:text-purple-300 transition-all text-sm rounded-md border border-purple-500/20"
+            >
+              <span>🗺️</span>
+              <span>Explore Map</span>
+            </a>
+          </div>
         </div>
 
         <p class="text-gray-500 text-sm pt-8">
-          December 2025
+          <a href="/mapthewild/about" class="hover:text-gray-300 transition-colors">
+            What is this? →
+          </a>
         </p>
       </article>
     </main>

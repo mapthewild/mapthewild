@@ -67,4 +67,29 @@
     outline: 2px solid #58a6ff;
     outline-offset: 2px;
   }
+
+  /* Split layout for stacking panes */
+  .split-layout {
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .main-content {
+    flex: 1;
+    min-width: 0;
+    transition: margin-right 0.3s ease;
+  }
+
+  /* When panes are open on desktop */
+  .main-content.panes-open {
+    margin-right: 50vw;
+  }
+
+  /* Mobile: no margin shift, full overlay instead */
+  @media (max-width: 768px) {
+    .main-content.panes-open {
+      margin-right: 0;
+    }
+  }
 }

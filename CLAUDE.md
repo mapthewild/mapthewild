@@ -2,6 +2,20 @@
 
 Astro blog with custom bracket syntax for embedding Claude artifacts.
 
+**Workspace philosophy**: See [../CLAUDE.md - Philosophy & Craft](../CLAUDE.md#philosophy--craft)
+
+## Communication Style
+
+The person working on this project is **not a coder** — explain things in plain language:
+
+- **Avoid jargon** without explaining it first
+- **Use analogies** when introducing technical concepts
+- **Define terms** like "slug" (URL-friendly version of a title), "component" (reusable piece of UI), etc.
+- **Show before/after** examples when explaining changes
+- **Ask clarifying questions** rather than assuming technical knowledge
+
+Think of responses as teaching moments, not just task completion.
+
 ## Commands
 
 ```bash

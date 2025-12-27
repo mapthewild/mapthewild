@@ -1,6 +1,33 @@
 # Map the Wild - TODO
 
-Last updated: December 20, 2025
+Last updated: December 26, 2025
+
+---
+
+## COMPLETED (December 2025)
+
+### ✅ Fogmap Integration (Dec 26, 2025)
+**What was done:**
+- Moved fogmap-test into mapthewild as `/explore` page
+- Created React component (`BlogFogMap.tsx`) with WASD navigation
+- Built explorable-maps skill with 3 working scripts
+- Auto-generates map data from all posts (11 posts → 16 territories)
+- 2 islands: Nowbrary (5 posts), Map (6 posts)
+- All validations passing (8/8 checks)
+- Bracket links work correctly
+- Navigation between islands functional
+- Documentation complete (4 guides created)
+- Production ready!
+
+**Files created:**
+- `src/components/BlogFogMap.tsx` - Fogmap React component
+- `src/pages/explore.astro` - Exploration mode page
+- `src/generated/blogMapData.js` - Auto-generated territory data
+- `.claude/skills/explorable-maps/` - Complete skill with scripts & docs
+- `EXPLORE_GUIDE.md` - User guide for writing posts
+- `PUBLISHING.md` - Deployment & Substack guide
+
+**Live at:** http://localhost:4321/mapthewild/explore
 
 ---
 
@@ -11,9 +38,9 @@ Last updated: December 20, 2025
 - ✅ **Blog navigation complete** (prev/next, breadcrumbs, footer)
 - ✅ **Stacking panes working** (Andy Matuschak-style cascading)
 - ✅ **Bracket link syntax working** `[[text:artifact-id]]`
+- ✅ **Exploration mode live** (WASD navigation, fog-of-war) 🎉
 - ✅ Posts listing page with count
-- ✅ 5 published posts (Nowbrary series)
-- ✅ 13 draft posts in progress (collating content + artifacts)
+- ✅ 11 published posts
 
 ---
 
@@ -23,20 +50,13 @@ Last updated: December 20, 2025
 
 ---
 
-## P1 - HIGH
+## P1 - HIGH (December Goals)
 
-### [CONTENT] Complete draft posts
-**Description:** Finish collating remaining draft posts with their artifacts
-**Current state:** 13 posts in various stages of completion
-**Inventory:** See `docs/draft-posts-inventory.md` for full breakdown
-**Why:** Main content pipeline
-**What to do:**
-- **Quick wins (7 posts):** Concept posts ready to publish after light review
-- **Needs artifacts (5 posts):** Get embed URLs from Claude, migrate prototypes to PrototypePost
-- **Archive (1 post):** Delete artifact-demo.mdx (was just a test)
-**Estimated effort:** Ongoing
-**Created:** Dec 20, 2025
-**Inventory created:** Dec 20, 2025
+### [FEATURE] Fog Text Reading
+**Description:** Paragraphs reveal as you read, progress saved to localStorage
+**Why:** Creates intentional reading experience (fog-of-war for text)
+**Implementation:** New `FogProse.tsx` component
+**Created:** Dec 22, 2025
 
 ---
 
@@ -107,20 +127,17 @@ Last updated: December 20, 2025
 
 ## BACKLOG / FUTURE
 
-### Interactive fogmap integration
-Embed CivFogMap and WikiFogMap as interactive elements in posts
-
-### Post templates
-Consistent format for different post types (prototype, essay, tutorial)
-
 ### Search
 Client-side search when content grows (Pagefind or similar)
 
 ### Tags/categories
-Organize posts by theme (prototypes, tools for thinking, relationships, etc)
+Organize posts by theme
 
 ### Related posts
 Show related content at bottom of posts
+
+### Auto-linking
+Scan posts for known terms, insert bracket links automatically
 
 ---
 
@@ -197,42 +214,6 @@ Show related content at bottom of posts
 
 ---
 
-## Project Integration Roadmap
-
-### Prototypes to Feature on Blog
-
-**7year (Career Navigator)**
-- Status: Built, ready to write about
-- Needs: Artifact embed URL or self-host
-- Blog post: Draft in progress
-
-**archetype (Reflection Tool)**
-- Status: Built, ready to write about
-- Needs: Artifact embed URL or self-host
-- Blog post: Draft in progress
-
-**dtd (Death to Divorce)**
-- Status: Built, ready to write about
-- Needs: Artifact embed URL or self-host
-- Blog post: Draft in progress
-
-**wallfly (Voice Recorder)**
-- Status: Built, needs completion
-- Needs: Finish implementation, then write about
-- Blog post: Not started
-
-**fogmap-test (Exploration)**
-- Status: Built, could be embedded
-- Needs: Deploy as standalone or embed
-- Blog post: Thinking Territories draft in progress
-
-**components/ (CivFogMap, WikiFogMap)**
-- Status: Standalone React components
-- Needs: Deploy and get embed URLs
-- Blog posts: Visual Territories draft in progress
-
----
-
 ## Notes
 
 ### Effort Estimates
@@ -246,10 +227,3 @@ Show related content at bottom of posts
 - **P2:** Important improvements
 - **P3:** Nice to have
 
-### Content Pipeline
-1. Write/collate post content
-2. Build/publish artifacts to Claude
-3. Get artifact embed URLs
-4. Add to ARTIFACT_REGISTRY in StackingPanes.tsx
-5. Set `draft: false` in post frontmatter
-6. Deploy (automatic on git push)

@@ -20,10 +20,12 @@ const { title = 'Map the Wild' } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-	<body>
-		<Header />
-		<slot />
-		<Footer />
+	<body class="split-layout">
+		<div id="main-content" class="main-content">
+			<Header />
+			<slot />
+			<Footer />
+		</div>
 		<StackingPanes client:load />
 	</body>
 </html>
