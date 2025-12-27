@@ -7,7 +7,7 @@ A minimalist blog built with Astro featuring a custom bracket system for embeddi
 - **Custom Bracket System**: Embed Claude artifacts with `[[triggerWord:artifactId]]` syntax
 - **Content Collections**: Type-safe blog posts with MDX support
 - **Animated Starfield**: CSS-only twinkling star background
-- **Interactive Artifact Panel**: Smooth slide-out panel for viewing artifacts
+- **Stacking Panes**: Andy Matuschak-style cascading panes for viewing artifacts and posts
 - **Dark Theme**: Beautiful purple gradient accents on dark background
 - **Responsive Design**: Optimized for all screen sizes
 - **Accessibility**: Keyboard navigation and focus states
@@ -28,7 +28,7 @@ A minimalist blog built with Astro featuring a custom bracket system for embeddi
 │   └── favicon.svg
 ├── src/
 │   ├── components/
-│   │   ├── ArtifactPanel.tsx       # Slide-out artifact viewer
+│   │   ├── StackingPanes.tsx       # Cascading pane viewer for artifacts/posts
 │   │   ├── BlogPost.astro          # Blog post layout
 │   │   └── StarField.astro         # Animated background
 │   ├── content/
@@ -220,14 +220,16 @@ The `bracketParser.ts` remark plugin:
 3. Replaces them with HTML spans containing data attributes
 4. Applies styling classes for visual appearance
 
-### Artifact Panel
+### Stacking Panes
 
-The `ArtifactPanel.tsx` component:
+The `StackingPanes.tsx` component:
 
 1. Listens for clicks on bracketed elements
-2. Extracts artifact ID from data attributes
-3. Renders iframe pointing to `claude.site/public/artifacts/{id}/embed`
-4. Handles keyboard navigation and escape key
+2. Validates and resolves content (artifacts, posts, or external URLs)
+3. Renders content in cascading panes with hover previews
+4. Handles keyboard navigation (Enter/Space to open, Escape to close)
+5. Supports nested panes via postMessage communication
+6. Restores focus when panes are closed
 
 ## Accessibility
 
@@ -254,9 +256,9 @@ The `ArtifactPanel.tsx` component:
 
 ### Bracket Links Not Working
 
-- Ensure the artifact ID is correct
+- Ensure the artifact ID is correct (UUID format or registered in ARTIFACT_REGISTRY)
 - Check that the artifact is publicly accessible
-- Verify `ArtifactPanel` is included in the layout
+- Verify `StackingPanes` is included in the layout
 
 ### Build Errors
 

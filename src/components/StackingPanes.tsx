@@ -2,6 +2,15 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 
 type ContentType = 'artifact' | 'site' | 'post';
 
+// Trusted origins for postMessage communication
+// Messages from other origins are rejected for security
+const TRUSTED_ORIGINS = [
+  'https://focusedition.github.io',
+  'https://claude.site',
+  'http://localhost:4321',
+  'http://localhost:3000',
+];
+
 // External apps that block iframes - open in new tab
 const EXTERNAL_APPS: Record<string, string> = {
   'dtd-app': 'https://project-death-to-divorce-ritual-739.magicpatterns.app',
@@ -14,21 +23,45 @@ const ARTIFACT_REGISTRY: Record<string, string> = {
   'demo-artifact': 'https://claude.site/public/artifacts/2a378267-bc36-4858-942d-bf0815fdff85/embed',
 };
 
+// Input validation utilities
+function isValidUrl(urlString: string): boolean {
+  try {
+    const url = new URL(urlString);
+    return ['http:', 'https:'].includes(url.protocol);
+  } catch {
+    return false;
+  }
+}
+
+function isValidArtifactId(id: string): boolean {
+  // UUID format: 8-4-4-4-12 hex chars (standard Claude artifact IDs)
+  const uuidPattern = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
+  // Short alphanumeric (for registry keys like 'demo-artifact')
+  const shortIdPattern = /^[a-z0-9][a-z0-9-]{0,50}$/i;
+  return uuidPattern.test(id) || shortIdPattern.test(id);
+}
+
+function isValidPostSlug(slug: string): boolean {
+  // Slugs are lowercase alphanumeric with hyphens, reasonable length
+  const slugPattern = /^[a-z0-9][a-z0-9-]{0,100}$/;
+  return slugPattern.test(slug);
+}
+
 // Internal posts that load in panes
 const INTERNAL_POSTS = [
-  'death-to-divorce',
-  'seven-year-career-navigator',
-  'archetypal-reflection-tool',
-  'tools-for-thinking',
-  'ritual-design',
-  'metacognitive-tools',
-  'contemplative-pause',
-  'phone-passing',
+  // Nowbrary series
   'nowbrary-living-constellation',
   'starting-your-nowbrary',
   'nowbrary-architecture',
   'what-nowbrary-isnt',
   'sharing-your-nowbrary',
+  // Map territory
+  'beyond-the-boxes',
+  'candor-conversation-flow',
+  'digital-hoarding-intelligence',
+  'evolution-of-surveillance',
+  'my-ai-struggle',
+  'well-log-poc',
 ];
 
 interface StackedPage {
@@ -50,20 +83,41 @@ interface HoverPreview {
 const PAGE_WIDTH = 640;
 const PEEK_WIDTH = 40; // How much of previous pages show
 
-const resolveContent = (content: string): { url: string; type: ContentType } => {
+const resolveContent = (content: string): { url: string; type: ContentType } | null => {
+  // Check registered apps first (trusted, pre-validated)
   if (EXTERNAL_APPS[content]) {
     return { url: EXTERNAL_APPS[content], type: 'site' };
   }
+
+  // Check artifact registry (trusted, pre-validated)
   if (ARTIFACT_REGISTRY[content]) {
     return { url: ARTIFACT_REGISTRY[content], type: 'artifact' };
   }
+
+  // Check internal posts (validate slug format)
   if (INTERNAL_POSTS.includes(content)) {
-    return { url: `/posts/${content}/embed`, type: 'post' };
+    if (!isValidPostSlug(content)) {
+      console.warn('Invalid post slug rejected:', content);
+      return null;
+    }
+    return { url: `/mapthewild/posts/${content}/embed`, type: 'post' };
   }
+
+  // Validate external URLs
   if (content.startsWith('http://') || content.startsWith('https://')) {
+    if (!isValidUrl(content)) {
+      console.warn('Invalid URL rejected:', content);
+      return null;
+    }
     return { url: content, type: 'site' };
   }
-  // Fallback: assume it's a Claude artifact ID
+
+  // Validate artifact ID format before constructing URL
+  if (!isValidArtifactId(content)) {
+    console.warn('Invalid artifact ID rejected:', content);
+    return null;
+  }
+
   return {
     url: `https://claude.site/public/artifacts/${content}/embed`,
     type: 'artifact'
@@ -74,21 +128,46 @@ export default function StackingPanes() {
   const [stackedPages, setStackedPages] = useState<StackedPage[]>([]);
   const [hoverPreview, setHoverPreview] = useState<HoverPreview | null>(null);
   const [isInIframe, setIsInIframe] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const stackedPagesRef = useRef<StackedPage[]>([]);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   // Detect if we're inside an iframe (nested StackingPanes)
   useEffect(() => {
     setIsInIframe(window.self !== window.top);
   }, []);
 
+  // Detect mobile breakpoint
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Toggle panes-open class on main content
+  useEffect(() => {
+    const mainContent = document.getElementById('main-content');
+    if (!mainContent) return;
+
+    if (stackedPages.length > 0) {
+      mainContent.classList.add('panes-open');
+    } else {
+      mainContent.classList.remove('panes-open');
+    }
+  }, [stackedPages.length]);
+
   // Keep ref in sync with state
   stackedPagesRef.current = stackedPages;
 
   const scrollToPane = useCallback((index: number) => {
     if (scrollContainerRef.current) {
-      const scrollPosition = index * PEEK_WIDTH;
+      const containerWidth = scrollContainerRef.current.clientWidth;
+      // Each pane is full container width, so scroll to index * containerWidth
+      // Subtract the accumulated spine widths so content is fully visible
+      const scrollPosition = index * containerWidth - index * PEEK_WIDTH;
       scrollContainerRef.current.scrollTo({
         left: scrollPosition,
         behavior: 'smooth'
@@ -100,6 +179,11 @@ export default function StackingPanes() {
     // Use ref for current state to avoid stale closure
     const currentPages = stackedPagesRef.current;
 
+    // Store focus before opening first pane (for restoration on close)
+    if (currentPages.length === 0) {
+      previousFocusRef.current = document.activeElement as HTMLElement;
+    }
+
     // Check if already in stack
     const existingIndex = currentPages.findIndex(p => p.content === content);
     if (existingIndex >= 0) {
@@ -109,6 +193,11 @@ export default function StackingPanes() {
     }
 
     const resolved = resolveContent(content);
+    if (!resolved) {
+      console.warn('Could not resolve content:', content);
+      return;
+    }
+
     const newPage: StackedPage = {
       id: `page-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       type: resolved.type,
@@ -117,25 +206,39 @@ export default function StackingPanes() {
       url: resolved.url,
     };
 
-    setStackedPages(prev => [...prev, newPage]);
-
-    // Scroll to new page after render
-    setTimeout(() => {
-      if (scrollContainerRef.current) {
-        scrollContainerRef.current.scrollTo({
-          left: scrollContainerRef.current.scrollWidth,
-          behavior: 'smooth'
-        });
-      }
-    }, 50);
+    setStackedPages(prev => {
+      const newPages = [...prev, newPage];
+      // Scroll to new page after render
+      setTimeout(() => {
+        scrollToPane(newPages.length - 1);
+      }, 50);
+      return newPages;
+    });
   }, [scrollToPane]);
 
   const closePage = useCallback((index: number) => {
-    setStackedPages(prev => prev.slice(0, index));
+    setStackedPages(prev => {
+      const newPages = prev.slice(0, index);
+      // Restore focus when closing the last pane
+      if (newPages.length === 0 && previousFocusRef.current) {
+        setTimeout(() => {
+          previousFocusRef.current?.focus();
+          previousFocusRef.current = null;
+        }, 0);
+      }
+      return newPages;
+    });
   }, []);
 
   const closeAllPages = useCallback(() => {
     setStackedPages([]);
+    // Restore focus to previously focused element
+    setTimeout(() => {
+      if (previousFocusRef.current) {
+        previousFocusRef.current.focus();
+        previousFocusRef.current = null;
+      }
+    }, 0);
   }, []);
 
   // Handle bracket link interactions
@@ -156,11 +259,13 @@ export default function StackingPanes() {
 
         // If we're in an iframe, send message to parent window
         if (isInIframe && window.parent) {
+          // Use current origin for same-origin parent, or try trusted origins
+          const targetOrigin = window.location.origin;
           window.parent.postMessage({
             type: 'stackingPanes:navigate',
             content: decodedContent,
             trigger: trigger || decodedContent,
-          }, '*');
+          }, targetOrigin);
           return;
         }
 
@@ -187,6 +292,12 @@ export default function StackingPanes() {
 
     // Parent-only: Listen for messages from iframes
     const handleMessage = (event: MessageEvent) => {
+      // Security: Validate origin before processing messages
+      if (!TRUSTED_ORIGINS.includes(event.origin)) {
+        console.warn('Rejected postMessage from untrusted origin:', event.origin);
+        return;
+      }
+
       if (event.data?.type === 'stackingPanes:navigate') {
         const { content, trigger } = event.data;
 
@@ -212,6 +323,8 @@ export default function StackingPanes() {
         if (EXTERNAL_APPS[decodedContent]) return;
 
         const resolved = resolveContent(decodedContent);
+        if (!resolved) return; // Invalid content, skip preview
+
         const rect = target.getBoundingClientRect();
 
         hoverTimeoutRef.current = setTimeout(() => {
@@ -242,8 +355,44 @@ export default function StackingPanes() {
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      // Close pane on Escape
       if (event.key === 'Escape' && stackedPagesRef.current.length > 0) {
         closePage(stackedPagesRef.current.length - 1);
+        return;
+      }
+
+      // Handle Enter/Space on bracket links for keyboard accessibility
+      if (event.key === 'Enter' || event.key === ' ') {
+        const target = event.target as HTMLElement;
+        if (!target.classList.contains('bracket-link')) return;
+
+        event.preventDefault();
+        const content = target.getAttribute('data-content');
+        const trigger = target.getAttribute('data-trigger');
+
+        if (content) {
+          const decodedContent = decodeURIComponent(content);
+
+          // If we're in an iframe, send message to parent window
+          if (isInIframe && window.parent) {
+            const targetOrigin = window.location.origin;
+            window.parent.postMessage({
+              type: 'stackingPanes:navigate',
+              content: decodedContent,
+              trigger: trigger || decodedContent,
+            }, targetOrigin);
+            return;
+          }
+
+          // Parent window: handle directly
+          if (EXTERNAL_APPS[decodedContent]) {
+            window.open(EXTERNAL_APPS[decodedContent], '_blank', 'noopener,noreferrer');
+            return;
+          }
+
+          setHoverPreview(null);
+          navigateToStackedPage(decodedContent, trigger || decodedContent);
+        }
       }
     };
 
@@ -300,49 +449,62 @@ export default function StackingPanes() {
 
       {/* Stacked Pages Container */}
       {hasPages && (
-        <div
-          className="fixed inset-0 z-50"
-          style={{ pointerEvents: 'none' }}
-        >
-          {/* Backdrop - click to close all */}
-          <div
-            className="absolute inset-0 bg-black/30"
-            style={{ pointerEvents: 'auto' }}
-            onClick={closeAllPages}
-          />
+        <>
+          {/* Backdrop - only on mobile */}
+          {isMobile && (
+            <div
+              className="fixed inset-0 z-40 bg-black/40"
+              onClick={closeAllPages}
+            />
+          )}
 
-          {/* Panes container - uses left positioning with calculated offsets */}
+          {/* Panes container - fixed right panel with horizontal scroll */}
           <div
             ref={scrollContainerRef}
-            className="absolute inset-0 overflow-x-auto"
-            style={{ pointerEvents: 'auto' }}
+            className="fixed top-0 right-0 h-full z-50 flex overflow-x-auto"
+            style={{
+              width: isMobile ? '100%' : '50vw',
+              maxWidth: isMobile ? '100%' : PAGE_WIDTH,
+            }}
           >
-            {/* Inner container sized to fit all panes with peek spacing */}
-            <div
-              className="relative h-full"
-              style={{
-                width: Math.max(PAGE_WIDTH + (stackedPages.length - 1) * PEEK_WIDTH, window.innerWidth),
-                minWidth: '100%',
-              }}
-            >
-              {stackedPages.map((page, index) => (
+            {stackedPages.map((page, index) => (
+              <div
+                key={page.id}
+                className="h-full flex flex-shrink-0"
+                style={{
+                  width: '100%',
+                  background: '#0a0a0f',
+                }}
+              >
+                {/* Sticky spine - rotated title tab */}
                 <div
-                  key={page.id}
-                  className="absolute top-0 h-full bg-white flex flex-col"
+                  className="h-full flex-shrink-0 cursor-pointer flex items-center justify-center border-r border-gray-800 hover:bg-gray-800/50 transition-colors"
                   style={{
-                    width: PAGE_WIDTH,
+                    width: PEEK_WIDTH,
+                    background: '#111118',
+                    position: 'sticky',
                     left: index * PEEK_WIDTH,
-                    zIndex: index,
-                    boxShadow: '-4px 0 15px rgba(0,0,0,0.1)',
+                    zIndex: 10,
+                    writingMode: 'vertical-rl',
+                    transform: 'rotate(180deg)',
                   }}
+                  onClick={() => scrollToPane(index)}
+                  title={page.trigger}
                 >
+                  <span className="text-xs text-gray-400 truncate px-2 max-h-[200px]">
+                    {page.trigger}
+                  </span>
+                </div>
+
+                {/* Pane content */}
+                <div className="flex-1 flex flex-col min-w-0">
                   {/* Page Header */}
-                  <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50 flex-shrink-0">
+                  <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-800 flex-shrink-0" style={{ background: '#111118' }}>
                     <div className="flex items-center gap-2 min-w-0 flex-1">
-                      <span className="text-sm font-medium text-gray-900 truncate">
+                      <span className="text-sm font-medium text-gray-200 truncate">
                         {page.trigger}
                       </span>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 flex-shrink-0">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-purple-900/50 text-purple-300 flex-shrink-0">
                         {page.type === 'post' ? 'Note' : page.type === 'site' ? 'Site' : 'Artifact'}
                       </span>
                     </div>
@@ -352,7 +514,7 @@ export default function StackingPanes() {
                         e.stopPropagation();
                         closePage(index);
                       }}
-                      className="flex items-center justify-center w-7 h-7 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors"
+                      className="flex items-center justify-center w-7 h-7 text-gray-500 hover:text-gray-300 hover:bg-gray-800 rounded transition-colors"
                       aria-label="Close"
                     >
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -365,27 +527,27 @@ export default function StackingPanes() {
                   <div className="flex-1 overflow-hidden">
                     <iframe
                       src={page.url}
-                      className="w-full h-full border-0 bg-white"
+                      className="w-full h-full border-0"
+                      style={{ background: '#0a0a0f' }}
                       title={page.trigger}
                     />
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
 
           {/* Close All Button */}
           <button
             onClick={closeAllPages}
-            className="absolute bottom-4 left-4 z-[60] flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-full shadow-lg hover:bg-gray-800 transition-colors"
-            style={{ pointerEvents: 'auto' }}
+            className="fixed bottom-4 right-4 z-[60] flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-full shadow-lg hover:bg-gray-800 transition-colors"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
             Close all ({stackedPages.length})
           </button>
-        </div>
+        </>
       )}
 
       <style>{`
