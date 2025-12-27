@@ -16,6 +16,21 @@ interface ParsedBracket {
   content: string;
 }
 
+/**
+ * Escape HTML special characters to prevent XSS attacks.
+ * Applied to user-controlled content before inserting into HTML strings.
+ */
+function escapeHtml(text: string): string {
+  const htmlEscapes: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  }
+  return text.replace(/[&<>"']/g, (char) => htmlEscapes[char])
+}
+
 function parseBracketContent(trigger: string, content: string): ParsedBracket {
   // Check for explicit type declaration: [[word:type:content]]
   const explicitTypeMatch = content.match(/^(artifact|site):(.+)$/);
@@ -52,11 +67,11 @@ export function bracketParser() {
       const text = node.value;
       // Regex: [[trigger:content]] where trigger can have spaces, content can have colons (for URLs)
       // Match: [[ + (anything except ] and :) + : + (anything except ]) + ]]
-      const bracketRegex = /\[\[([^\]\:]+):([^\]]+)\]\]/g;
+      const bracketRegex = /\[\[([^\]:]+):([^\]]+)\]\]/g;
 
       if (!bracketRegex.test(text)) return;
 
-      const newNodes: any[] = [];
+      const newNodes: Array<{ type: string; value: string }> = [];
       let lastIndex = 0;
 
       bracketRegex.lastIndex = 0;
@@ -77,7 +92,7 @@ export function bracketParser() {
 
         newNodes.push({
           type: 'html',
-          value: `<span class="bracket-link" data-trigger="${parsed.trigger}" data-type="${parsed.type}" data-content="${encodeURIComponent(parsed.content)}" role="button" tabindex="0">${parsed.trigger}</span>`,
+          value: `<span class="bracket-link" data-trigger="${escapeHtml(parsed.trigger)}" data-type="${parsed.type}" data-content="${encodeURIComponent(parsed.content)}" role="button" tabindex="0">${escapeHtml(parsed.trigger)}</span>`,
         });
 
         lastIndex = matchStart + fullMatch.length;
