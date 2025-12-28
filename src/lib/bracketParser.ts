@@ -16,6 +16,18 @@ interface ParsedBracket {
   content: string;
 }
 
+/**
+ * Escapes HTML entities to prevent XSS attacks
+ */
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 function parseBracketContent(trigger: string, content: string): ParsedBracket {
   // Check for explicit type declaration: [[word:type:content]]
   const explicitTypeMatch = content.match(/^(artifact|site):(.+)$/);
@@ -77,7 +89,7 @@ export function bracketParser() {
 
         newNodes.push({
           type: 'html',
-          value: `<span class="bracket-link" data-trigger="${parsed.trigger}" data-type="${parsed.type}" data-content="${encodeURIComponent(parsed.content)}" role="button" tabindex="0">${parsed.trigger}</span>`,
+          value: `<span class="bracket-link" data-trigger="${escapeHtml(parsed.trigger)}" data-type="${parsed.type}" data-content="${encodeURIComponent(parsed.content)}" role="button" tabindex="0">${escapeHtml(parsed.trigger)}</span>`,
         });
 
         lastIndex = matchStart + fullMatch.length;
