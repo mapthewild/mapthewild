@@ -25,3 +25,13 @@ pnpm-debug.log*
 
 # generated files
 # Note: blogMapData.js is now committed (needed for explore mode)
+
+# Claude Code configuration (entire folder)
+.claude/
+
+# Session logs and planning docs
+.sessions/
+*-PLAN.md
+
+# Archive files
+*.zip
