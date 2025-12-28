@@ -12,7 +12,7 @@ const EDGE_THRESHOLD = 30;
 
 export default function EmotionsFogMap() {
   const [currentMapId, setCurrentMapId] = useState('root');
-  const [playerPos, setPlayerPos] = useState({ x: 80, y: 300 });
+  const [playerPos, setPlayerPos] = useState({ x: 400, y: 500 }); // Start at spawn campfire
   const [revealedTiles, setRevealedTiles] = useState({});
   const [activeZone, setActiveZone] = useState(null);
   const [visitedZones, setVisitedZones] = useState(new Set(['spawn']));
