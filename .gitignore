@@ -23,5 +23,5 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-# generated files (regenerate on each build)
-src/generated/blogMapData.js
+# generated files
+# Note: blogMapData.js is now committed (needed for explore mode)
