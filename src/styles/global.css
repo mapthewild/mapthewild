@@ -79,7 +79,8 @@
   }
 
   body {
-    @apply bg-parchment text-ink;
+    background-color: #f5f0e6;
+    color: #4a3f35;
     margin: 0;
     padding: 0;
     font-family: Georgia, 'Times New Roman', serif;
@@ -98,7 +99,7 @@
     font-variation-settings: 'WONK' 1, 'SOFT' 50;
     line-height: 1.2;
     font-weight: 500;
-    @apply text-ink;
+    color: #4a3f35;
   }
 
   h1 { font-size: 36px; font-weight: 400; }
@@ -110,7 +111,7 @@
   }
 
   a {
-    @apply text-ochre;
+    color: #c4a035;
     text-decoration: none;
     transition: color 0.2s ease;
   }
@@ -138,7 +139,7 @@
     font-size: 11px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    @apply text-ochre;
+    color: #c4a035;
   }
 
   /* Parchment background with subtle texture */
