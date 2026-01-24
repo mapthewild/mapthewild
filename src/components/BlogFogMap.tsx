@@ -1,5 +1,36 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { TERRITORY_LEVELS, BUILDING_SPRITES, LEY_LINES } from '../generated/blogMapData.js';
+
+// Preload images for building sprites
+const usePreloadedImages = () => {
+  const [loadedImages, setLoadedImages] = useState<Record<string, HTMLImageElement>>({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const imagePromises = Object.entries(BUILDING_SPRITES).map(([key, sprite]) => {
+      return new Promise<[string, HTMLImageElement]>((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve([key, img]);
+        img.onerror = () => {
+          console.warn(`Failed to load image for ${key}: ${sprite.image}`);
+          resolve([key, null as any]);
+        };
+        img.src = sprite.image;
+      });
+    });
+
+    Promise.all(imagePromises).then((results) => {
+      const images: Record<string, HTMLImageElement> = {};
+      results.forEach(([key, img]) => {
+        if (img) images[key] = img;
+      });
+      setLoadedImages(images);
+      setLoading(false);
+    });
+  }, []);
+
+  return { loadedImages, loading };
+};
 
 // Map/player configuration
 const MAP_WIDTH = 800;
@@ -9,6 +40,41 @@ const FOG_TILE_SIZE = 25;
 const REVEAL_RADIUS = 90;
 const INTERACTION_RADIUS = 70;
 const EDGE_THRESHOLD = 30;
+
+// Alive design system color palette
+const COLORS = {
+  parchment: {
+    50: '#ffffff',
+    100: '#f5f0e6',
+    200: '#f5f0e6',
+    300: '#e8e3d9',
+    400: '#d4c9aa',
+    500: '#b8a990',
+  },
+  ink: '#4a3f35',
+  inkLight: '#6b5d4d',
+  inkMuted: '#8a7a66',
+  grid: '#b8a990',
+  ochre: '#c4a035',
+  ochreDark: '#9a7f2a',
+  verdigris: '#2d6a6a',
+  sienna: '#a03e20',
+  rose: '#c9a0a0',
+  roseDark: '#8a6b6b',
+  // Legacy mappings for compatibility
+  cartographic: {
+    ink: '#4a3f35',
+    sepia: '#8a7a66',
+    gold: '#c4a035',
+    teal: '#2d6a6a',
+    forest: '#4a5d23',
+  },
+  terra: {
+    400: '#c17f59',
+    500: '#a66b4b',
+    600: '#8b5a3d',
+  }
+};
 
 export default function EmotionsFogMap() {
   const [currentMapId, setCurrentMapId] = useState('root');
@@ -23,6 +89,7 @@ export default function EmotionsFogMap() {
   const [activeLeyLine, setActiveLeyLine] = useState(null);
   const keysPressed = useRef(new Set());
   const gameLoopRef = useRef(null);
+  const { loadedImages, loading: imagesLoading } = usePreloadedImages();
 
   const currentMap = TERRITORY_LEVELS[currentMapId] || TERRITORY_LEVELS['root'];
   const territories = currentMap?.territories || {};
@@ -189,7 +256,8 @@ export default function EmotionsFogMap() {
         const zone = territories[zoneId] || TERRITORY_LEVELS['root'].territories[zoneId];
         return (
           <button key={i} onClick={() => handleTeleport(zoneId)}
-            className="text-amber-300 hover:text-amber-100 underline decoration-dotted cursor-pointer bg-transparent border-none font-inherit">
+            className="underline decoration-dotted cursor-pointer bg-transparent border-none font-inherit"
+            style={{ color: COLORS.cartographic.gold }}>
             {zone ? zone.name : zoneId}
           </button>
         );
@@ -305,8 +373,15 @@ export default function EmotionsFogMap() {
     for (let tx = 0; tx < tilesX; tx++) {
       for (let ty = 0; ty < tilesY; ty++) {
         if (!revealed.has(`${tx},${ty}`)) {
-          tiles.push(<div key={`${tx},${ty}`} className="absolute bg-slate-900 pointer-events-none"
-            style={{ left: tx * FOG_TILE_SIZE, top: ty * FOG_TILE_SIZE, width: FOG_TILE_SIZE + 1, height: FOG_TILE_SIZE + 1 }} />);
+          tiles.push(<div key={`${tx},${ty}`} className="absolute pointer-events-none"
+            style={{
+              left: tx * FOG_TILE_SIZE,
+              top: ty * FOG_TILE_SIZE,
+              width: FOG_TILE_SIZE + 1,
+              height: FOG_TILE_SIZE + 1,
+              backgroundColor: COLORS.parchment[400],
+              opacity: 0.95
+            }} />);
         }
       }
     }
@@ -362,12 +437,9 @@ export default function EmotionsFogMap() {
       const toZone = territories[line.to.territoryId];
       if (!fromZone || !toZone) return null;
 
-      // Check if both territories are visited
-      const bothVisited = visitedZones.has(line.from.territoryId) && visitedZones.has(line.to.territoryId);
-      if (!bothVisited) return null;
-
+      // Always show ley lines on current map (reading order guides)
       const isActive = activeLeyLine?.id === line.id;
-      const opacity = isActive ? 0.8 : 0.3;
+      const opacity = isActive ? 0.8 : 0.4;
 
       return (
         <g key={line.id}>
@@ -377,12 +449,12 @@ export default function EmotionsFogMap() {
             y1={fromZone.y}
             x2={toZone.x}
             y2={toZone.y}
-            stroke="#fbbf24"
+            stroke={COLORS.cartographic.gold}
             strokeWidth={isActive ? 4 : 2}
             opacity={opacity}
             strokeDasharray="5,5"
             style={{
-              filter: 'drop-shadow(0 0 4px rgba(251, 191, 36, 0.6))',
+              filter: `drop-shadow(0 0 4px ${COLORS.cartographic.gold}99)`,
               transition: 'all 0.3s ease'
             }}
           />
@@ -404,19 +476,19 @@ export default function EmotionsFogMap() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
+    <div className="w-full min-h-screen flex flex-col items-center justify-center p-4" style={{ backgroundColor: 'transparent' }}>
       {navigationPath.length > 1 && (
         <div className="text-sm mb-2 flex items-center gap-1">
           {getBreadcrumb().map((crumb, index) => (
             <span key={crumb.id}>
-              {index > 0 && <span className="text-slate-600 mx-1">›</span>}
+              {index > 0 && <span style={{ color: COLORS.cartographic.sepia }} className="mx-1">›</span>}
               <button
                 onClick={() => handleBreadcrumbClick(index)}
-                className={`px-2 py-0.5 rounded transition-colors cursor-pointer border-none ${
-                  index === navigationPath.length - 1
-                    ? 'bg-slate-700 text-white'
-                    : 'bg-transparent text-slate-400 hover:text-white hover:bg-slate-800'
-                }`}
+                className="px-2 py-0.5 rounded transition-colors cursor-pointer border-none"
+                style={{
+                  backgroundColor: index === navigationPath.length - 1 ? COLORS.parchment[300] : 'transparent',
+                  color: index === navigationPath.length - 1 ? COLORS.cartographic.ink : COLORS.cartographic.sepia
+                }}
               >
                 {crumb.name}
               </button>
@@ -425,43 +497,66 @@ export default function EmotionsFogMap() {
         </div>
       )}
 
-      <div className="text-slate-400 text-sm mb-3 flex flex-wrap gap-4 justify-center items-center">
-        <span className="text-white font-medium">{mapTitle}</span>
-        <span className="text-slate-600">•</span>
+      <div className="text-sm mb-3 flex flex-wrap gap-4 justify-center items-center" style={{ color: COLORS.cartographic.sepia }}>
+        <span className="font-medium" style={{ color: COLORS.ink, fontFamily: "'Fraunces', Georgia, serif" }}>{mapTitle}</span>
+        <span style={{ color: COLORS.parchment[400] }}>|</span>
         <span>WASD to move</span>
-        <span className="text-slate-600">•</span>
+        <span style={{ color: COLORS.parchment[400] }}>|</span>
         <span>Enter to interact</span>
-        {currentMapId !== 'root' && <><span className="text-slate-600">•</span><span>ESC to exit</span></>}
-        <span className="text-slate-600">•</span>
+        {currentMapId !== 'root' && <><span style={{ color: COLORS.parchment[400] }}>|</span><span>ESC to exit</span></>}
+        <span style={{ color: COLORS.parchment[400] }}>|</span>
         <span>{visitedZones.size} discovered</span>
       </div>
 
       <div className="flex gap-4 flex-wrap justify-center">
-        <div className="relative overflow-hidden rounded-xl border border-slate-700 shadow-2xl"
-          style={{ width: MAP_WIDTH, height: MAP_HEIGHT, transform: `scale(${zoomLevel})`, transition: 'transform 0.4s ease-in-out' }}>
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #1e293b, #0f172a)' }}>
-            <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
+        <div className="relative overflow-hidden rounded-xl shadow-2xl"
+          style={{
+            width: MAP_WIDTH,
+            height: MAP_HEIGHT,
+            transform: `scale(${zoomLevel})`,
+            transition: 'transform 0.4s ease-in-out',
+            border: `3px solid ${COLORS.cartographic.sepia}`,
+            boxShadow: `inset 0 0 0 1px ${COLORS.parchment[300]}`
+          }}>
+          <div className="absolute inset-0" style={{ background: `linear-gradient(to right, ${COLORS.parchment[200]}, ${COLORS.parchment[100]})` }}>
+            {/* Grid pattern like old maps */}
+            <div className="absolute inset-0" style={{
+              backgroundImage: `
+                linear-gradient(${COLORS.cartographic.sepia}08 1px, transparent 1px),
+                linear-gradient(90deg, ${COLORS.cartographic.sepia}08 1px, transparent 1px)
+              `,
+              backgroundSize: '30px 30px'
+            }} />
           </div>
 
           {currentMapId !== 'root' && (
-            <div className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-slate-600">← Back</div>
+            <div className="absolute left-2 top-1/2 -translate-y-1/2 text-xs" style={{ color: COLORS.cartographic.sepia }}>← Back</div>
           )}
 
           {/* Directional edge indicators */}
           {currentMap?.edges?.top && (
-            <div className="absolute top-2 left-1/2 -translate-x-1/2 text-xs text-slate-600">↑ Abstract</div>
+            <div className="absolute top-2 left-1/2 -translate-x-1/2 text-xs" style={{ color: COLORS.cartographic.sepia }}>↑ Abstract</div>
           )}
           {currentMap?.edges?.bottom && (
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs text-slate-600">↓ Concrete</div>
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs" style={{ color: COLORS.cartographic.sepia }}>↓ Concrete</div>
           )}
           {currentMap?.edges?.right && (
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-600">Deeper →</div>
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 text-xs" style={{ color: COLORS.cartographic.sepia }}>Deeper →</div>
           )}
 
-          {currentMapId !== 'root' && <div className="absolute top-3 left-3 text-xs text-slate-500 bg-slate-900/80 px-2 py-1 rounded">📍 {currentMap.name}</div>}
+          {currentMapId !== 'root' && (
+            <div className="absolute top-3 left-3 text-xs px-2 py-1 rounded"
+              style={{ color: COLORS.cartographic.sepia, backgroundColor: `${COLORS.parchment[100]}cc` }}>
+              📍 {currentMap.name}
+            </div>
+          )}
 
           {/* Ley Lines - SVG layer behind territories */}
-          <svg className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
+          <svg
+            className="absolute inset-0 pointer-events-none"
+            viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
+            style={{ zIndex: 5 }}
+          >
             <g className="pointer-events-auto">
               {renderLeyLines()}
             </g>
@@ -471,44 +566,76 @@ export default function EmotionsFogMap() {
             const sprite = BUILDING_SPRITES[zone.level];
             const isVisited = visitedZones.has(zone.id);
             const isActive = activeZone?.id === zone.id;
+            const hasImage = loadedImages[zone.level];
             return (
               <div key={zone.id} className="absolute flex flex-col items-center transition-all duration-300"
-                style={{ left: zone.x - sprite.size / 2, top: zone.y - sprite.size / 2, width: sprite.size, height: sprite.size, opacity: isVisited ? 1 : 0.4, filter: isActive ? 'brightness(1.3)' : 'none' }}>
+                style={{ left: zone.x - sprite.size / 2, top: zone.y - sprite.size / 2, width: sprite.size, height: sprite.size, opacity: isVisited ? 1 : 0.4, filter: isActive ? 'brightness(1.1)' : 'none' }}>
                 <div className="absolute rounded-full transition-all duration-300"
-                  style={{ width: sprite.size * 2, height: sprite.size * 2, left: -sprite.size / 2, top: -sprite.size / 2, background: `radial-gradient(circle, ${zone.color}66, transparent 70%)`, opacity: isActive ? 1 : 0.6 }} />
-                <span className="relative z-10" style={{ fontSize: sprite.size * 0.7 }}>{sprite.emoji}</span>
-                <span className="absolute text-white text-xs font-medium whitespace-nowrap drop-shadow-lg text-center"
-                  style={{ top: sprite.size + 4, opacity: isVisited ? 0.9 : 0.5, maxWidth: 90 }}>
-                  {zone.name}{zone.hasChildren && <span className="text-amber-400 ml-1">⏎</span>}
+                  style={{ width: sprite.size * 2, height: sprite.size * 2, left: -sprite.size / 2, top: -sprite.size / 2, background: `radial-gradient(circle, ${zone.color}44, transparent 70%)`, opacity: isActive ? 1 : 0.6 }} />
+                {hasImage ? (
+                  <img
+                    src={sprite.image}
+                    alt={zone.name}
+                    className="relative z-10"
+                    style={{
+                      width: sprite.size * 0.8,
+                      height: sprite.size * 0.8,
+                      objectFit: 'contain'
+                    }}
+                  />
+                ) : (
+                  <span className="relative z-10" style={{ fontSize: sprite.size * 0.5, color: COLORS.cartographic.ink }}>●</span>
+                )}
+                <span className="absolute text-xs font-medium text-center"
+                  style={{ top: sprite.size + 4, opacity: isVisited ? 0.9 : 0.5, width: 110, color: COLORS.cartographic.ink, textShadow: `0 1px 2px ${COLORS.parchment[100]}`, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                  {zone.name}{zone.hasChildren && <span style={{ color: COLORS.cartographic.gold }} className="ml-1">⏎</span>}
                 </span>
               </div>
             );
           })}
 
-          <div className="absolute rounded-full bg-white shadow-lg z-20"
-            style={{ left: playerPos.x - PLAYER_SIZE / 2, top: playerPos.y - PLAYER_SIZE / 2, width: PLAYER_SIZE, height: PLAYER_SIZE, boxShadow: '0 0 20px rgba(255,255,255,0.9)', transition: isTransitioning ? 'none' : 'left 0.05s, top 0.05s' }} />
+          {/* Player marker - compass style */}
+          <div className="absolute z-20"
+            style={{
+              left: playerPos.x - PLAYER_SIZE / 2,
+              top: playerPos.y - PLAYER_SIZE / 2,
+              width: PLAYER_SIZE,
+              height: PLAYER_SIZE,
+              transition: isTransitioning ? 'none' : 'left 0.05s, top 0.05s'
+            }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke={COLORS.cartographic.ink} strokeWidth="2" style={{ width: '100%', height: '100%' }}>
+              <circle cx="12" cy="12" r="8" fill={COLORS.parchment[50]} />
+              <path d="M12 8l2 4-2 4-2-4z" fill={COLORS.cartographic.gold} stroke="none"/>
+            </svg>
+          </div>
 
-          <div className="absolute inset-0 pointer-events-none">{renderFog()}</div>
+          <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 2, filter: 'blur(8px)' }}>{renderFog()}</div>
         </div>
 
-        <div className="w-80 bg-slate-900/90 rounded-xl border border-slate-700 p-5 overflow-y-auto backdrop-blur" style={{ height: MAP_HEIGHT }}>
+        {/* Info Panel */}
+        <div className="w-80 rounded-xl p-5 overflow-y-auto backdrop-blur"
+          style={{
+            height: MAP_HEIGHT,
+            backgroundColor: `${COLORS.parchment[100]}f0`,
+            border: `2px solid ${COLORS.cartographic.sepia}40`
+          }}>
           {activeLeyLine ? (
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-2xl">⚡</span>
-                <span className="text-lg font-bold text-amber-300">Ley Line</span>
+                <span className="text-lg font-bold" style={{ color: COLORS.ochre, fontFamily: "'Fraunces', Georgia, serif" }}>Ley Line</span>
               </div>
-              <div className="text-xs text-slate-500 mb-3">
+              <div className="text-xs mb-3" style={{ color: COLORS.cartographic.sepia }}>
                 {territories[activeLeyLine.from.territoryId]?.name} ↔ {territories[activeLeyLine.to.territoryId]?.name}
               </div>
-              <p className="text-slate-300 text-sm mb-4 border-b border-slate-700 pb-3">{activeLeyLine.content.summary}</p>
-              <div className="text-slate-400 text-xs leading-relaxed mb-4">{activeLeyLine.content.full}</div>
-              <div className="text-xs text-slate-600">
+              <p className="text-sm mb-4 pb-3" style={{ color: COLORS.cartographic.ink, borderBottom: `1px solid ${COLORS.cartographic.sepia}30` }}>{activeLeyLine.content.summary}</p>
+              <div className="text-xs leading-relaxed mb-4" style={{ color: COLORS.cartographic.ink }}>{activeLeyLine.content.full}</div>
+              <div className="text-xs" style={{ color: COLORS.cartographic.sepia }}>
                 <p className="mb-1">Source: {activeLeyLine.source.type}</p>
                 {activeLeyLine.content.sources.length > 0 && (
                   <div className="mt-2">
                     {activeLeyLine.content.sources.map((src, i) => (
-                      <a key={i} href={src} target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:text-amber-300 block truncate">
+                      <a key={i} href={src} target="_blank" rel="noopener noreferrer" className="block truncate" style={{ color: COLORS.cartographic.gold }}>
                         {src}
                       </a>
                     ))}
@@ -519,26 +646,67 @@ export default function EmotionsFogMap() {
           ) : activeZone ? (
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-2xl">{BUILDING_SPRITES[activeZone.level].emoji}</span>
-                <span className="text-lg font-bold" style={{ color: activeZone.color }}>{activeZone.name}</span>
+                {loadedImages[activeZone.level] ? (
+                  <img
+                    src={BUILDING_SPRITES[activeZone.level].image}
+                    alt={activeZone.name}
+                    style={{ width: 28, height: 28, objectFit: 'contain' }}
+                  />
+                ) : (
+                  <span className="text-2xl">●</span>
+                )}
+                <span className="text-lg font-bold" style={{ color: activeZone.color, fontFamily: "'Fraunces', Georgia, serif" }}>{activeZone.name}</span>
               </div>
-              {activeZone.hasChildren && <button onClick={handleInteract} className="text-amber-400 text-xs mb-2 bg-amber-400/10 px-2 py-1 rounded hover:bg-amber-400/20 cursor-pointer border border-amber-400/30">⏎ Press Enter to go inside</button>}
-              {activeZone.isExit && <button onClick={handleInteract} className="text-slate-400 text-xs mb-2 bg-slate-400/10 px-2 py-1 rounded hover:bg-slate-400/20 cursor-pointer border border-slate-400/30">⏎ Press Enter to exit</button>}
-              <p className="text-slate-400 text-xs mb-4 border-b border-slate-700 pb-3">{activeZone.description}</p>
-              <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap mb-4">{renderContent(activeZone.content)}</div>
+              {activeZone.hasChildren && (
+                <button onClick={handleInteract}
+                  className="text-xs mb-2 px-2 py-1 rounded cursor-pointer"
+                  style={{ color: COLORS.cartographic.gold, backgroundColor: `${COLORS.cartographic.gold}15`, border: `1px solid ${COLORS.cartographic.gold}40` }}>
+                  ⏎ Press Enter to go inside
+                </button>
+              )}
+              {activeZone.isExit && (
+                <button onClick={handleInteract}
+                  className="text-xs mb-2 px-2 py-1 rounded cursor-pointer"
+                  style={{ color: COLORS.cartographic.sepia, backgroundColor: `${COLORS.cartographic.sepia}15`, border: `1px solid ${COLORS.cartographic.sepia}40` }}>
+                  ⏎ Press Enter to exit
+                </button>
+              )}
+              <p className="text-xs mb-4 pb-3" style={{ color: COLORS.cartographic.sepia, borderBottom: `1px solid ${COLORS.cartographic.sepia}30` }}>{activeZone.description}</p>
+              <div className="text-sm leading-relaxed whitespace-pre-wrap mb-4" style={{ color: COLORS.cartographic.ink }}>{renderContent(activeZone.content)}</div>
             </div>
           ) : (
-            <div className="text-slate-500 text-sm">
+            <div className="text-sm" style={{ color: COLORS.cartographic.sepia }}>
               <p className="mb-4">Walk toward a location to discover it.</p>
-              <p className="mb-4">Press <span className="text-amber-400">Enter</span> to go inside categories.</p>
+              <p className="mb-4">Press <span style={{ color: COLORS.cartographic.gold }}>Enter</span> to go inside categories.</p>
               <p className="mb-4">Click [[bracket links]] to teleport.</p>
-              <p className="mb-6">Hover over <span className="text-amber-400">glowing lines</span> to see connections.</p>
-              <div className="border-t border-slate-700 pt-4">
-                <p className="text-xs text-slate-600 mb-3 uppercase tracking-wide">Wikipedia Structure</p>
-                <div className="text-xs text-slate-500 space-y-1">
-                  <p>🗼 Tower = Category</p>
-                  <p>🏘️ Village = Subcategory</p>
-                  <p>🏠 House = Article</p>
+              <p className="mb-6">Hover over <span style={{ color: COLORS.cartographic.gold }}>glowing lines</span> to see connections.</p>
+              <div className="pt-4" style={{ borderTop: `1px solid ${COLORS.cartographic.sepia}30` }}>
+                <p className="text-xs mb-3 uppercase tracking-wide" style={{ color: COLORS.cartographic.sepia }}>Map Legend</p>
+                <div className="text-xs space-y-2" style={{ color: COLORS.cartographic.ink }}>
+                  <div className="flex items-center gap-2">
+                    {loadedImages.campfire ? (
+                      <img src={BUILDING_SPRITES.campfire.image} alt="Compass" style={{ width: 16, height: 16, objectFit: 'contain' }} />
+                    ) : <span>◎</span>}
+                    <span>Compass = Start</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {loadedImages.tower ? (
+                      <img src={BUILDING_SPRITES.tower.image} alt="Banner" style={{ width: 16, height: 16, objectFit: 'contain' }} />
+                    ) : <span>⚑</span>}
+                    <span>Banner = Category</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {loadedImages.village ? (
+                      <img src={BUILDING_SPRITES.village.image} alt="Ship" style={{ width: 16, height: 16, objectFit: 'contain' }} />
+                    ) : <span>⛵</span>}
+                    <span>Ship = Subcategory</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {loadedImages.house ? (
+                      <img src={BUILDING_SPRITES.house.image} alt="Pin" style={{ width: 16, height: 16, objectFit: 'contain' }} />
+                    ) : <span>📍</span>}
+                    <span>Pin = Article</span>
+                  </div>
                   <p>⚡ Lines = Connections</p>
                 </div>
               </div>
@@ -549,7 +717,14 @@ export default function EmotionsFogMap() {
 
       {isTransitioning && transitionText && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-          <div className="text-white text-xl font-medium bg-slate-900/80 px-6 py-3 rounded-lg backdrop-blur">{transitionText}</div>
+          <div className="text-xl font-medium px-6 py-3 rounded-lg backdrop-blur"
+            style={{
+              color: COLORS.ink,
+              backgroundColor: `${COLORS.parchment[100]}e0`,
+              fontFamily: "'Fraunces', Georgia, serif"
+            }}>
+            {transitionText}
+          </div>
         </div>
       )}
 

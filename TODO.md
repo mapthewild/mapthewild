@@ -1,6 +1,6 @@
 # Map the Wild - TODO
 
-Last updated: December 26, 2025
+Last updated: December 31, 2025
 
 ---
 
@@ -126,6 +126,40 @@ Last updated: December 26, 2025
 ---
 
 ## BACKLOG / FUTURE
+
+### Inline Artifact Embeds
+**Description:** Option to embed artifacts inline (like Medium large images) instead of opening in sliding pane
+**Use case:** When artifact illustrates a point in the reading flow vs. interactive exploration
+**Current behavior:** `[[text:artifact-id]]` opens content in sliding pane (side trip)
+**Proposed:** New syntax like `{{artifact-id}}` for inline embed (part of the scroll)
+**Tradeoff:**
+- Pane = "explore this when you're ready" (current)
+- Inline = "this is part of reading" (new option)
+**Decision:** To be determined based on specific artifact examples
+**Created:** Dec 31, 2025
+
+### Images in Explore Map View
+**Description:** Posts with images show raw MDX component markup (`<ZoomImage .../>`) in the explore map content panel instead of rendering gracefully
+**Options:**
+1. Strip component tags from content (just show prose)
+2. Convert `<ZoomImage>` to `[Image: alt text]` placeholders
+3. Actually render images in ContentPanel
+4. Add "View full post" link for posts with images
+**Files:** `post-to-territory.js`, `ContentPanel.jsx`
+**Created:** Dec 27, 2025
+
+### Accessibility Audit
+**Description:** No accessibility documentation or systematic a11y implementation
+**Current state:**
+- Alt attributes on images (ZoomImage component)
+- Basic semantic HTML
+**Missing:**
+- ARIA labels for interactive elements (stacking panes, fogmap)
+- Keyboard navigation for explore mode (currently WASD only)
+- Screen reader support for pane system
+- Focus management when panes open/close
+- Color contrast audit
+**Created:** Dec 27, 2025
 
 ### Search
 Client-side search when content grows (Pagefind or similar)

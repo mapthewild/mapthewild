@@ -1,0 +1,97 @@
+---
+title: "AI with Professor Mo: One Month of Building"
+date: 2026-01-21
+description: "What I learned from a month of building with Claude Code — the crashes, the pivots, and the pipeline that builds the pipeline."
+tags: ["ai", "claude", "learning", "teaching"]
+draft: true
+---
+
+# ai with professor mo, january 2026
+
+so the class is about what i've been doing with claude code this month, and i want to tell it like a story not a presentation, because presentations are boring and also not how i actually think about this stuff
+
+## the crash
+
+december 16 i was building this fog of war game, like you explore a map and it reveals as you move, and i kept adding features, journals and notes and trails, and then it started crashing whenever you pressed a key too fast
+
+claude tried to fix it four times, each time made it worse, and i finally said "go nuclear, revert everything" and we went from 950 lines to 560 lines and it worked again
+
+the lesson there, and this is something i tell people at work too, is that sometimes you have to burn it down, you can't keep patching something that's fundamentally broken, and an AI will keep trying to fix forward unless you explicitly tell it to stop
+
+## the counting vs reading thing
+
+this is the one that surprised me, january 18 i wanted to find patterns in my journals, i have 1,260 daily notes going back 6 years, and i had claude build a script to analyze them
+
+first version counted everything, words and links and mentions of noah (my kid), and i ran it and looked at the output and said "i didn't learn much," like it just confirmed what i already knew
+
+then we pivoted, instead of counting 1,260 notes i deeply read 3 notes, like actually read them, and i found this whole arc i'd forgotten about, for 6 years i've been circling the same ideas, this thing i call the 7 year career, and leadIN which is my leadership practice, and cooperatives being better than regular companies, and personal work about fear of being seen
+
+so that's the thing about AI, it's really good at counting and sorting, but sometimes you learn more from reading 3 things deeply than analyzing 1,260 things with a script
+
+## running AI while i slept
+
+ok this is the technical part, i wanted claude to analyze all my notes for themes but that would cost like $15-20 in API calls, so instead i used a different AI that runs on my computer
+
+the stack was:
+- claude does the thinking and orchestrates
+- ollama runs AI models locally on my mac for free
+- deepseek is a reasoning model that ran overnight
+
+claude wrote the scripts, deepseek processed 190 voice segments from my notes, 9 hours later i had a complete analysis by year
+
+what worked: batching 20 at a time, grouping by year, running overnight
+what didn't: some responses got cut off mid-sentence, 17 notes failed and we never figured out why, the output format kept changing
+
+## the failed integration
+
+tried to connect claude code to magic patterns using MCP servers, basically a way for AI tools to talk to each other
+
+tried just the URL, tried URL plus auth key, tried a bridge tool
+
+nothing worked, connection never happened, moved on
+
+that's also a lesson, when an integration fails don't waste hours debugging, the tool still exists you just use it separately
+
+## teaching claude new tricks
+
+you can create slash commands, shortcuts that make claude behave specific ways
+
+i built /capture for saving ideas quickly, /introspect for analyzing why something worked or failed, /plan for structured planning, /resume for loading context from previous sessions
+
+the /resume one came from a mistake, i asked claude to "review the dtd session" and it launched a full codebase exploration reading hundreds of files when the answer was in 71 lines of session notes, i caught the pattern and said "you're exploring when the session log exists" and we made it a command
+
+## the architecture gap
+
+this is where it gets meta, i realized i'd built a lot of pieces but they weren't connected
+
+i have 5 slash commands, 3 processing skills, 106 signal cards from voice notes, 17 session logs, 1,253 note embeddings, but nothing that automatically connects them
+
+like when i process a new voice note, shouldn't claude automatically say "hey you thought about this same thing in 2021"? it doesn't, i have to manually ask
+
+skills are like recipe cards, they tell claude how to do something
+agents are like sous chefs, they work independently with their own context
+i built recipe cards, i need sous chefs
+
+## things i'd tell the class
+
+start with the demo not the data, when i built claude wrapped (spotify wrapped for AI usage) i hardcoded the stats first and made it look cool, then connected real data, demo-first is faster
+
+deep reading beats counting
+
+when stuck burn it down
+
+encode your learnings, if you correct AI the same way twice make it a command
+
+use the right AI for the right job, claude for thinking, local models for bulk processing
+
+integration failures are normal
+
+build pieces then connect them
+
+---
+
+scratch:
+- maybe show the actual game crash and recovery?
+- could demo /capture live
+- the overnight deepseek thing might be too technical, gauge the room
+- questions: when do you ask AI vs figure it out yourself, have you ever broken something by over-fixing it, what's one thing you do repeatedly that you could automate

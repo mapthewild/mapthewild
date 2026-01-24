@@ -71,47 +71,47 @@ const { Content } = await post.render();
     />
 
     <header class="mb-12">
-      <time class="text-sm text-gray-500 uppercase tracking-wide">
+      <time class="article-date">
         {post.data.date.toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
           day: 'numeric'
-        })}
+        }).toUpperCase()}
       </time>
 
-      <h1 class="text-4xl md:text-5xl font-bold text-white mt-3 mb-4">
+      <h1 class="article-title">
         {post.data.title}
       </h1>
 
       {post.data.description && (
-        <p class="text-xl text-gray-400 leading-relaxed">
+        <p class="article-subtitle">
           {post.data.description}
         </p>
       )}
     </header>
 
-    <div class="prose prose-invert prose-lg max-w-none">
+    <div class="prose">
       <Content />
     </div>
 
-    <nav class="flex justify-between items-start gap-8 mt-16 pt-8 border-t border-gray-800">
+    <nav class="flex justify-between items-start gap-8 mt-16 pt-8 border-t border-grid">
       {previousPost ? (
         <a
           href={`/mapthewild/posts/${previousPost.slug}`}
-          class="flex-1 group text-left"
+          class="flex-1 group text-left hover-shift hover-shift-ochre p-3 -m-3 rounded-md"
         >
-          <div class="text-sm text-gray-500 mb-2">← Previous</div>
-          <div class="text-lg text-gray-300 group-hover:text-purple-400 transition-colors line-clamp-2">
+          <div class="text-sm text-ink-muted mb-2">← Previous</div>
+          <div class="text-lg text-ink-light group-hover:text-ochre transition-colors line-clamp-2">
             {previousPost.data.title}
           </div>
         </a>
       ) : islandLink ? (
         <a
           href={islandLink.href}
-          class="flex-1 group text-left"
+          class="flex-1 group text-left hover-shift hover-shift-verdigris p-3 -m-3 rounded-md"
         >
-          <div class="text-sm text-gray-500 mb-2">← Explore</div>
-          <div class="text-lg text-gray-300 group-hover:text-purple-400 transition-colors">
+          <div class="text-sm text-ink-muted mb-2">← Explore</div>
+          <div class="text-lg text-ink-light group-hover:text-verdigris transition-colors">
             {islandLink.name}
           </div>
         </a>
@@ -122,20 +122,20 @@ const { Content } = await post.render();
       {nextPost ? (
         <a
           href={`/mapthewild/posts/${nextPost.slug}`}
-          class="flex-1 group text-right"
+          class="flex-1 group text-right hover-shift hover-shift-ochre p-3 -m-3 rounded-md"
         >
-          <div class="text-sm text-gray-500 mb-2">Next →</div>
-          <div class="text-lg text-gray-300 group-hover:text-purple-400 transition-colors line-clamp-2">
+          <div class="text-sm text-ink-muted mb-2">Next →</div>
+          <div class="text-lg text-ink-light group-hover:text-ochre transition-colors line-clamp-2">
             {nextPost.data.title}
           </div>
         </a>
       ) : islandLink ? (
         <a
           href={islandLink.href}
-          class="flex-1 group text-right"
+          class="flex-1 group text-right hover-shift hover-shift-verdigris p-3 -m-3 rounded-md"
         >
-          <div class="text-sm text-gray-500 mb-2">Explore →</div>
-          <div class="text-lg text-gray-300 group-hover:text-purple-400 transition-colors">
+          <div class="text-sm text-ink-muted mb-2">Explore →</div>
+          <div class="text-lg text-ink-light group-hover:text-verdigris transition-colors">
             {islandLink.name}
           </div>
         </a>
@@ -147,47 +147,137 @@ const { Content } = await post.render();
 </Layout>
 
 <style>
+  /* Article header styles */
+  .article-date {
+    font-size: 13px;
+    color: var(--color-ink-muted);
+    letter-spacing: 1px;
+    margin-bottom: var(--space-sm);
+    display: block;
+  }
+
+  .article-title {
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--color-ochre);
+    margin-bottom: var(--space-md);
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: 'WONK' 1, 'SOFT' 50;
+  }
+
+  .article-subtitle {
+    font-size: 18px;
+    color: var(--color-ink-muted);
+    line-height: 1.5;
+  }
+
+  /* Prose styles - warm light treatment */
   .prose {
-    @apply text-gray-300 font-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--color-ink-light);
+    font-family: Georgia, 'Times New Roman', serif;
   }
 
   .prose :global(p) {
-    @apply mb-6 leading-relaxed;
+    margin-bottom: var(--space-md);
   }
 
   .prose :global(h2) {
-    @apply text-2xl font-semibold text-white mt-12 mb-4;
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--color-ink);
+    margin-top: var(--space-2xl);
+    margin-bottom: var(--space-md);
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: 'WONK' 1, 'SOFT' 50;
   }
 
   .prose :global(h3) {
-    @apply text-xl font-semibold text-white mt-8 mb-3;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-ink);
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-sm);
+    font-family: 'Fraunces', Georgia, serif;
   }
 
   .prose :global(ul), .prose :global(ol) {
-    @apply ml-6 space-y-2 my-6;
+    margin-left: var(--space-lg);
+    margin-top: var(--space-md);
+    margin-bottom: var(--space-md);
+  }
+
+  .prose :global(li) {
+    margin-bottom: var(--space-sm);
   }
 
   .prose :global(a) {
-    @apply text-purple-400 hover:text-purple-300 underline decoration-purple-400/50 transition-colors;
+    color: var(--color-ochre);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(196, 160, 53, 0.4);
+    transition: all 0.2s;
   }
 
-  .prose :global(code) {
-    @apply bg-gray-800 px-2 py-1 rounded text-purple-300 text-sm;
-  }
-
-  .prose :global(pre) {
-    @apply bg-gray-900 p-4 rounded-lg overflow-x-auto my-6;
-  }
-
-  .prose :global(pre code) {
-    @apply bg-transparent p-0;
+  .prose :global(a:hover) {
+    color: var(--color-ochre-dark);
+    border-bottom-color: var(--color-ochre-dark);
   }
 
   .prose :global(strong) {
-    @apply text-white font-semibold;
+    color: var(--color-ink);
+    font-weight: 600;
   }
 
+  .prose :global(em) {
+    font-style: italic;
+  }
+
+  /* Blockquotes - dusty rose border (the "wrong" color) */
   .prose :global(blockquote) {
-    @apply border-l-4 border-purple-500 pl-4 italic text-gray-400 my-6;
+    border-left: 3px solid var(--color-rose);
+    padding-left: var(--space-md);
+    margin: var(--space-lg) 0;
+    font-style: italic;
+    color: var(--color-ink-light);
+  }
+
+  /* Code blocks */
+  .prose :global(code) {
+    background: var(--color-parchment-dark);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 14px;
+    color: var(--color-ink);
+  }
+
+  .prose :global(pre) {
+    background: var(--color-ink);
+    color: var(--color-parchment);
+    padding: var(--space-md);
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: var(--space-lg) 0;
+  }
+
+  .prose :global(pre code) {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+  }
+
+  /* Images */
+  .prose :global(img) {
+    border-radius: 8px;
+    margin: var(--space-lg) 0;
+  }
+
+  /* Horizontal rules */
+  .prose :global(hr) {
+    border: none;
+    border-top: 1px solid var(--color-grid);
+    margin: var(--space-xl) 0;
   }
 </style>
