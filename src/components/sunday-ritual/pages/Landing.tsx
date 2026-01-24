@@ -55,7 +55,7 @@ export function Landing({ onStart }: LandingProps) {
           }}>
 
           <img
-            src="/mapthewild/srimage.jpeg"
+            src="/mapthewild/srimage.jpg"
             alt="Therapy without the waiting room"
             className="w-full rounded-2xl shadow-lg" />
 
