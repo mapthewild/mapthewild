@@ -55,7 +55,7 @@ export function Landing({ onStart }: LandingProps) {
           }}>
 
           <img
-            src="/mapthewild/Gemini_Generated_Image_t034fkt034fkt034.png"
+            src="/mapthewild/srimage.jpeg"
             alt="Therapy without the waiting room"
             className="w-full rounded-2xl shadow-lg" />
 
