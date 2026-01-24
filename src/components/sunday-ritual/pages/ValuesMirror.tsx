@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Screen } from '../components/Screen';
 import { Button } from '../components/Button';
-import { WarmUpAnswers } from './WarmUpQuestions';
+import type { WarmUpAnswers } from './WarmUpQuestions';
 export interface ValuesMirrorProps {
   partner1Name: string;
   partner2Name: string;

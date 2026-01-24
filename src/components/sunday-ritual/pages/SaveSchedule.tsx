@@ -2,7 +2,7 @@ import React, { useState, createElement } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Screen } from '../components/Screen';
 import { Button } from '../components/Button';
-import { WarmUpAnswers } from './WarmUpQuestions';
+import type { WarmUpAnswers } from './WarmUpQuestions';
 export interface SaveScheduleProps {
   partner1: string;
   partner2: string;

@@ -3,7 +3,8 @@ import { Landing } from './pages/Landing';
 import { NamesToMeet } from './pages/NamesToMeet';
 import { RitualSetup } from './pages/RitualSetup';
 import { SplitIntro } from './pages/SplitIntro';
-import { WarmUpQuestions, WarmUpAnswers } from './pages/WarmUpQuestions';
+import { WarmUpQuestions } from './pages/WarmUpQuestions';
+import type { WarmUpAnswers } from './pages/WarmUpQuestions';
 import { Handoff } from './pages/Handoff';
 import { WelcomeBack } from './pages/WelcomeBack';
 import { ValuesMirror } from './pages/ValuesMirror';
@@ -198,3 +199,5 @@ export function App() {
     </div>);
 
 }
+
+export default App
