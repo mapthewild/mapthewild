@@ -1,6 +1,77 @@
+/* Import Fraunces for display headings with variable axes */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..700,0..100,0..1&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Sunday Ritual 3D card utilities */
+@layer utilities {
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .transform-style-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+}
+
+/* CSS Custom Properties for easy reference */
+:root {
+  /* Colors - Foundation */
+  --color-parchment: #f5f0e6;
+  --color-parchment-dark: #e8e3d9;
+  --color-ink: #4a3f35;
+  --color-ink-light: #6b5d4d;
+  --color-ink-muted: #8a7a66;
+  --color-grid: #b8a990;
+  --color-grid-light: rgba(180, 170, 150, 0.12);
+  --color-white: #ffffff;
+
+  /* Colors - Accents */
+  --color-ochre: #c4a035;
+  --color-ochre-dark: #9a7f2a;
+  --color-ochre-bg: rgba(196, 160, 53, 0.15);
+
+  --color-sienna: #a03e20;
+  --color-sienna-light: #b84c2d;
+  --color-sienna-bg: rgba(160, 62, 32, 0.15);
+
+  --color-verdigris: #2d6a6a;
+  --color-verdigris-bg: rgba(45, 106, 106, 0.12);
+
+  --color-rose: #c9a0a0;
+  --color-rose-dark: #8a6b6b;
+  --color-rose-bg: rgba(201, 160, 160, 0.25);
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 60px;
+
+  /* Grid */
+  --grid-size: 40px;
+
+  /* Shadows */
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  /* Borders */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+}
 
 @layer base {
   html {
@@ -8,64 +79,233 @@
   }
 
   body {
-    @apply bg-dark-bg text-gray-100;
+    @apply bg-parchment text-ink;
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif;
+    font-family: Georgia, 'Times New Roman', serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
+    /* 40px grid background */
+    background-image:
+      linear-gradient(var(--color-grid-light) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid-light) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
   }
 
   h1, h2, h3, h4, h5, h6 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: 'WONK' 1, 'SOFT' 50;
     line-height: 1.2;
-    font-weight: 600;
+    font-weight: 500;
+    @apply text-ink;
   }
 
+  h1 { font-size: 36px; font-weight: 400; }
+  h2 { font-size: 24px; font-weight: 400; }
+  h3 { font-size: 18px; font-weight: 700; }
+
   p {
-    line-height: 1.5;
+    line-height: 1.7;
   }
 
   a {
-    color: #667eea;
+    @apply text-ochre;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease;
   }
 
   a:hover {
-    color: #764ba2;
+    text-decoration: underline;
   }
 }
 
 @layer components {
-  /* Andy Matuschak-style bracket links - blue, hoverable, expandable */
+  /* Display font utility with full wonk */
+  .font-display {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: 'WONK' 1, 'SOFT' 50;
+  }
+
+  /* Extra wonky for emphasis */
+  .font-display-wonky {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: 'WONK' 1, 'SOFT' 100;
+  }
+
+  /* Section label styling */
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    @apply text-ochre;
+  }
+
+  /* Parchment background with subtle texture */
+  .bg-parchment-texture {
+    background-color: var(--color-parchment);
+    background-image:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+  }
+
+  /* Grid background pattern */
+  .bg-grid {
+    background-image:
+      linear-gradient(var(--color-grid-light) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid-light) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+  }
+
+  /* Vignette effect for aged paper edges */
+  .vignette {
+    position: relative;
+  }
+  .vignette::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(74, 63, 53, 0.08) 100%);
+  }
+
+  /* Bracket links - ochre styling */
   .bracket-link {
-    color: #58a6ff;
+    color: var(--color-ochre);
     cursor: pointer;
     position: relative;
     transition: all 0.15s ease;
     text-decoration: none;
     border-radius: 2px;
+    border-bottom: 1px dotted var(--color-ochre);
   }
 
   .bracket-link:hover {
-    color: #79c0ff;
-    text-decoration: underline;
-  }
-
-  .bracket-link:focus {
-    outline: 2px solid #58a6ff;
-    outline-offset: 2px;
-  }
-
-  .bracket-link:focus:not(:focus-visible) {
-    outline: none;
+    color: var(--color-ochre-dark);
+    border-bottom-color: var(--color-ochre-dark);
   }
 
   .bracket-link:focus-visible {
-    outline: 2px solid #58a6ff;
+    outline: 2px solid var(--color-ochre);
     outline-offset: 2px;
+  }
+
+  /* Hover states with 4px shift */
+  .hover-shift {
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+  .hover-shift:hover {
+    transform: translateX(4px);
+  }
+
+  .hover-shift-ochre:hover {
+    background-color: rgba(196, 160, 53, 0.05);
+  }
+  .hover-shift-verdigris:hover {
+    background-color: rgba(45, 106, 106, 0.05);
+  }
+  .hover-shift-sienna:hover {
+    background-color: rgba(160, 62, 32, 0.05);
+  }
+  .hover-shift-rose:hover {
+    background-color: rgba(201, 160, 160, 0.08);
+  }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 4px;
+  }
+
+  .tag-ochre {
+    background: var(--color-ochre-bg);
+    color: var(--color-ochre-dark);
+  }
+  .tag-verdigris {
+    background: var(--color-verdigris-bg);
+    color: var(--color-verdigris);
+  }
+  .tag-sienna {
+    background: var(--color-sienna-bg);
+    color: var(--color-sienna);
+  }
+  .tag-rose {
+    background: var(--color-rose-bg);
+    color: var(--color-rose-dark);
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 10px 20px;
+    font-family: Georgia, serif;
+    font-size: 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+
+  .btn-primary {
+    background: var(--color-ochre-bg);
+    color: var(--color-ochre-dark);
+    border-color: var(--color-ochre);
+  }
+  .btn-primary:hover {
+    background: var(--color-ochre);
+    color: var(--color-white);
+    text-decoration: none;
+  }
+
+  .btn-secondary {
+    background: var(--color-white);
+    color: var(--color-ink-light);
+    border-color: var(--color-grid);
+  }
+  .btn-secondary:hover {
+    border-color: var(--color-ink-light);
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-ink-muted);
+  }
+  .btn-ghost:hover {
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: box-shadow 0.2s;
+  }
+  .card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  /* Icon filters for recoloring black SVGs/PNGs */
+  .filter-ochre {
+    filter: invert(62%) sepia(85%) saturate(391%) hue-rotate(11deg) brightness(92%) contrast(87%);
+  }
+  .filter-verdigris {
+    filter: invert(36%) sepia(25%) saturate(749%) hue-rotate(131deg) brightness(93%) contrast(89%);
+  }
+  .filter-ink-light {
+    filter: invert(35%) sepia(10%) saturate(638%) hue-rotate(356deg) brightness(94%) contrast(88%);
+  }
+  .filter-rose {
+    filter: invert(75%) sepia(12%) saturate(540%) hue-rotate(314deg) brightness(90%) contrast(87%);
   }
 
   /* Split layout for stacking panes */

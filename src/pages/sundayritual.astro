@@ -1,0 +1,30 @@
+---
+import App from '../components/sunday-ritual/App'
+import '../styles/global.css'
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sunday Ritual - The Sunday Morning Ritual</title>
+    <meta name="description" content="A 30-minute couples ritual to reconnect and build your relationship manual together." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      /* Override mapthewild's base styles for Sunday Ritual */
+      body {
+        background-color: #FAF7F2 !important;
+        background-image: none !important;
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-[#FAF7F2]">
+    <App client:only="react" />
+  </body>
+</html>

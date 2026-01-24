@@ -138,6 +138,26 @@ npm install -D vitest @astro/check
 - CSP blocking iframe embeds
 - Incorrect embed URL format
 
+## Adding React Islands
+
+When adding React components as Astro client islands:
+
+1. **Use `import type` for type-only imports** — TypeScript interfaces are erased at runtime. In ESM, importing them as values causes runtime errors.
+   ```typescript
+   // ❌ Will fail at runtime
+   import { MyComponent, MyType } from './file'
+
+   // ✅ Correct
+   import { MyComponent } from './file'
+   import type { MyType } from './file'
+   ```
+
+2. **Use default exports** — Astro's `client:only` works best with default exports
+
+3. **Test in browser, not just build** — Build warnings often become runtime errors
+
+4. **Check image paths** — Use `/mapthewild/` prefix for public assets (due to base path config)
+
 ## Deployment Considerations
 
 - **Claude embeds**: Require deployed site, won't work on localhost
