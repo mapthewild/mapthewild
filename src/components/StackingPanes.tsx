@@ -2,6 +2,39 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 
 type ContentType = 'artifact' | 'site' | 'post';
 
+// Design system color palette (2026 alive)
+const COLORS = {
+  parchment: {
+    DEFAULT: '#f5f0e6',
+    dark: '#e8e3d9',
+  },
+  ink: {
+    DEFAULT: '#4a3f35',
+    light: '#6b5d4d',
+    muted: '#8a7a66',
+  },
+  grid: '#b8a990',
+  ochre: {
+    DEFAULT: '#c4a035',
+    dark: '#9a7f2a',
+    bg: 'rgba(196, 160, 53, 0.15)',
+  },
+  sienna: {
+    DEFAULT: '#a03e20',
+    bg: 'rgba(160, 62, 32, 0.15)',
+  },
+  verdigris: {
+    DEFAULT: '#2d6a6a',
+    bg: 'rgba(45, 106, 106, 0.12)',
+  },
+  rose: {
+    DEFAULT: '#c9a0a0',
+    dark: '#8a6b6b',
+    bg: 'rgba(201, 160, 160, 0.25)',
+  },
+  white: '#ffffff',
+};
+
 // Trusted origins for postMessage communication
 // Messages from other origins are rejected for security
 const TRUSTED_ORIGINS = [
@@ -424,17 +457,25 @@ export default function StackingPanes() {
       {hoverPreview?.visible && (
         <div
           id="hover-preview"
-          className="fixed z-[200] bg-white rounded-lg shadow-2xl border border-gray-200 overflow-hidden"
+          className="fixed z-[200] rounded-lg shadow-2xl overflow-hidden"
           style={{
             left: Math.min(hoverPreview.x, window.innerWidth - 420),
             top: Math.min(hoverPreview.y, window.innerHeight - 320),
             width: 400,
             height: 280,
+            backgroundColor: COLORS.parchment.DEFAULT,
+            border: `2px solid ${COLORS.grid}40`,
           }}
           onMouseLeave={() => setHoverPreview(null)}
         >
-          <div className="flex items-center justify-between px-3 py-2 border-b border-gray-100 bg-gray-50">
-            <span className="text-sm font-medium text-gray-700 truncate">
+          <div
+            className="flex items-center justify-between px-3 py-2"
+            style={{
+              borderBottom: `1px solid ${COLORS.grid}20`,
+              backgroundColor: COLORS.parchment.dark,
+            }}
+          >
+            <span className="text-sm font-medium truncate" style={{ color: COLORS.ink.DEFAULT }}>
               {hoverPreview.trigger}
             </span>
           </div>
@@ -453,7 +494,8 @@ export default function StackingPanes() {
           {/* Backdrop - only on mobile */}
           {isMobile && (
             <div
-              className="fixed inset-0 z-40 bg-black/40"
+              className="fixed inset-0 z-40"
+              style={{ backgroundColor: `${COLORS.ink.muted}40` }}
               onClick={closeAllPages}
             />
           )}
@@ -473,15 +515,16 @@ export default function StackingPanes() {
                 className="h-full flex flex-shrink-0"
                 style={{
                   width: '100%',
-                  background: '#0a0a0f',
+                  background: COLORS.parchment.DEFAULT,
                 }}
               >
                 {/* Sticky spine - rotated title tab */}
                 <div
-                  className="h-full flex-shrink-0 cursor-pointer flex items-center justify-center border-r border-gray-800 hover:bg-gray-800/50 transition-colors"
+                  className="h-full flex-shrink-0 cursor-pointer flex items-center justify-center transition-colors"
                   style={{
                     width: PEEK_WIDTH,
-                    background: '#111118',
+                    background: COLORS.parchment.dark,
+                    borderRight: `1px solid ${COLORS.grid}30`,
                     position: 'sticky',
                     left: index * PEEK_WIDTH,
                     zIndex: 10,
@@ -491,7 +534,7 @@ export default function StackingPanes() {
                   onClick={() => scrollToPane(index)}
                   title={page.trigger}
                 >
-                  <span className="text-xs text-gray-400 truncate px-2 max-h-[200px]">
+                  <span className="text-xs truncate px-2 max-h-[200px]" style={{ color: COLORS.ink.muted }}>
                     {page.trigger}
                   </span>
                 </div>
@@ -499,12 +542,24 @@ export default function StackingPanes() {
                 {/* Pane content */}
                 <div className="flex-1 flex flex-col min-w-0">
                   {/* Page Header */}
-                  <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-800 flex-shrink-0" style={{ background: '#111118' }}>
+                  <div
+                    className="flex items-center justify-between px-4 py-2.5 flex-shrink-0"
+                    style={{
+                      background: COLORS.parchment.dark,
+                      borderBottom: `1px solid ${COLORS.grid}30`,
+                    }}
+                  >
                     <div className="flex items-center gap-2 min-w-0 flex-1">
-                      <span className="text-sm font-medium text-gray-200 truncate">
+                      <span className="text-sm font-medium truncate" style={{ color: COLORS.ink.DEFAULT, fontFamily: "'Fraunces', Georgia, serif" }}>
                         {page.trigger}
                       </span>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-purple-900/50 text-purple-300 flex-shrink-0">
+                      <span
+                        className="text-xs px-2 py-0.5 rounded-full flex-shrink-0"
+                        style={{
+                          backgroundColor: COLORS.ochre.bg,
+                          color: COLORS.ochre.dark,
+                        }}
+                      >
                         {page.type === 'post' ? 'Note' : page.type === 'site' ? 'Site' : 'Artifact'}
                       </span>
                     </div>
@@ -514,7 +569,8 @@ export default function StackingPanes() {
                         e.stopPropagation();
                         closePage(index);
                       }}
-                      className="flex items-center justify-center w-7 h-7 text-gray-500 hover:text-gray-300 hover:bg-gray-800 rounded transition-colors"
+                      className="flex items-center justify-center w-7 h-7 rounded transition-colors"
+                      style={{ color: COLORS.ink.muted }}
                       aria-label="Close"
                     >
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -528,7 +584,7 @@ export default function StackingPanes() {
                     <iframe
                       src={page.url}
                       className="w-full h-full border-0"
-                      style={{ background: '#0a0a0f' }}
+                      style={{ background: COLORS.parchment.DEFAULT }}
                       title={page.trigger}
                     />
                   </div>
@@ -540,7 +596,11 @@ export default function StackingPanes() {
           {/* Close All Button */}
           <button
             onClick={closeAllPages}
-            className="fixed bottom-4 right-4 z-[60] flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-full shadow-lg hover:bg-gray-800 transition-colors"
+            className="fixed bottom-4 right-4 z-[60] flex items-center gap-2 px-4 py-2 rounded-full shadow-lg transition-colors"
+            style={{
+              backgroundColor: COLORS.sienna.DEFAULT,
+              color: COLORS.white,
+            }}
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

@@ -1,0 +1,107 @@
+---
+title: "Building a Spotify Wrapped for Claude"
+date: 2025-12-28
+description: "I saw ChatGPT Wrapped and realized my version was shallow. Here's how I fixed it."
+tags: ["ai", "claude", "react", "experiments", "wrapped"]
+islands: ["map"]
+---
+
+import ZoomImage from '../../components/ZoomImage.jsx'
+
+I dropped two screenshots side by side. One was my Claude Wrapped. The other was ChatGPT's.
+
+The difference was stark.
+
+Mine said "Three big themes of 2025" with keywords: Analysis, Strategy, Design. Clinical. Forgettable.
+
+ChatGPT's said "Building the Next Chapter" — a story about reshaping a career around service design and AI leadership. Not categories. *Stories*.
+
+Two problems: shallow themes, and the colors had regressed from Claude's brand guidelines. It looked worse than before.
+
+## Where do rich themes come from?
+
+I had two paths:
+
+1. Call an LLM API at runtime to generate narratives
+2. Pre-compute with my notebook — craft the themes myself
+
+I chose the notebook. This wasn't about automation. It was about authorship. The themes needed to come from *my* understanding of the year, not a model's guess.
+
+## What the notebook found
+
+{/* IMAGE: notebook heatmap or chart - replace with actual path */}
+{/* <ZoomImage client:load src="/mapthewild/images/claude-wrapped/notebook-heatmap.png" alt="Activity heatmap from the analysis notebook" /> */}
+
+From 1,149 conversations and 3.97 million words, three narrative themes emerged:
+
+**Architecting Integration Intelligence** — the career reinvention story. Moving beyond HR and service design into something at the intersection of AI and organizational flourishing.
+
+**The Midnight Clarity Sessions** — the working pattern story. Best thinking after everyone else went to sleep. Not scattered insomnia, but deliberate excavation.
+
+**Crafting Worlds Within Worlds** — the creative escape story. Portal fantasies about families escaping burnout into worlds where support systems actually work.
+
+## The problems surface
+
+{/* IMAGE: early broken version - replace with actual path */}
+{/* <ZoomImage client:load src="/mapthewild/images/claude-wrapped/early-version.png" alt="Early version with broken layout and thin descriptions" /> */}
+
+First implementation was broken.
+
+Duplicate titles everywhere. When images failed to load, browsers displayed the alt text — which I'd set to the title. So broken images became redundant labels.
+
+The descriptions were too thin. One sentence. Abstract. Compare to ChatGPT's 2-3 sentence narratives with specific details.
+
+And the stats were wrong. I'd used 888 conversations from an earlier analysis. The full 2025 dump had 1,149.
+
+## The fixes
+
+Richer descriptions with specifics:
+
+**Before:**
+> "Your best thinking happened after everyone else went to sleep."
+
+**After:**
+> "Your best thinking happened after everyone else went to sleep—nearly 3,000 messages after 10pm, excavating the same questions from different angles until something new emerged. You built what you called 'clarity infrastructure': returning to topics not because you forgot, but because each pass revealed something the previous ones couldn't."
+
+The difference: numbers. Named concepts. A story arc.
+
+## Correct stats
+
+| Stat | Wrong | Correct |
+|------|-------|---------|
+| Conversations | 888 | 1,149 |
+| Total words | 658,889 | 3,967,094 |
+| Peak hour | 11pm | 9pm |
+| Chattiest day | Sep 15 | Jun 14, 2025 |
+| Longest conversation | 188 messages | 376 messages |
+
+"Nearly a thousand" vs "over a thousand" frames the year differently. The numbers are part of the story.
+
+## The final result
+
+{/* IMAGE: final cards - replace with actual path */}
+{/* <ZoomImage client:load src="/mapthewild/images/claude-wrapped/final-cards.png" alt="Final theme cards with rich descriptions and custom images" /> */}
+
+Image-first layout. Title overlay on a dark gradient. Empty alt text so broken images don't show duplicate titles. Rich descriptions that tell the story of a year.
+
+## What I learned
+
+**Rich themes require authorship, not extraction.** Keyword frequency analysis gives you "Strategy" and "Design." Narrative themes require a human who understands the *meaning* of a year's worth of conversations.
+
+**Details make it feel personal.** "Late-night thinking" is generic. "Nearly 3,000 messages after 10pm" is specific. "Clarity infrastructure" is a named concept that belongs to *this* person.
+
+**Broken states reveal design assumptions.** The duplicate title bug only appeared because images were missing. Good design handles broken states gracefully.
+
+**Stats tell a story.** The difference between 888 and 1,149 conversations isn't just accuracy — it changes the narrative.
+
+## The partnership
+
+This wasn't a handoff. It was collaboration.
+
+Claude explored the notebook, proposed theme structures, wrote initial implementations. I caught the gaps — thin descriptions, wrong stats, broken UI — provided the images, made direct edits to fix the card layout.
+
+Together we iterated until it felt true.
+
+---
+
+*December 2025. Data: 1,149 Claude conversations, July 2024 - December 2025.*

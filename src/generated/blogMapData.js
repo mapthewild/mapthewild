@@ -3,19 +3,19 @@
 
 export const BUILDING_SPRITES = {
   "campfire": {
-    "emoji": "🔥",
+    "image": "/mapthewild/images/Coronelli Compass Roses/EnglishCompass.png",
     "size": 40
   },
   "tower": {
-    "emoji": "🗼",
+    "image": "/mapthewild/images/CoMiGoFantasyIcons/SVG_Black/Rock.svg",
     "size": 50
   },
   "house": {
-    "emoji": "🏠",
+    "image": "/mapthewild/images/CoMiGoFantasyIcons/SVG_Black/Pin.svg",
     "size": 35
   },
   "village": {
-    "emoji": "🏘️",
+    "image": "/mapthewild/images/CoMiGoFantasyIcons/SVG_Black/Ship.svg",
     "size": 45
   }
 }
@@ -321,6 +321,31 @@ export const TERRITORY_LEVELS = {
   }
 }
 
-export const LEY_LINES = []
+export const LEY_LINES = [
+  {
+    id: "nowbrary-1",
+    from: { mapId: "nowbrary-level", territoryId: "nowbrary-living-constellation" },
+    to: { mapId: "nowbrary-level", territoryId: "starting-your-nowbrary" },
+    visible: true
+  },
+  {
+    id: "nowbrary-2",
+    from: { mapId: "nowbrary-level", territoryId: "starting-your-nowbrary" },
+    to: { mapId: "nowbrary-level", territoryId: "nowbrary-architecture" },
+    visible: true
+  },
+  {
+    id: "nowbrary-3",
+    from: { mapId: "nowbrary-level", territoryId: "nowbrary-architecture" },
+    to: { mapId: "nowbrary-level", territoryId: "what-nowbrary-isnt" },
+    visible: true
+  },
+  {
+    id: "nowbrary-4",
+    from: { mapId: "nowbrary-level", territoryId: "what-nowbrary-isnt" },
+    to: { mapId: "nowbrary-level", territoryId: "sharing-your-nowbrary" },
+    visible: true
+  }
+]
 
 export default TERRITORY_LEVELS
