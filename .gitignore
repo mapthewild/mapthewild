@@ -35,3 +35,7 @@ pnpm-debug.log*
 
 # Archive files
 *.zip
+
+# Internal planning (not needed in public repo)
+TODO.md
+docs/
