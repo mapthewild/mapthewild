@@ -63,7 +63,7 @@ The embed template is a **separate document** loaded in an iframe — changes to
 ## Gotchas
 
 - **Astro scoped styles don't reach MDX content** — Use `:global(.class)` for styles that need to apply to rendered MDX content (like `.bracket-link`, `.prose` children)
-- **Stacking panes use absolute positioning** — flexbox attempts failed. Read `docs/stacking-panes.md` before changes.
+- **Stacking panes require pane-level sticky** — The entire pane div must be `position: sticky`, NOT just the spine. If only the spine is sticky, it moves visually but doesn't push sibling content, causing overlap. Each pane sticks at `left: index * PEEK_WIDTH` so later panes overlap earlier ones.
 - **Claude artifacts need domain allowlist** — localhost won't embed. Deploy to test embeds.
 - **EXTERNAL_APPS open in new tab** — magicpatterns.app blocks iframes
 
@@ -106,6 +106,7 @@ npm install -D vitest @astro/check
 3. Test artifact embeds (may need deployed environment)
 4. Run `npm run build` to check for build errors
 5. Commit with message: `feat(mapthewild): [description]`
+6. Push to remote: `git push`
 
 ### Adding a New Blog Post
 1. Create MDX file in `src/content/posts/your-post.mdx`
