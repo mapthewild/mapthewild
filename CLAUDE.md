@@ -65,6 +65,7 @@ The embed template is a **separate document** loaded in an iframe — changes to
 - **Astro scoped styles don't reach MDX content** — Use `:global(.class)` for styles that need to apply to rendered MDX content (like `.bracket-link`, `.prose` children)
 - **Stacking panes require pane-level sticky** — The entire pane div must be `position: sticky`, NOT just the spine. If only the spine is sticky, it moves visually but doesn't push sibling content, causing overlap. Each pane sticks at `left: index * PEEK_WIDTH` so later panes overlap earlier ones.
 - **Claude artifacts need domain allowlist** — localhost won't embed. Deploy to test embeds.
+- **TRUSTED_ORIGINS must match deployment** — If site moves to new domain, update `TRUSTED_ORIGINS` in StackingPanes.tsx or postMessage from iframes will be rejected.
 - **EXTERNAL_APPS open in new tab** — magicpatterns.app blocks iframes
 
 ## Code Style
