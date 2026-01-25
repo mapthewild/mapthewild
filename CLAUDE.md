@@ -29,6 +29,20 @@ npm run preview  # Preview build
 - `src/content/posts/*.mdx` — Blog posts
 - `src/components/StackingPanes.tsx` — Pane UI + artifact registry
 - `src/lib/bracketParser.ts` — `[[word:id]]` syntax parser
+- `src/pages/posts/[slug]/embed.astro` — Post content for stacking panes (separate styling context!)
+- `map-the-wild-complete-design-system.html` — Design system reference (colors, typography, components)
+
+### Styling Contexts (Important!)
+
+When updating visual styling, check ALL THREE contexts:
+
+| Context | File | What it styles |
+|---------|------|----------------|
+| Main site | `src/styles/global.css` | Regular page views |
+| Pane chrome | `src/components/StackingPanes.tsx` | Headers, spines, buttons |
+| Pane content | `src/pages/posts/[slug]/embed.astro` | Post content inside iframes |
+
+The embed template is a **separate document** loaded in an iframe — changes to global.css don't affect it.
 
 ## Adding Artifacts
 
@@ -48,6 +62,7 @@ npm run preview  # Preview build
 
 ## Gotchas
 
+- **Astro scoped styles don't reach MDX content** — Use `:global(.class)` for styles that need to apply to rendered MDX content (like `.bracket-link`, `.prose` children)
 - **Stacking panes use absolute positioning** — flexbox attempts failed. Read `docs/stacking-panes.md` before changes.
 - **Claude artifacts need domain allowlist** — localhost won't embed. Deploy to test embeds.
 - **EXTERNAL_APPS open in new tab** — magicpatterns.app blocks iframes
@@ -124,6 +139,12 @@ npm install -D vitest @astro/check
 - Test with URLs: `[[text:https://example.com]]`
 - Test with special characters in text
 - Test malformed syntax (should gracefully fail)
+
+### Adding a New Territory
+1. Create territory page: `src/pages/islands/<territory-name>.astro`
+2. Add to homepage grid: `src/pages/index.astro`
+3. Add to Territories listing: `src/pages/islands/index.astro` (in `islandMeta`)
+4. Test both pages show the new territory
 
 ### Debugging Embed Issues
 **Where to look:**
