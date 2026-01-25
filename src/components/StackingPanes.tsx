@@ -41,6 +41,11 @@ const TRUSTED_ORIGINS = [
   'https://focusedition.github.io',
   'https://claude.site',
   'http://localhost:4321',
+  'http://localhost:4322',
+  'http://localhost:4323',
+  'http://localhost:4324',
+  'http://localhost:4325',
+  'http://localhost:4326',
   'http://localhost:3000',
 ];
 
@@ -127,15 +132,6 @@ const resolveContent = (content: string): { url: string; type: ContentType } | n
     return { url: ARTIFACT_REGISTRY[content], type: 'artifact' };
   }
 
-  // Check internal posts (validate slug format)
-  if (INTERNAL_POSTS.includes(content)) {
-    if (!isValidPostSlug(content)) {
-      console.warn('Invalid post slug rejected:', content);
-      return null;
-    }
-    return { url: `/mapthewild/posts/${content}/embed`, type: 'post' };
-  }
-
   // Validate external URLs
   if (content.startsWith('http://') || content.startsWith('https://')) {
     if (!isValidUrl(content)) {
@@ -145,16 +141,23 @@ const resolveContent = (content: string): { url: string; type: ContentType } | n
     return { url: content, type: 'site' };
   }
 
-  // Validate artifact ID format before constructing URL
-  if (!isValidArtifactId(content)) {
-    console.warn('Invalid artifact ID rejected:', content);
-    return null;
+  // Check if it's a valid post slug (lowercase alphanumeric with hyphens)
+  // This is more permissive - any valid slug is treated as a post
+  if (isValidPostSlug(content)) {
+    return { url: `/mapthewild/posts/${content}/embed`, type: 'post' };
   }
 
-  return {
-    url: `https://claude.site/public/artifacts/${content}/embed`,
-    type: 'artifact'
-  };
+  // Check if it's a UUID (artifact ID)
+  const uuidPattern = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
+  if (uuidPattern.test(content)) {
+    return {
+      url: `https://claude.site/public/artifacts/${content}/embed`,
+      type: 'artifact'
+    };
+  }
+
+  console.warn('Could not resolve content type:', content);
+  return null;
 };
 
 export default function StackingPanes() {
@@ -469,13 +472,18 @@ export default function StackingPanes() {
           onMouseLeave={() => setHoverPreview(null)}
         >
           <div
-            className="flex items-center justify-between px-3 py-2"
+            className="flex items-center justify-between"
             style={{
+              padding: '8px 12px',
               borderBottom: `1px solid ${COLORS.grid}20`,
               backgroundColor: COLORS.parchment.dark,
             }}
           >
-            <span className="text-sm font-medium truncate" style={{ color: COLORS.ink.DEFAULT }}>
+            <span className="truncate" style={{
+              color: COLORS.ink.DEFAULT,
+              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontSize: '13px'
+            }}>
               {hoverPreview.trigger}
             </span>
           </div>
@@ -514,27 +522,32 @@ export default function StackingPanes() {
                 key={page.id}
                 className="h-full flex flex-shrink-0"
                 style={{
-                  width: '100%',
+                  // PANE is sticky - overlaps previous panes, showing only their spines
+                  position: 'sticky',
+                  left: index * PEEK_WIDTH,
+                  width: PAGE_WIDTH,
                   background: COLORS.parchment.DEFAULT,
+                  zIndex: index, // Later panes on top
                 }}
               >
-                {/* Sticky spine - rotated title tab */}
+                {/* Spine - rotated title tab (no longer sticky, pane handles that) */}
                 <div
                   className="h-full flex-shrink-0 cursor-pointer flex items-center justify-center transition-colors"
                   style={{
                     width: PEEK_WIDTH,
                     background: COLORS.parchment.dark,
-                    borderRight: `1px solid ${COLORS.grid}30`,
-                    position: 'sticky',
-                    left: index * PEEK_WIDTH,
-                    zIndex: 10,
+                    borderRight: `1px solid ${COLORS.grid}`,
                     writingMode: 'vertical-rl',
                     transform: 'rotate(180deg)',
                   }}
                   onClick={() => scrollToPane(index)}
                   title={page.trigger}
                 >
-                  <span className="text-xs truncate px-2 max-h-[200px]" style={{ color: COLORS.ink.muted }}>
+                  <span className="truncate px-2 max-h-[200px]" style={{
+                    color: COLORS.ink.muted,
+                    fontFamily: "Georgia, 'Times New Roman', serif",
+                    fontSize: '12px'
+                  }}>
                     {page.trigger}
                   </span>
                 </div>
@@ -543,24 +556,35 @@ export default function StackingPanes() {
                 <div className="flex-1 flex flex-col min-w-0">
                   {/* Page Header */}
                   <div
-                    className="flex items-center justify-between px-4 py-2.5 flex-shrink-0"
+                    className="flex items-center justify-between flex-shrink-0"
                     style={{
+                      padding: '10px 16px',
                       background: COLORS.parchment.dark,
-                      borderBottom: `1px solid ${COLORS.grid}30`,
+                      borderBottom: `1px solid ${COLORS.grid}`,
                     }}
                   >
                     <div className="flex items-center gap-2 min-w-0 flex-1">
-                      <span className="text-sm font-medium truncate" style={{ color: COLORS.ink.DEFAULT, fontFamily: "'Fraunces', Georgia, serif" }}>
+                      <span className="truncate" style={{
+                        color: COLORS.ink.DEFAULT,
+                        fontFamily: "Georgia, 'Times New Roman', serif",
+                        fontSize: '14px',
+                        fontWeight: 'normal'
+                      }}>
                         {page.trigger}
                       </span>
                       <span
-                        className="text-xs px-2 py-0.5 rounded-full flex-shrink-0"
+                        className="flex-shrink-0"
                         style={{
-                          backgroundColor: COLORS.ochre.bg,
-                          color: COLORS.ochre.dark,
+                          fontSize: '11px',
+                          letterSpacing: '1px',
+                          textTransform: 'uppercase',
+                          padding: '4px 10px',
+                          borderRadius: '4px',
+                          backgroundColor: page.type === 'post' ? COLORS.rose.bg : page.type === 'site' ? COLORS.verdigris.bg : COLORS.ochre.bg,
+                          color: page.type === 'post' ? COLORS.rose.dark : page.type === 'site' ? COLORS.verdigris.DEFAULT : COLORS.ochre.dark,
                         }}
                       >
-                        {page.type === 'post' ? 'Note' : page.type === 'site' ? 'Site' : 'Artifact'}
+                        {page.type === 'post' ? 'NOTE' : page.type === 'site' ? 'SITE' : 'ARTIFACT'}
                       </span>
                     </div>
 
@@ -569,11 +593,24 @@ export default function StackingPanes() {
                         e.stopPropagation();
                         closePage(index);
                       }}
-                      className="flex items-center justify-center w-7 h-7 rounded transition-colors"
-                      style={{ color: COLORS.ink.muted }}
+                      className="flex items-center justify-center rounded transition-colors"
+                      style={{
+                        width: '28px',
+                        height: '28px',
+                        color: COLORS.ink.muted,
+                        borderRadius: '4px',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = COLORS.sienna.bg;
+                        e.currentTarget.style.color = COLORS.sienna.DEFAULT;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.color = COLORS.ink.muted;
+                      }}
                       aria-label="Close"
                     >
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg style={{ width: '16px', height: '16px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </button>
@@ -596,13 +633,30 @@ export default function StackingPanes() {
           {/* Close All Button */}
           <button
             onClick={closeAllPages}
-            className="fixed bottom-4 right-4 z-[60] flex items-center gap-2 px-4 py-2 rounded-full shadow-lg transition-colors"
+            className="fixed z-[60] flex items-center transition-colors"
             style={{
-              backgroundColor: COLORS.sienna.DEFAULT,
-              color: COLORS.white,
+              bottom: '16px',
+              right: '16px',
+              gap: '8px',
+              padding: '10px 20px',
+              borderRadius: '6px',
+              backgroundColor: COLORS.sienna.bg,
+              color: COLORS.sienna.DEFAULT,
+              border: `1px solid ${COLORS.sienna.DEFAULT}`,
+              fontFamily: "Georgia, serif",
+              fontSize: '14px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = COLORS.sienna.DEFAULT;
+              e.currentTarget.style.color = COLORS.white;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = COLORS.sienna.bg;
+              e.currentTarget.style.color = COLORS.sienna.DEFAULT;
             }}
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg style={{ width: '16px', height: '16px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
             Close all ({stackedPages.length})

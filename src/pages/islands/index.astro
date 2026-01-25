@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content'
 import Layout from '../../layouts/Layout.astro'
 import Breadcrumbs from '../../components/Breadcrumbs.astro'
 
-const islandMeta: Record<string, { name: string; description: string }> = {
+const islandMeta: Record<string, { name: string; description: string; dedicatedPage?: boolean }> = {
   nowbrary: {
     name: 'Nowbrary',
     description: 'Living constellation of books'
@@ -15,6 +15,11 @@ const islandMeta: Record<string, { name: string; description: string }> = {
   territory: {
     name: 'Territory',
     description: 'Developed work — established, complete, structured'
+  },
+  sundayritual: {
+    name: 'Sunday Ritual',
+    description: 'Weekly practice for reflection and intention',
+    dedicatedPage: true
   }
 }
 
@@ -30,13 +35,24 @@ publishedPosts.forEach(post => {
 })
 
 // Get islands that have posts, ordered by count
-const activeIslands = Object.entries(islandCounts)
+const postBasedIslands = Object.entries(islandCounts)
   .sort((a, b) => b[1] - a[1])
   .map(([id, count]) => ({
     id,
     count,
     ...islandMeta[id] || { name: id, description: '' }
   }))
+
+// Add dedicated territory pages (like Sunday Ritual) that aren't post collections
+const dedicatedIslands = Object.entries(islandMeta)
+  .filter(([id, meta]) => meta.dedicatedPage && !islandCounts[id])
+  .map(([id, meta]) => ({
+    id,
+    count: null,
+    ...meta
+  }))
+
+const activeIslands = [...postBasedIslands, ...dedicatedIslands]
 ---
 
 <Layout title="Territories - Map the Wild">
@@ -63,7 +79,9 @@ const activeIslands = Object.entries(islandCounts)
         >
           <h2 class="territory-item-title">
             {island.name}
-            <span class="territory-item-count">({island.count})</span>
+            {island.count !== null && (
+              <span class="territory-item-count">({island.count})</span>
+            )}
           </h2>
           <p class="territory-item-description">{island.description}</p>
         </a>
