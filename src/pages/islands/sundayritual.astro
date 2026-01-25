@@ -1,0 +1,205 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+---
+
+<Layout title="Sunday Ritual - Map the Wild">
+  <main class="relative z-10 max-w-2xl mx-auto px-6 py-16 md:py-24">
+    <Breadcrumbs
+      items={[
+        { label: 'Home', href: '/mapthewild/' },
+        { label: 'Territories', href: '/mapthewild/islands' },
+        { label: 'Sunday Ritual' }
+      ]}
+    />
+
+    <header class="mb-8">
+      <h1 class="text-3xl md:text-4xl font-display text-ink mb-4">
+        Sunday Ritual
+      </h1>
+      <p class="text-lg text-ink-light italic">
+        A transition ritual for couples. Answer separately. Come back together.
+      </p>
+    </header>
+
+    <!-- App Link Card -->
+    <a href="/mapthewild/sundayritual" class="app-card group">
+      <div class="app-card-image">
+        <img
+          src="/mapthewild/images/territory-sundayritual.jpeg"
+          alt="Sunday Ritual"
+          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+      </div>
+      <div class="app-card-content">
+        <span class="app-card-label">Start the Ritual</span>
+        <span class="app-card-arrow">&rarr;</span>
+      </div>
+    </a>
+
+    <!-- Content Section -->
+    <article class="prose mt-12">
+      <h2>The Infrastructure Gap</h2>
+      <p>
+        Between dating apps and divorce lawyers, there's nothing.
+      </p>
+      <p>
+        That's not quite true. There's therapy. But couples often wait years before seeking it. By then things have calcified. The median divorce costs $7,000. About two in five marriages end there. The rituals that used to exist: the priest asking questions before the wedding, the grandmother giving advice, the neighbor who'd tell you when you were being an idiot. That's mostly gone.
+      </p>
+
+      <h2>Why Structure Matters</h2>
+      <p>
+        Our transitions follow a pattern: you leave one state, you enter a threshold space where old rules don't apply, you come out changed.
+      </p>
+      <p>
+        The daily commute used to do this for work. When remote work killed the commute, 47% of workers reported concerns about blurred boundaries. Not because they missed traffic. Because they lost the structure that helped them shift between "work self" and "home self."
+      </p>
+      <p><strong>Relationships have the same problem.</strong></p>
+      <p>
+        We once had transition rituals for couples too. Across cultures, togetherness was a way to share in the humanity of our connection. Some of them became maxims — "The family that eats/plays/prays together stays together." Or you might have heard an echo of older couples say they always made time for each other, or made time for an evening walk together.
+      </p>
+      <p>
+        Today, phones have stolen what little space remains in our day. People buy lockboxes to guarantee moments without screens. But phones aren't going away. So what if the phone became the bonfire? A prompt to sit together. A reason to put it down and talk.
+      </p>
+
+      <h2>What Couples Need</h2>
+      <p>
+        Some people aren't sure how to have difficult conversations. I was one of them. I believed that I had to ask things in just the right way. I'd replay the questions and responses in my mind, turning them over and over. I've since learned questions aren't the main event. The hard part is creating the conditions where you can feel comfortable talking about important things. The "this really bothers me, and you really need to know" kind of things.
+      </p>
+      <p>
+        So how do you shift away from having your guard slightly up? The kind of guard where you're present enough to listen, but spicy enough to retort in your special way. Where you won't just perform the version of yourself you think your partner wants to see. Where having important conversations should be as unassuming as taking a walk or as low stakes as who cleans the dishes tonight.
+      </p>
+
+      <hr />
+
+      <h2>The coffee table</h2>
+      <p>
+        A friend's partner ordered a $2900 coffee table without mentioning it. They weren't really hiding it, it just didn't occur to them it was a conversation worth having, it was their money. To my friend, anything over $200 is a discussion. "We both think we're good with money...but it turns out we have completely different ideas for when it factors into making a decision."
+      </p>
+      <p>
+        So I shared my <a href="https://www.figma.com/community/file/1157379047847848535/wall-therapy-for-couples-dtd-edition-death-to-divorce-community" target="_blank" rel="noopener">figjam board</a>, a series of questions you can have over sticky notes and a wall, and I figured they'd be able to have their conversations using that. They liked the structure, but didn't have a ritual, a place for this conversation to live, so they never did have the conversations they wanted.
+      </p>
+      <p>
+        Around the same time, AI was getting shoehorned into everything. So I built a voice-based AI that would talk to each partner separately, generate reports, surface hard topics. It was all sorts of wrong but not for the reasons you'd expect. Every time I tried to make the AI smarter, I noticed it was about the structure I wanted it to stick to. From question sequence, to doing it alone, to what was revealed and how. I realized that the AI was fulfilling the role of scaffolding. Once the structure stood on its own, the scaffolding could come down.
+      </p>
+
+      <h3>Strip it down</h3>
+      <p>
+        So I left behind what added nothing, and instead tried to make it feel like an invitation to connect. Just a phone you pass back and forth. My hope is that you can use it without logging in, set a reminder to come back to it, and eventually not need it at all.
+      </p>
+      <p>
+        <a href="/mapthewild/sundayritual" class="cta-link">Try it out &rarr;</a>
+      </p>
+    </article>
+  </main>
+</Layout>
+
+<style>
+  .app-card {
+    display: block;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 2px solid var(--color-ochre);
+    background: var(--color-white);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.2s;
+  }
+
+  .app-card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+  }
+
+  .app-card-image {
+    aspect-ratio: 16/9;
+    overflow: hidden;
+  }
+
+  .app-card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md) var(--space-lg);
+    border-top: 1px solid var(--color-grid);
+    background: var(--color-cream);
+  }
+
+  .app-card-label {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.125rem;
+    color: var(--color-ochre);
+    font-weight: 500;
+  }
+
+  .app-card-arrow {
+    font-size: 1.25rem;
+    color: var(--color-ochre);
+    transition: transform 0.2s;
+  }
+
+  .app-card:hover .app-card-arrow {
+    transform: translateX(4px);
+  }
+
+  .prose {
+    color: var(--color-ink-light);
+    line-height: 1.7;
+  }
+
+  .prose h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: 'WONK' 1, 'SOFT' 50;
+    font-size: 1.5rem;
+    color: var(--color-ink);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose h3 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: 'WONK' 1, 'SOFT' 50;
+    font-size: 1.25rem;
+    color: var(--color-ink);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .prose p {
+    margin-bottom: 1.25rem;
+  }
+
+  .prose strong {
+    color: var(--color-ink);
+  }
+
+  .prose a {
+    color: var(--color-ochre);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .prose a:hover {
+    color: var(--color-ochre-dark);
+  }
+
+  .prose hr {
+    border: none;
+    border-top: 1px solid var(--color-grid);
+    margin: 2.5rem 0;
+  }
+
+  .prose .cta-link {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-ochre);
+    color: var(--color-white) !important;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+
+  .prose .cta-link:hover {
+    background: var(--color-ochre-dark);
+  }
+</style>
