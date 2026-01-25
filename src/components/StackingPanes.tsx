@@ -39,6 +39,7 @@ const COLORS = {
 // Messages from other origins are rejected for security
 const TRUSTED_ORIGINS = [
   'https://focusedition.github.io',
+  'https://mapthewild.github.io',
   'https://claude.site',
   'http://localhost:4321',
   'http://localhost:4322',
