@@ -129,6 +129,44 @@ npm install -D vitest @astro/check
 4. Use in MDX: `[[Descriptive Text:my-artifact-id]]`
 5. Deploy to test (localhost won't work for Claude embeds)
 
+### Adding NotebookLM Content
+
+Use this workflow to publish NotebookLM research queries, AI-generated images, and PDFs on your blog.
+
+**Workflow:**
+1. Create a new blog post in `src/content/posts/notebooklm-[topic].mdx`
+2. Add frontmatter with title, date, description, and territory tag (usually `islands: ["map"]`)
+3. Write the context—explain why you're researching this topic
+4. Include the NotebookLM query or questions you asked
+5. Create a folder: `/public/images/notebooklm-[topic-slug]/` to hold PDFs and images
+6. Export files from NotebookLM and place them in that folder
+7. Reference in MDX using:
+   - **Images**: `<ZoomImage client:load src="/mapthewild/images/notebooklm-[topic]/image.jpeg" alt="description" />`
+   - **PDFs**: `<iframe src="/mapthewild/images/notebooklm-[topic]/document.pdf" width="100%" height="700px"></iframe>`
+
+**File naming convention:**
+- Folder: lowercase with hyphens (e.g., `notebooklm-islamic-narrative`)
+- PDFs/images: descriptive, lowercase (e.g., `narrative-structures.pdf`, `character-development.jpeg`)
+- Avoid spaces and special characters
+
+**Example:**
+```
+/public/images/notebooklm-topic/
+├── main-analysis.pdf
+├── insight-1.jpeg
+├── insight-2.jpeg
+└── source-comparison.pdf
+```
+
+Then in your MDX:
+```jsx
+<iframe src="/mapthewild/images/notebooklm-topic/main-analysis.pdf" width="100%" height="700px"></iframe>
+
+<ZoomImage client:load src="/mapthewild/images/notebooklm-topic/insight-1.jpeg" alt="Key insight from analysis" />
+```
+
+**Reference post:** See `src/content/posts/notebooklm-islamic-narrative-traditions.mdx` for a full example.
+
 ### Modifying Bracket Syntax Parsing
 **Files to check first:**
 - `src/lib/bracketParser.ts` - Core parsing logic
