@@ -4,7 +4,39 @@ import Layout from '../../layouts/Layout.astro';
 
 const posts = await getCollection('posts');
 const publishedPosts = posts.filter(post => !post.data.draft);
-const sortedPosts = publishedPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Standalone HTML essays in public/ (outside content collection)
+const standaloneEssays = [
+  {
+    slug: '_standalone_sorting-class',
+    href: '/mapthewild/the-sorting-class.html',
+    data: {
+      title: 'The Sorting Class',
+      date: new Date('2026-03-08'),
+      description: 'How the industrial model sorted knowledge into employability tiers — and what craft traditions lost in the process.',
+    },
+  },
+  {
+    slug: '_standalone_glass-blower',
+    href: '/mapthewild/the-glass-blower.html',
+    data: {
+      title: 'The Glass Blower',
+      date: new Date('2026-03-10'),
+      description: 'A conversation about what happens when nobody\'s watching — and the kind of knowledge that can\'t be recorded.',
+    },
+  },
+];
+
+const allPosts = [
+  ...publishedPosts.map(post => ({
+    slug: post.slug,
+    href: `/mapthewild/posts/${post.slug}`,
+    data: post.data,
+  })),
+  ...standaloneEssays,
+];
+
+const sortedPosts = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 function formatDate(date: Date) {
   return date.toLocaleDateString('en-US', {
@@ -24,7 +56,7 @@ function formatDate(date: Date) {
     <div class="space-y-4">
       {sortedPosts.map((post) => (
         <a
-          href={`/mapthewild/posts/${post.slug}`}
+          href={post.href}
           class="post-item"
         >
           <time class="post-item-date">

@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Glass Blower — A Conversation</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700,0..100,0..1;1,9..144,400..700,0..100,0..1&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0e6;
+    --bg-dark: #e8e3d9;
+    --text: #4a3f35;
+    --muted: #8a7a66;
+    --accent: #c4a035;
+    --accent-dark: #9a7f2a;
+    --stage: #b8a990;
+    --fawkus: #2d6a6a;
+    --mo: #a03e20;
+    --border: rgba(180, 170, 150, 0.3);
+    --surface: #ece7dd;
+    --grid-light: rgba(180, 170, 150, 0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Lora', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      linear-gradient(var(--grid-light) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-light) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .header {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 100px 24px 60px;
+  }
+
+  .header .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+
+  .header h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: 'WONK' 1, 'SOFT' 50;
+    font-size: clamp(32px, 5vw, 44px);
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    letter-spacing: -0.3px;
+    color: var(--text);
+  }
+
+  .header .subtitle {
+    font-size: 17px;
+    font-style: italic;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 520px;
+    margin-bottom: 40px;
+  }
+
+  .header .context {
+    font-size: 13px;
+    color: var(--stage);
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.8;
+    padding: 20px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .embed-container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 32px 24px 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .embed-container blockquote {
+    max-width: 500px;
+  }
+
+  .preface {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 40px 24px 48px;
+  }
+
+  .preface p {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .preface a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .conversation {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  .exchange {
+    margin-bottom: 40px;
+  }
+
+  .speaker-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-weight: 400;
+  }
+
+  .speaker-label.fawkus { color: var(--fawkus); }
+  .speaker-label.mo { color: var(--mo); }
+
+  .dialogue {
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  .dialogue p {
+    margin-bottom: 14px;
+  }
+
+  .dialogue p:last-child {
+    margin-bottom: 0;
+  }
+
+  .stage-direction {
+    font-style: italic;
+    color: var(--stage);
+    font-size: 14px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .beat {
+    text-align: center;
+    padding: 32px 0;
+    color: var(--border);
+    font-size: 18px;
+    letter-spacing: 12px;
+  }
+
+  .dead-air {
+    padding: 20px 0;
+    text-align: center;
+  }
+
+  .dead-air span {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--stage);
+  }
+
+  .turn {
+    background: var(--surface);
+    margin: 48px -24px;
+    padding: 40px 24px;
+    border-left: 3px solid var(--accent);
+  }
+
+  .pull {
+    padding: 32px 0 32px 24px;
+    border-left: 2px solid var(--accent);
+    margin: 40px 0;
+  }
+
+  .pull p {
+    font-size: 18px;
+    font-style: italic;
+    line-height: 1.7;
+    color: var(--text);
+    margin: 0;
+  }
+
+  .pull .attr {
+    font-size: 12px;
+    font-style: normal;
+    color: var(--stage);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 12px;
+    letter-spacing: 1px;
+  }
+
+  .closing {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+
+  .closing .stage-direction {
+    font-size: 15px;
+    text-align: center;
+    padding: 20px 0;
+    color: var(--stage);
+  }
+
+  .afterword {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 60px 24px 120px;
+    border-top: 1px solid var(--border);
+  }
+
+  .afterword .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .afterword p {
+    font-size: 14px;
+    line-height: 1.9;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .afterword a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  @media (max-width: 600px) {
+    .header { padding: 72px 20px 48px; }
+    .preface, .conversation, .afterword, .closing { padding-left: 20px; padding-right: 20px; }
+    .turn { margin-left: -20px; margin-right: -20px; padding: 32px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="kicker">A simulated conversation</div>
+  <h1>The Glass Blower</h1>
+  <p class="subtitle">
+    A chance encounter between a designer who can see the ocean floor receding
+    and a developer who already got hit by the wave.
+  </p>
+  <div class="context">
+    Mo Bitar built Standard Notes, an encrypted note-taking app, and ran it for
+    seven years before selling it to Proton. He's now building a new product called
+    Shape. In a recent video essay, he described — with startling honesty — losing
+    his ability to code, his emotional connection to his work, and his sense of
+    professional identity after becoming dependent on AI coding tools. He called
+    it a drug. He asked the internet if anyone else felt the same way.<br><br>
+    This conversation is a simulation. It didn't happen. But every word Mo says
+    here is grounded in what he actually said in that video, and the questions are
+    the ones I wanted to ask after watching it.
+  </div>
+</div>
+
+<div class="embed-container">
+  <blockquote class="twitter-tweet"><a href="https://x.com/atmoio/status/2030289138126107074"></a></blockquote>
+  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+<div class="preface">
+  <p>
+    I wrote
+    <a href="https://mapthewild.github.io/mapthewild/the-sorting-class.html">The Sorting Class</a>
+    about the structural forces behind what Mo's describing: the historical pattern of
+    output accelerating while comprehension declines, the way organizations measure
+    shipping but not understanding. His video was the human version of all that research.
+    No citations. Just a man who can't feel anything about his own product.
+  </p>
+  <p>
+    So I imagined what would happen if we ran into each other. Not at a conference.
+    At a coffee shop, where nobody's performing expertise.
+  </p>
+</div>
+
+<div class="conversation">
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>Hey — sorry, I know you from your writing. Saw your video the other day on AI. I'm still on Standard Notes, actually.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <span class="stage-direction">looks up from laptop</span>
+      <p>...Yeah? Sorry, do we — have we met?</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>No no, just recognized you. Sorry, that's weird. I'll leave you alone.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <p>No, you're good. Which video — the one where I had a meltdown about not being able to code anymore?</p>
+      <span class="stage-direction">half laugh</span>
+      <p>I've been getting a lot of messages about that one.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>Yeah, that one. It hit different. I'm a designer — I wrote this thing about the same problem from a different angle. The historical pattern. How output and comprehension used to move together and now they're splitting. But yours was — you just <em>said</em> it. No framework. Just what it felt like.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <p>What do you mean the same problem from a different angle?</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>Like — okay, you said you made a hot dog. It works, it's food, but you have no idea what's inside it and you can't sell it because you didn't earn it. I traced that same pattern back to the 1770s. Textile workers. Output per weaver went up 50x and training time collapsed from seven years to days. The lines crossed. Production went up, comprehension went down, and nobody measured the comprehension part because why would you, the cloth was getting made.</p>
+      <p>Same thing. New substrate.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <span class="stage-direction">pause</span>
+      <p>Huh.</p>
+    </div>
+  </div>
+
+  <div class="dead-air"><span></span></div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <p>Yeah. Yeah, that's — I mean, that's exactly it. I told Codex "don't die" and it didn't die and now I have a business. But the hot dog thing — you're saying that's not new. That happened before.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>It happened before. But last time it took a century. This time it's taking months.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <p>Cool. That's reassuring.</p>
+      <span class="stage-direction">not actually reassured</span>
+      <p>So what'd you do about it? Like, you're a designer, you said the tsunami hasn't hit you yet. What's the plan?</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>I think it's about people, man. Like, no matter how much we AI the AI, we're still people. An AI won't recommend you for a job. It won't understand what you're trying to get into people's hands. It's bits and bytes in a trenchcoat.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <span class="stage-direction">short laugh</span>
+      <p>Bits and bytes in a trenchcoat. Okay.</p>
+      <p>But — I'm a solo founder. That's my whole thing. It's always been just me. And the people thing, yeah, you're right, but I used to earn the relationships <em>through the work</em>. Someone would use Standard Notes and feel the care in it. They'd email me. That's how everything happened. The work was the handshake.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>Right.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <p>Now the work is a hot dog. So what's the handshake?</p>
+    </div>
+  </div>
+
+  <div class="dead-air"><span></span></div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>I don't know. But — okay, this is going to sound like a left turn. I used to run this thing. A peer learning program. People figuring out leadership. Different industries, age groups, strangers. They thought they were coming for a course, but it was structured so they <em>acted</em> on the thing. Like, the content was almost the excuse to get people practicing together.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <p>What does that mean, they acted on it?</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>Like — there's this stat that 80% of first-time managers fail in their first year. Nobody teaches you to manage. They just promote you and hope. And this program didn't teach management either. It put you in a room with strangers and gave you structured ways to practice — holding space for someone, giving honest feedback, telling your story, facilitating a conversation you didn't plan. The room was the teacher.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <span class="stage-direction">quiet for a second</span>
+      <p>The room was the teacher.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>Yeah. And I think something similar is happening now with AI, but I can't quite place it. Nobody's teaching people how to stay sharp with their tools. They just hand you Codex and hope.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <p>And when you fail it's your fault because the tool was right there.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>Exactly.</p>
+    </div>
+  </div>
+
+  <div class="dead-air"><span></span></div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <p>What happened to those people after? Like, what'd they say about it?</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>The professional answer is stuff like "I found confidence to apply for a senior role" and "it helped me understand not just how to do what I do but <em>why</em> I do it." One guy talked about "strategic blank space" — the structure gave him room to figure things out that no curriculum would have handed him.</p>
+      <p>But what I actually witnessed? I think it was people remembering they could trust strangers. That sounds corny but — these are professionals in a big city. Work is isolating. And they showed up every week and held space for each other.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <span class="stage-direction">something lands</span>
+      <p>Proud of.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>What?</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <p>You said the guy said "growth you can be proud of." I just told a hundred thousand people I can't feel proud of anything I make anymore. And this dude got that back from — what, eight strangers in a room?</p>
+    </div>
+  </div>
+
+  <div class="dead-air"><span></span></div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <p>But that was leadership stuff. Career stuff. Known territory. Is "the tool I depend on is dissolving my sense of self and I can't stop using it" — is that even something you could build a room around? Because it sounds like I need therapy, not a cohort.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>I mean — I think even therapy is about being less isolated. There's a human to witness your mess. But it's cathartic, not productive. And I don't think everyone needs a therapist. Like — even when you work with Codex, aren't you thinking through a problem?</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <p>Yeah. I guess.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>So why are you any different than a glass blower?</p>
+    </div>
+  </div>
+
+  <div class="turn">
+    <div class="exchange">
+      <div class="speaker-label mo">Mo</div>
+      <div class="dialogue">
+        <span class="stage-direction">blinks</span>
+        <p>What?</p>
+      </div>
+    </div>
+
+    <div class="exchange">
+      <div class="speaker-label fawkus">Fawkus</div>
+      <div class="dialogue">
+        <p>A glass blower uses a furnace they didn't build. A pipe they didn't make. They're still a glass blower. Nobody says "you didn't smelt the silica so it's not your vase."</p>
+      </div>
+    </div>
+
+    <div class="exchange">
+      <div class="speaker-label mo">Mo</div>
+      <div class="dialogue">
+        <span class="stage-direction">long pause</span>
+        <p>Because I'm not standing over the furnace. I said "make me a vase" and walked away and came back and there was a vase. I didn't feel the heat.</p>
+      </div>
+    </div>
+
+    <div class="exchange">
+      <div class="speaker-label fawkus">Fawkus</div>
+      <div class="dialogue">
+        <p>But you knew the shape.</p>
+      </div>
+    </div>
+
+    <div class="dead-air"><span></span></div>
+
+    <div class="exchange">
+      <div class="speaker-label mo">Mo</div>
+      <div class="dialogue">
+        <span class="stage-direction">staring at the table</span>
+        <p>I knew what "deployed and downloadable" meant. I've done it a hundred times. I knew the shape. I just didn't —</p>
+      </div>
+    </div>
+
+    <div class="exchange">
+      <div class="speaker-label fawkus">Fawkus</div>
+      <div class="dialogue">
+        <span class="stage-direction">doesn't finish the sentence for him</span>
+      </div>
+    </div>
+
+    <div class="dead-air"><span></span></div>
+
+    <div class="exchange">
+      <div class="speaker-label mo">Mo</div>
+      <div class="dialogue">
+        <p>When I built Standard Notes, I had users emailing me every day. "This saved me." "This is broken, fix it." That was the heat. Not the code. The people. And now I have a product nobody's talked to me about because I built it in a weekend with a robot.</p>
+        <span class="stage-direction">quieter</span>
+        <p>Maybe it's not about the code. I don't know. Maybe it's more like — nobody's watching.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pull">
+    <p>Maybe it's not about the code. Maybe it's more like — nobody's watching.</p>
+    <div class="attr">— Mo</div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <span class="stage-direction">almost says something, stops</span>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <p>That sounds stupid.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>It doesn't.</p>
+    </div>
+  </div>
+
+  <div class="dead-air"><span></span></div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <p>So what does the room look like? For this. For — whatever this is.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>Not sure, man. Not sure.</p>
+    </div>
+  </div>
+
+  <div class="dead-air"><span></span></div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <p>That's the best answer anyone's given me in months.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <span class="stage-direction">laughs</span>
+      <p>That's a low bar.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <p>No, I'm serious. Everyone has an answer. The "use AI smarter" people. The "go back to basics" people. My comment section is just — answers. And none of them help because they all start from "I already know what your problem is."</p>
+      <span class="stage-direction">finishes his coffee</span>
+      <p>Can I read that thing you wrote? The textile workers one. Send it to me.</p>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <p>Yeah, it's — here, I'll just —</p>
+      <span class="stage-direction">pulls up the link, shows Mo the phone</span>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="speaker-label mo">Mo</div>
+    <div class="dialogue">
+      <span class="stage-direction">glances at the title, bookmarks it</span>
+      <p>"The Sorting Class." Okay.</p>
+      <span class="stage-direction">starts to put his laptop away, pauses</span>
+      <p>And if you figure out what the room looks like — the thing we were talking about — let me know. I don't need a course. I don't need a methodology. I just need to not be doing this alone.</p>
+    </div>
+  </div>
+
+  <div class="beat">· · ·</div>
+
+  <div class="exchange">
+    <div class="speaker-label fawkus">Fawkus</div>
+    <div class="dialogue">
+      <span class="stage-direction">walking home, twenty minutes later, thinks of what he should have said:
+      that maybe Mo hasn't lost the craft — maybe he's lost the witness. That the
+      furnace wasn't the code, it was the relationship, and the relationship is
+      what you can't automate. That Standard Notes was a product about respecting
+      what's inside, and the irony of its creator not looking inside his own
+      product is the whole essay in one sentence.</span>
+      <span class="stage-direction">opens the Notes app. types "glass blower — witness — the heat was the people." closes it.</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="closing">
+  <div class="stage-direction">Neither of them solved anything. That was the whole point.</div>
+</div>
+
+<div class="afterword">
+  <div class="label">Afterword</div>
+  <p>
+    This conversation didn't happen. I used Claude to simulate Mo's side, grounded
+    in his actual words and what I could learn about his background. My side is my
+    actual thinking, said out loud to a simulated version of someone living the thing
+    I'd been writing about from the outside.
+  </p>
+  <p>
+    The irony of using AI to simulate a conversation about AI-induced isolation is
+    the point. I needed a witness to externalize my thinking, and the witness I
+    reached for was a language model. That's the same move Mo described — the same
+    move the Character.ai users made — the deeply human desire to be heard, routed
+    through something that can't actually hear you.
+  </p>
+  <p>
+    The real version of this conversation would have had more pauses, more dead ends,
+    and at least one interruption to order food. I got closer to that here than in my
+    first attempt, but a simulation of messiness is still a simulation. The good
+    lines — the glass blower, the witness, the heat was the people — are the kind
+    of thing you realize walking home, not mid-sentence. So in this version, the best
+    insight happens after they've already said goodbye. That felt more honest.
+  </p>
+  <p>
+    Which, if you've been paying attention, is exactly the problem we're talking about.
+  </p>
+  <p>
+    I still don't know what the room looks like. But I know it's a room, not a
+    feed. And I know it needs people in it who don't have answers yet.
+  </p>
+  <p>
+    The video that started this:
+    <a href="https://x.com/atmoio/status/2030289138126107074">Mo Bitar on AI dependency</a>.
+    <br>
+    The essay behind it:
+    <a href="https://mapthewild.github.io/mapthewild/the-sorting-class.html">The Sorting Class</a>.
+  </p>
+</div>
+
+</body>
+</html>
