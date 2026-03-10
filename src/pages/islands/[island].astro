@@ -37,10 +37,44 @@ export async function getStaticPaths() {
 const { island } = Astro.props
 const meta = islandMeta[island] || { name: island, description: '' }
 
+// Standalone HTML essays in public/ (outside content collection)
+const standaloneEssays = [
+  {
+    slug: '_standalone_sorting-class',
+    href: '/mapthewild/the-sorting-class.html',
+    data: {
+      title: 'The Sorting Class',
+      date: new Date('2026-03-08'),
+      description: 'How the industrial model sorted knowledge into employability tiers — and what craft traditions lost in the process.',
+      islands: ['map'],
+    },
+  },
+  {
+    slug: '_standalone_glass-blower',
+    href: '/mapthewild/the-glass-blower.html',
+    data: {
+      title: 'The Glass Blower',
+      date: new Date('2026-03-10'),
+      description: 'A conversation about what happens when nobody\'s watching — and the kind of knowledge that can\'t be recorded.',
+      islands: ['map'],
+    },
+  },
+]
+
 const posts = await getCollection('posts')
-const islandPosts = posts
+const collectionPosts = posts
   .filter(post => !post.data.draft && post.data.islands?.includes(island))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .map(post => ({
+    slug: post.slug,
+    href: `/mapthewild/posts/${post.slug}`,
+    data: post.data,
+  }))
+
+const standaloneForIsland = standaloneEssays
+  .filter(essay => essay.data.islands.includes(island))
+
+const islandPosts = [...collectionPosts, ...standaloneForIsland]
+  .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf())
 
 function formatDate(date: Date) {
   return date.toLocaleDateString('en-US', {
@@ -76,7 +110,7 @@ function formatDate(date: Date) {
         const colorClass = colors[index % colors.length];
         return (
         <a
-          href={`/mapthewild/posts/${post.slug}`}
+          href={post.href || `/mapthewild/posts/${post.slug}`}
           class={`post-item post-item-${colorClass}`}
         >
           <time class="post-item-date">
