@@ -249,14 +249,92 @@
     text-underline-offset: 3px;
   }
 
+  /* Site navigation */
+  .essay-nav {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .essay-nav a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .essay-nav a:hover { color: var(--accent); }
+
+  .essay-footer {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    display: flex;
+    justify-content: space-between;
+    gap: 32px;
+  }
+  .essay-footer-rule {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .essay-footer-rule hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  .essay-footer a {
+    font-family: 'JetBrains Mono', monospace;
+    text-decoration: none;
+    flex: 1;
+    transition: color 0.2s;
+  }
+  .essay-footer a:hover .essay-footer-title { color: var(--accent); }
+  .essay-footer-label {
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .essay-footer-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: 'WONK' 1, 'SOFT' 50;
+    font-size: 18px;
+    color: var(--stage);
+    transition: color 0.2s;
+    display: block;
+  }
+  .essay-footer .next { text-align: right; }
+  .essay-footer .all-posts {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .essay-footer .all-posts:hover { color: var(--accent); }
+
   @media (max-width: 600px) {
     .header { padding: 72px 20px 48px; }
     .preface, .conversation, .afterword, .closing { padding-left: 20px; padding-right: 20px; }
     .turn { margin-left: -20px; margin-right: -20px; padding: 32px 20px; }
+    .essay-footer { flex-direction: column; gap: 24px; }
+    .essay-footer .next { text-align: left; }
   }
 </style>
 </head>
 <body>
+
+<nav class="essay-nav">
+  <a href="/mapthewild/posts">← Map the Wild</a>
+  <a href="/mapthewild/posts">All Posts</a>
+</nav>
 
 <div class="header">
   <div class="kicker">A simulated conversation</div>
@@ -740,6 +818,19 @@
     <a href="https://mapthewild.github.io/mapthewild/the-sorting-class.html">The Sorting Class</a>.
   </p>
 </div>
+
+<div class="essay-footer-rule"><hr></div>
+<nav class="essay-footer">
+  <a href="/mapthewild/the-sorting-class.html">
+    <span class="essay-footer-label">← Previous</span>
+    <span class="essay-footer-title">The Sorting Class</span>
+  </a>
+  <a href="/mapthewild/posts" class="all-posts">All Posts</a>
+  <a href="/mapthewild/the-mapping-problem.html" class="next">
+    <span class="essay-footer-label">Next →</span>
+    <span class="essay-footer-title">The Mapping Problem</span>
+  </a>
+</nav>
 
 </body>
 </html>

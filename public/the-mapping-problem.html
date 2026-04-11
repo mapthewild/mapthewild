@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mapping Problem</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAFAF7;
+    --text: #1a1a1a;
+    --text-secondary: #555;
+    --text-muted: #888;
+    --accent: #c43b2a;
+    --rule: #d4d0c8;
+    --blockquote-bg: #f0eeea;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Newsreader', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 19px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .header {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 80px 24px 0;
+  }
+
+  .header h1 {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: clamp(36px, 5.5vw, 52px);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+  }
+
+  .header .dek {
+    font-size: 21px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    max-width: 600px;
+    font-style: italic;
+  }
+
+  .rule {
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 0 24px;
+  }
+  .rule hr {
+    border: none;
+    border-top: 1px solid var(--rule);
+  }
+
+  article {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px 40px;
+  }
+
+  article p { margin-bottom: 22px; }
+
+  article .lead {
+    font-size: 21px;
+    line-height: 1.65;
+  }
+
+  article h2 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 52px 0 18px;
+  }
+
+  blockquote {
+    background: var(--blockquote-bg);
+    border-left: 3px solid var(--accent);
+    padding: 20px 24px;
+    margin: 32px 0;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    border-radius: 0 6px 6px 0;
+  }
+
+  strong { font-weight: 600; }
+  em { font-style: italic; }
+
+  .section-break {
+    text-align: center;
+    margin: 44px 0;
+    color: var(--rule);
+    font-size: 22px;
+    letter-spacing: 12px;
+  }
+
+  sup.fn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  sup.fn a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  sup.fn a:hover { text-decoration: underline; }
+
+  .sources {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+  .sources h2 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .sources ol {
+    list-style: none;
+    counter-reset: source-counter;
+    padding: 0;
+  }
+  .sources li {
+    counter-increment: source-counter;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    padding-left: 28px;
+    position: relative;
+  }
+  .sources li::before {
+    content: counter(source-counter);
+    position: absolute;
+    left: 0;
+    font-weight: 600;
+    color: var(--accent);
+    font-size: 12px;
+    top: 2px;
+  }
+  .sources li a {
+    color: var(--text-secondary);
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-underline-offset: 2px;
+  }
+  .sources li a:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+  }
+
+  /* Site navigation */
+  .essay-nav {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .essay-nav a {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .essay-nav a:hover { color: var(--accent); }
+
+  .essay-footer {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    display: flex;
+    justify-content: space-between;
+    gap: 32px;
+  }
+  .essay-footer-rule {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .essay-footer-rule hr {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin-bottom: 32px;
+  }
+  .essay-footer a {
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: none;
+    flex: 1;
+    transition: color 0.2s;
+  }
+  .essay-footer a:hover .essay-footer-title { color: var(--accent); }
+  .essay-footer-label {
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .essay-footer-title {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 18px;
+    color: var(--text-secondary);
+    transition: color 0.2s;
+    display: block;
+  }
+  .essay-footer .next { text-align: right; }
+  .essay-footer .all-posts {
+    font-size: 14px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .essay-footer .all-posts:hover { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    .header { padding-top: 48px; }
+    article { font-size: 17px; }
+    blockquote { padding: 16px 18px; margin: 24px 0; }
+    .essay-footer { flex-direction: column; gap: 24px; }
+    .essay-footer .next { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="essay-nav">
+  <a href="/mapthewild/posts">← Map the Wild</a>
+  <a href="/mapthewild/posts">All Posts</a>
+</nav>
+
+<div class="header">
+  <h1>The Mapping Problem</h1>
+  <div class="dek">AI's bottleneck isn't the tool. It's finding where to point it.</div>
+</div>
+
+<div class="rule"><hr></div>
+
+<article>
+
+<p class="lead">In early 2026, researchers at INSEAD and Harvard ran a field experiment across 515 startups. Every firm received the same AI tools, the same API credits, the same technical training. Half the firms also received something else: case studies showing how other companies had reorganized their work around AI.</p>
+
+<p>Three months later, the firms that received those case studies had discovered 44% more places to use AI. They completed 12% more tasks. They were 18% more likely to have paying customers. They generated nearly twice the revenue. And they asked for 39.5% less outside capital — $220,000 less per firm — because they could do more with what they had.<sup class="fn"><a href="#fn1" id="ref1">1</a></sup></p>
+
+<p>The firms that didn't get the case studies had the same technology. They weren't less talented or less trained. They searched in a smaller space. They used AI for the obvious things — drafting emails, generating content, automating what was already on their desk — and missed the applications that required rethinking how the work was organized.</p>
+
+<p>The researchers call this the mapping problem: when a technology can do many things, the hard part isn't using it. It's discovering <em>where</em> it creates value inside your specific production process. The search problem, not the adoption problem.</p>
+
+<div class="section-break">· · ·</div>
+
+<h2>This is not new</h2>
+
+<p>When electric motors replaced steam engines in American factories in the 1890s, the obvious move was to swap the power source and keep everything else the same. Factories did exactly that. They replaced the central steam engine with a central electric motor, kept the system of shafts and belts that distributed power from a single point, and waited for the productivity gains.</p>
+
+<p>They waited thirty years.</p>
+
+<p>The gains showed up only when factory owners realized that electric motors didn't have to be central. You could put a small motor on each machine. That meant machines didn't have to line up along a drive shaft anymore. That meant the factory floor could be rearranged around the flow of work rather than the flow of power. That meant multi-story factories with heavy machinery on the ground floor could be replaced by single-story buildings where materials moved horizontally. The resistance to rearrangement wasn't technical. The motors were available from day one. It was cognitive. People couldn't see the factory that the new technology made possible because they were still standing inside the old one.<sup class="fn"><a href="#fn2" id="ref2">2</a></sup></p>
+
+<p>Paul David called this the productivity paradox: the technology arrives, the productivity gains don't, and everyone wonders why. The answer, every time, is that the gains require reorganizing production around the technology's actual capabilities, and the reorganization is a discovery problem that the technology itself doesn't solve.<sup class="fn"><a href="#fn3" id="ref3">3</a></sup></p>
+
+<p>Electricity wasn't a faster steam engine. It was a reason to redesign the factory. The people who swapped the motor and kept the floor plan got electricity's costs without its benefits.</p>
+
+<div class="section-break">· · ·</div>
+
+<h2>Why explanation fails</h2>
+
+<p>In 1939, RCA demonstrated television at the New York World's Fair. Visitors watched a live broadcast transmitted from one room to a screen in another. Many of them assumed it was a trick — a concealed film projector, a clever mirror. The idea that an image could travel through the air and appear on glass in real time was so far outside their frame of reference that seeing it work wasn't enough. RCA had to build the television cabinet out of transparent Lucite so people could verify there was no projector hidden inside. Then they invited visitors to stand in front of the camera and see their own faces appear on the screen. Once you've seen yourself on a television, the trick explanation stops working. But RCA couldn't get there with a pamphlet.<sup class="fn"><a href="#fn4" id="ref4">4</a></sup></p>
+
+<p>This is the problem with explaining a general-purpose technology to someone who hasn't experienced what it makes possible. The explanation necessarily uses concepts from the old frame. "It's like a faster steam engine." "It's like a really smart assistant." The listener maps the new thing onto the thing they already know and concludes it's an incremental improvement. The mapping problem compounds: the technology is hard to explain because the explanation requires the listener to have already reorganized their mental model, which is the thing the explanation is trying to cause.</p>
+
+<p>Alfred Fuller, who built a door-to-door brush company into a multi-million dollar business starting in 1906, understood this at a practical level. His salesmen didn't explain the brushes. They washed the customer's baby with one. They cleaned the radiator while the housewife watched. Fuller's description of the core technique: he demonstrated "anything that would prove the worth of what I had to sell." He wasn't selling bristle density. He was selling the result, live, on the customer's own surfaces, with their own dirt.<sup class="fn"><a href="#fn5" id="ref5">5</a></sup></p>
+
+<p>Brownie Wise took the same insight to a different problem. In 1951, Tupperware was failing on department store shelves. The product had a patented airtight seal, but the seal required a specific technique — pressing the lid and "burping" out the air — that nobody understood from looking at the container on a shelf. The product couldn't sell itself in a context where you couldn't touch it. Wise redesigned the sales model around home parties: a friend invited you over, demonstrated the seal by throwing a bowl of water across the room, and the product sold itself through experience in a trusted social setting. Tupperware pulled its products from every retail store in America. Wise became the first woman on the cover of <em>BusinessWeek</em>.<sup class="fn"><a href="#fn6" id="ref6">6</a></sup></p>
+
+<p>What Fuller and Wise understood, and what the INSEAD experiment confirmed with a randomized controlled trial sixty years later, is the same thing: when a product's value is hard to predict in advance, the bottleneck is not awareness and it is not access. It is the cognitive step of seeing where this thing fits inside the specific mess of your own situation. The pamphlet fails. The feature list fails. The pitch fails. What works is putting someone's hands on their own problem and letting the gap between before and after speak for itself.</p>
+
+<div class="section-break">· · ·</div>
+
+<h2>What the experiment actually showed</h2>
+
+<p>The treated firms in the INSEAD study didn't receive better tools. They received information about how other firms had reorganized. Case studies of companies that had rethought their production sequences: where tasks moved, which roles changed, what new bottlenecks appeared when old ones were removed. The treatment wasn't "use AI more." It was "look at what happens when someone rethinks where AI fits."</p>
+
+<p>The effects showed up in product development and strategy — the areas where using AI well requires changing how work is structured, not layering a tool onto an existing task. The effects did not show up in research, writing, or sales — areas where AI use looks more like acceleration of what you're already doing. The difference between the two groups wasn't technical skill. Founders with engineering backgrounds benefited no more than founders without them. Firms that were already doing well benefited no more than firms that were struggling. The mapping problem bound equally across the board.<sup class="fn"><a href="#fn1" id="ref1b">1</a></sup></p>
+
+<p>And the treated firms didn't just grow faster. They grew cheaper. They demanded 39.5% less capital from investors. Not because they were smaller or less ambitious — the top performers among them raised substantially more money than the top performers in the control group. They needed less capital because they could produce more with the same resources. The tool didn't replace people. It replaced the part of the work that made the work expensive.</p>
+
+<div class="section-break">· · ·</div>
+
+<h2>The shape of the solution</h2>
+
+<p>The INSEAD experiment was ten weeks long and worked with startups, which have low organizational inertia. The researchers note that the mapping problem is likely harder in larger firms, where processes are calcified and decision authority is distributed. They also note that the problem gets worse as the technology improves: more capable models mean more potential applications, which means a larger search space, which means the cognitive constraint on discovery tightens as the technical constraint loosens.</p>
+
+<p>Their conclusion: teaching people how to use AI may be insufficient. Teaching them <em>where</em> to use it — by showing them what reorganized production actually looks like in practice — may be at least as important.</p>
+
+<p>But the case studies that worked in the experiment were descriptions of other firms. They showed what was possible in someone else's situation. The fuller version of the solution, the one that Fuller and Wise and RCA all converged on independently, requires something more specific: the person has to experience it on their own material. Not a case study of a company they've never heard of. Their own project. Their own documents. Their own domain.</p>
+
+<p>The structural insight underneath all of this is simple enough to state: there is more information about any problem than any person can hold. Machines can hold all of it but cannot tell you what matters. People can tell you what matters but cannot hold all of it. The productive move is to separate those two jobs — let the machine hold and surface, let the person judge and steer — and design the interaction so that the person discovers things in their own domain that they did not know were there.</p>
+
+<p>This is not a training problem. Training assumes the gap is skill. The INSEAD data shows it isn't — technical background didn't predict who benefited. It is not an adoption problem. Adoption assumes the gap is usage. Both groups used AI. It is a search problem, and the solution is whatever broadens the search: examples of reorganized production, structured frameworks for exploring where the technology applies, and — when it works best — the experience of seeing your own situation reflected back in a way you didn't expect.</p>
+
+<p>The vacuum cleaner doesn't replace your arms. It replaces getting on your knees.</p>
+
+<p>But you have to see it clean your carpet before you understand what that means.</p>
+
+</article>
+
+<!-- SOURCES -->
+<div class="sources">
+  <hr style="border: none; border-top: 1px solid var(--rule); margin-bottom: 32px;">
+  <h2>Sources</h2>
+  <ol>
+    <li id="fn1">
+      Hyunjin Kim, Dahyeon Kim, and Rembrand Koning, "Mapping AI into Production: A Field Experiment on Firm Performance," INSEAD Working Paper 2026/20/STR, March 2026. 515 high-growth startups, randomized controlled trial, preregistered (AEA RCT Registry AEARCTR-0016746). Three-month accelerator. Treatment: case studies showing how firms reorganized production around AI. Results: 44% more AI use cases, 12% more tasks completed, 18% more likely to acquire paying customers, 1.9x revenue, 39.5% lower capital demand.
+      <a href="https://ssrn.com/abstract=6513481">Link</a>
+    </li>
+    <li id="fn2">
+      Warren D. Devine Jr., "From Shafts to Wires: Historical Perspective on Electrification," <em>Journal of Economic History</em> 43, no. 2 (1983): 347–372. On the thirty-year delay between electric motor availability and factory reorganization. See also Andrew Atkeson and Patrick J. Kehoe, "Modeling the Transition to a New Economy: Lessons from Two Technological Revolutions," <em>American Economic Review</em> 97, no. 1 (2007): 64–88.
+    </li>
+    <li id="fn3">
+      Paul A. David, "The Dynamo and the Computer: An Historical Perspective on the Modern Productivity Paradox," <em>American Economic Review</em> 80, no. 2 (1990): 355–361.
+    </li>
+    <li id="fn4">
+      The RCA demonstration at the 1939 World's Fair is documented in multiple sources. The transparent Lucite cabinet and the live camera demonstration are described in Albert Abramson, <em>The History of Television, 1942 to 2000</em> (McFarland, 2003). Terry O'Reilly discusses the episode in "Seeing Is Believing: The Power of Demonstration Commercials," <em>Under the Influence</em>, Season 13, February 2024.
+    </li>
+    <li id="fn5">
+      The Fuller Brush Company's sales methods are documented in Alfred C. Fuller, <em>A Foot in the Door</em> (McGraw-Hill, 1960). "I washed babies with a back brush, swept stairs, cleaned radiators and milk bottles — anything that would prove the worth of what I had to sell." See also "The Fuller Brush Man," <em>American Heritage</em>.
+      <a href="https://www.americanheritage.com/fuller-brush-man">Link</a>
+    </li>
+    <li id="fn6">
+      On Brownie Wise and the Tupperware party model: Bob Kealing, <em>Tupperware Unsealed</em> (University Press of Florida, 2008). On the psychology of the party as a compliance setting: Robert Cialdini, <em>Influence: The Psychology of Persuasion</em> (Harper Business, 1984), Chapter 5. A 1990 study by Frenzen and Davis found that guests' fondness for the hostess was twice as important as their regard for the product in predicting purchases.
+    </li>
+  </ol>
+</div>
+
+<div class="essay-footer-rule"><hr></div>
+<nav class="essay-footer">
+  <a href="/mapthewild/the-glass-blower.html">
+    <span class="essay-footer-label">← Previous</span>
+    <span class="essay-footer-title">The Glass Blower</span>
+  </a>
+  <a href="/mapthewild/posts" class="all-posts">All Posts</a>
+</nav>
+
+</body>
+</html>

@@ -352,16 +352,93 @@
     text-decoration-color: var(--accent);
   }
 
+  /* Site navigation */
+  .essay-nav {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .essay-nav a {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .essay-nav a:hover { color: var(--accent); }
+
+  .essay-footer {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    display: flex;
+    justify-content: space-between;
+    gap: 32px;
+  }
+  .essay-footer-rule {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .essay-footer-rule hr {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin-bottom: 32px;
+  }
+  .essay-footer a {
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: none;
+    flex: 1;
+    transition: color 0.2s;
+  }
+  .essay-footer a:hover .essay-footer-title { color: var(--accent); }
+  .essay-footer-label {
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .essay-footer-title {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 18px;
+    color: var(--text-secondary);
+    transition: color 0.2s;
+    display: block;
+  }
+  .essay-footer .next { text-align: right; }
+  .essay-footer .all-posts {
+    font-size: 14px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .essay-footer .all-posts:hover { color: var(--accent); }
+
   @media (max-width: 600px) {
     .header { padding-top: 48px; }
     article { font-size: 17px; }
     .diagram-container { margin: 32px -12px; }
     .chart-section { margin: 32px -12px; }
     blockquote { padding: 16px 18px; margin: 24px 0; }
+    .essay-footer { flex-direction: column; gap: 24px; }
+    .essay-footer .next { text-align: left; }
   }
 </style>
 </head>
 <body>
+
+<nav class="essay-nav">
+  <a href="/mapthewild/posts">← Map the Wild</a>
+  <a href="/mapthewild/posts">All Posts</a>
+</nav>
 
 <div class="header">
   <h1>The Sorting Class</h1>
@@ -1022,6 +1099,15 @@ function init() { drawIndustrial(); drawDigital(); }
 window.addEventListener('resize', init);
 init();
 </script>
+
+<div class="essay-footer-rule"><hr></div>
+<nav class="essay-footer">
+  <a href="/mapthewild/posts" class="all-posts">All Posts</a>
+  <a href="/mapthewild/the-glass-blower.html" class="next">
+    <span class="essay-footer-label">Next →</span>
+    <span class="essay-footer-title">The Glass Blower</span>
+  </a>
+</nav>
 
 </body>
 </html>
