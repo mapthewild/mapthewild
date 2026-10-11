@@ -108,6 +108,8 @@
   @media (max-width: 899px) { #turn { min-height: calc(2 * 12px + 2 * 3px + 44px + 2px + 3 * 1.4 * 15px + 6px + 3 * 1.4 * 14px); } }
   #turn .sub { grid-column: 1 / -1; color: #ffffff; font-size: 15px; line-height: 1.4; margin-top: 2px; }
   #narrate { grid-column: 1 / -1; margin-top: 6px; font-size: 14px; line-height: 1.4; color: var(--dim); }
+  #paceBtn { grid-column: 1 / -1; justify-self: start; margin-top: 8px; }
+  #paceBtn[hidden] { display: none; }
   #sub:empty + #narrate { color: #ffffff; font-size: 15px; }
   #sub .note, #sub .bad, #sub .good { margin-top: 6px; color: #ffffff; }
   #sub .mk-preview > div:first-child { margin-top: 0; }
@@ -332,6 +334,21 @@
   #ask > .sys { width: 100%; max-width: 400px; text-align: center; padding: 20px 18px 18px; }
   #ask p { margin: 0 0 14px; font: 700 18px/1.4 var(--body); }
   #ask .row { justify-content: center; }
+  #live { position: fixed; inset: 0; z-index: 57; display: flex; align-items: center; justify-content: center; padding: 16px; background-color: #03060fcc; }
+  #live > .sys { width: 100%; max-width: 420px; text-align: center; padding: 20px 18px 18px; }
+  #live h2 { font: 700 22px/1.25 var(--display); letter-spacing: .04em; margin: 2px 0 12px; color: var(--head); }
+  #live h2:empty { display: none; }
+  #liveP { margin: 0 0 14px; font-size: 16px; line-height: 1.45; }
+  #liveP .ln { display: block; }
+  #liveP .ln + .ln { margin-top: 6px; }
+  #liveLink { margin: 0 0 14px; padding: 8px 10px; text-align: left; font: 700 14px/1.4 var(--body); color: var(--ink); background-color: var(--cream); border: 2px solid var(--lead); word-break: break-all; user-select: all; -webkit-user-select: all; }
+  #live .row { justify-content: center; }
+  #liveNote { margin: 12px 0 0; }
+  #liveNote:empty { display: none; }
+  #liveLine { grid-column: 1 / -1; margin-top: 2px; font-size: 14px; line-height: 1.4; color: var(--dim); }
+  #liveLine .you { font-weight: 700; }
+  #liveLine .you.p0 { color: var(--green-text); } #liveLine .you.p1 { color: var(--red-text); }
+  #liveLine .conn { color: #ffffff; }
   @media (prefers-reduced-motion: reduce) {
     .cell.target.nudge { box-shadow: 0 0 0 6px var(--lightning), 0 0 30px var(--lightning); }
     *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition: none !important; }
@@ -363,11 +380,11 @@
       <div id="nextStrip"></div>
     </div>
     <div class="side">
-      <div class="sys" id="turn"><div class="status" id="status"></div><button type="button" id="hintBtn" data-t="hint.button">Hint</button><button type="button" id="boardAgain" data-t="over.again" hidden>Play again</button><div class="sub" id="sub" aria-live="polite"></div><div id="narrate" aria-live="polite"></div></div>
+      <div class="sys" id="turn"><div class="status" id="status"></div><button type="button" id="hintBtn" data-t="hint.button">Hint</button><button type="button" id="boardAgain" data-t="over.again" hidden>Play again</button><div id="liveLine" aria-live="polite" hidden></div><div class="sub" id="sub" aria-live="polite"></div><div id="narrate" aria-live="polite"></div><button type="button" id="paceBtn" hidden></button></div>
       <div class="sys paper" id="info" aria-live="polite"><div class="muted" data-t="info.default">Tap a card or a space to see what it does.</div></div>
       <details class="sys" id="log"><summary><span class="lt" data-t="log.title">Game log</span><span id="logLast"></span></summary><div class="muted" data-t="log.help">Every move, in order. Tap a line to see it on the board.</div><div id="logKeys" data-t="log.keys">Use the Up and Down arrow keys to go through the log. Press Enter to see that move on the board.</div><ul id="logList"></ul></details>
       <div class="menu">
-        <div class="row"><button type="button" id="newGame" data-t="menu.new">New game</button><button type="button" id="howBtn" data-t="menu.guide">Guided round</button></div>
+        <div class="row"><button type="button" id="newGame" data-t="menu.new">New game</button><button type="button" id="howBtn" data-t="menu.guide">Guided round</button><button type="button" id="liveBtn" data-t="live.button" hidden>Play a friend online</button></div>
         <details id="settings"><summary data-t="settings.summary">Game settings</summary><div class="sets">
         <select id="modeSel" data-t-aria="sel.mode.aria" aria-label="Which game"><option value="standard" data-t="sel.mode.standard">Game: standard</option><option value="kids" data-t="sel.mode.kids">Game: Kids</option></select>
         <select id="playersSel" data-t-aria="sel.players.aria" aria-label="Who plays"><option value="1" data-t="sel.players.1">Players: you against the computer</option><option value="2" data-t="sel.players.2">Players: 2 people, 1 screen</option></select>
@@ -375,6 +392,7 @@
         <select id="variantSel" data-t-aria="sel.variant.aria" aria-label="Which variant"><option value="base" data-t="sel.variant.base">Variant: none</option><option value="source" data-t="sel.variant.source">Variant: Soul Chess (test)</option></select>
         <select id="level" data-t-aria="sel.level.aria" aria-label="How strong the computer is"><option value="normal" data-t="sel.level.normal">Computer: normal</option><option value="easy" data-t="sel.level.easy">Computer: easy</option><option value="hard" data-t="sel.level.hard">Computer: hard</option></select>
         <select id="helpSel" data-t-aria="sel.help.aria" aria-label="Where the help text shows" hidden><option value="screen" data-t="sel.help.screen">Help text: on the screen</option><option value="log" data-t="sel.help.log">Help text: in the game log</option></select>
+        <select id="paceSel" data-t-aria="sel.pace.aria" aria-label="How the cards act"><option value="step" data-t="sel.pace.step">Cards act: one at a time</option><option value="auto" data-t="sel.pace.auto">Cards act: on their own</option></select>
         </div></details>
       </div>
       <details class="sys" id="rules"><summary data-t="rules.summary">Rules</summary><div id="rulesBody"></div></details>
@@ -391,8 +409,13 @@
 
 <div id="ask" hidden role="dialog" aria-modal="true" aria-describedby="askP"><div class="sys"><p id="askP" data-t="ask.text">Start a new game? This ends the game you are playing.</p><div class="row"><button type="button" class="primary" id="askNo" data-t="ask.keep">Keep playing</button><button type="button" id="askYes" data-t="menu.new">New game</button></div></div></div>
 
+<div id="live" hidden role="dialog" aria-modal="true" aria-labelledby="liveH" aria-describedby="liveP liveNote"><div class="sys"><h2 id="liveH" data-t="live.button">Play a friend online</h2><p id="liveP"></p><p id="liveLink" hidden></p><div class="row"><button type="button" class="primary" id="liveYes" data-t="live.ok">OK</button><button type="button" id="liveShare" data-t="live.share" hidden>Share link</button><button type="button" id="liveNo" data-t="live.cancel">Cancel</button></div><p class="muted" id="liveNote" aria-live="polite"></p></div></div>
+
+<script>
+window.OASIS_LIVE = "wss://soulfield-live.soulward.workers.dev";
+</script>
 <script id="oasis-data">
-window.OASIS_STR = {"page.title": "Soulfield Oasis", "head.title": "SOULFIELD", "head.step": "Oasis · prototype v0.6", "site.back": "← Map the Wild", "name.you.who": "You", "name.you.who_lc": "you", "name.you.whom": "you", "name.you.whose": "Your", "name.you.whose_lc": "your", "name.they.who": "They", "name.they.who_lc": "they", "name.they.whom": "them", "name.they.whose": "Their", "name.they.whose_lc": "their", "name.green.who": "Green", "name.green.whose": "Green’s", "name.red.who": "Red", "name.red.whose": "Red’s", "king.one": "{whose} soul ward", "king.two": "{whose} soul ward", "card.name.ice": "Ice", "card.name.lightning": "Lightning", "card.name.fire": "Fire", "card.name.light": "Light", "card.name.shadow": "Shadow", "tile.strikeN": "Strike {n}", "tile.name.frozen": "Frozen Ground", "tile.name.scorched": "Scorched Ground", "tile.name.sanctum": "Sanctum", "tile.name.reversal": "Reversal", "tile.name.lockdown": "Lockdown", "text.card.ice": "Take any ice off the 3 middle spaces in front of it. Put your ice there. Your ice goes away at the end of the next round.", "text.card.lightning": "Pick up your chain. The chain starts with your ice on the 3 middle spaces in front of this card. Your ice directly above, below, left or right of a chain piece joins the chain, until no more can join. The other soul ward loses 1 for each piece, or 1 if there are none.", "text.card.fire": "Take any ice off the 3 middle spaces in front of this card, your ice too. The other soul ward loses 2.", "text.card.light": "Your soul ward gets 1 back. This round, if you win a Strike card in front of this card, the other soul ward loses 1 more.", "text.card.shadow": "The other soul ward loses 1.", "text.square.strike": "If you win it, the other soul ward loses {n}.", "text.square.frozen": "If you win it, take any ice off. Put your ice on all 9 middle spaces.", "text.square.scorched": "If you win it, your Fire cards make the other soul ward lose 2 more for the next 2 rounds.", "text.square.sanctum": "If you win it, your soul ward gets 3 back.", "text.square.reversal": "If you win it while the other player’s Scorched Ground has a round left, their Scorched Ground becomes yours. If you win it at any other time, the other soul ward loses 1.", "text.square.lockdown": "If you win it, the other player puts down only 2 markers next round.", "status.over": "Game over", "status.acting": "The cards do what they say…", "status.turn.one": "Round {n}: {whose_lc} turn", "status.turn.two": "Round {n}: {who}’s turn", "sub.armed": "Tap the card again to put your marker on it.", "sub.left.one": "You have {n} markers left. Tap a card to see what it would do.", "sub.left.one.n1": "You have {n} marker left. Tap a card to see what it would do.", "sub.left.two": "{who} has {n} markers left. Tap a card to see what it would do.", "sub.left.two.n1": "{who} has {n} marker left. Tap a card to see what it would do.", "hint.button": "Hint", "hint.setup": "Try the {card} card on the edge space {where}.", "hint.place": "Try the {card} card {where}. Tap it once to see what it would do.", "board.aria": "Board", "cell.corner": "corner", "cell.slot.empty": "empty", "cell.square.empty": "empty", "storm.label": "Storm", "storm.tip.corner": "Storm", "storm.tip.edge": "Storm: no one can use this card this round", "lock.tip": "You can’t use this card now", "mk.tip.one": "{whose} marker {num}. This card goes {nth} this round.", "mk.tip.two": "{whose} marker {num}. This card goes {nth} this round.", "mk.tip.done.one": "{whose} marker {num}. This card went {nth} this round and did what it says. The marker stays, and it counts for winning middle cards.", "mk.tip.done.two": "{whose} marker {num}. This card went {nth} this round and did what it says. The marker stays, and it counts for winning middle cards.", "ord.1": "{n}st", "ord.2": "{n}nd", "ord.3": "{n}rd", "ord.other": "{n}th", "frost.tip.one": "{whose} ice", "frost.tip.two": "{whose} ice", "frost.tip.plain": "ice", "mark.zap": "A Lightning card picked up the ice piece here.", "mark.gone": "The ice piece here is gone.", "point.plain": "flag", "point.reversal": "Reversal", "win.badge": "WIN", "king.hp": "{hp}/{max}", "float.hit": "−{n}", "float.heal": "+{n}", "strip.next": "Next middle cards in the pile:", "strip.empty": "The pile is empty. Won spaces now stay empty.", "field.on.one": "{whose} field is on through round {n}.", "field.on.two": "{whose} field is on through round {n}.", "flags.line.one": "Flags: you have {a}, they have {b}. {field0} {field1}", "flags.line.two": "Flags: Green has {a}, Red has {b}. {field0} {field1}", "setup.log.title": "Build the board", "setup.log.how": "Take turns putting the {n} edge cards on the empty edge spaces.", "setup.coach.title": "Build the board", "setup.hide": "Hide", "setup.how": "How to build the board", "setup.coach.kids": "Take turns putting the {n} edge cards on the empty edge spaces. Pick an edge card under the board, then tap a lit edge space. You can use only a lit edge space, so 2 cards of the same kind are never next to each other on one edge. When you play, either player can use any edge card.", "setup.coach.std": "Take turns putting the {n} edge cards on the empty edge spaces, in the order the numbers below show. You can use only a lit edge space, so 2 cards of the same kind are never next to each other on one edge. When you play, either player can use any edge card.", "pool.label": "Edge cards to put on the board:", "pool.item": "{card} ×{n}", "setup.status.one": "Build the board: {whose_lc} turn", "setup.status.two": "Build the board: {who}’s turn", "setup.sub.picked": "Now tap a lit edge space for the {card} card.", "setup.sub.pick": "Pick an edge card under the board.", "setup.info.first": "First pick an edge card under the board. Then tap a lit edge space.", "setup.info.cant": "The {card} card can’t go here. Tap a lit edge space.", "setup.step": "When you finish this game, the next one has {more} more edge cards to put down.", "setup.step.all": "Now you build the whole board. To play on a random board, use Game settings.", "setup.guide.one": "Take turns with them to put down the {n} edge cards left. Pick one under the board.", "setup.guide.two": "Take turns to put down the {n} edge cards left. {who}, pick one under the board.", "setup.guide.above.one": "Take turns with them to put down {n} edge cards. Choose one above the board.", "setup.guide.above.two": "Take turns to put down {n} edge cards. {who}, choose one above the board.", "setup.put.one": "{who} put the {card} card {where}.", "setup.put.two": "{who} puts the {card} card {where}.", "built.log.one": "The board is built. {who} go first.", "built.log.two": "The board is built. {who} goes first.", "built.narr.one": "The board is built. Round {n}: you go first.", "built.narr.two": "The board is built. Round {n}: {who} goes first.", "banner.turn": "{who}’s turn", "where": "{at} of the {line}", "side.top": "at the top", "side.bottom": "at the bottom", "side.left": "on the left", "side.right": "on the right", "line.col.1": "left column", "line.col.2": "middle column", "line.col.3": "right column", "line.row.1": "bottom row", "line.row.2": "middle row", "line.row.3": "top row", "line.dir.column": "column", "line.dir.row": "row", "tile.label.empty": "an empty space", "tile.label.strike": "Strike {n}", "tile.label.strike.kids": "Strike {n}", "list.and": "{a} and {b}", "info.default": "Tap a card or a space to see what it does.", "info.card.title": "{card} card", "info.card.line": "Its 3 middle spaces are in its {dir}.", "info.card.same.one": "Your marker is on the card across from this one. You win no new middle card with it.", "info.card.same.two": "{whose} marker is on the card across from this one. {who} wins no new middle card with it.", "info.card.wins.one": "You will win {squares}.", "info.card.wins.one.many": "You will win {squares}.", "info.card.wins.two": "{who} will win {squares}.", "info.card.wins.two.many": "{who} will win {squares}.", "hint.zap.kids": "This card will pick up {n} ice pieces. The other soul ward will lose {dmg}.", "hint.zap.kids.n1": "This card will pick up {n} ice piece. The other soul ward will lose {dmg}.", "hint.zap.std": "This card will pick up {n} ice pieces. The other soul ward will lose {dmg}.", "hint.zap.std.n1": "This card will pick up {n} ice piece. The other soul ward will lose {dmg}.", "hint.nozap": "This card will find no ice to use, so the other soul ward will lose only {dmg}.", "hint.why.used": "Your earlier Lightning card will pick up that ice first.", "hint.why.melted": "A Fire card goes first and takes that ice off.", "hint.why.taken": "The other player’s Ice card goes first and makes that ice theirs.", "hint.why.none.kids": "You have no ice there yet. Use an Ice card first.", "hint.why.none.std": "None of your ice is on the 3 spaces in front of this card, and the chain has to start there.", "blocked.storm": "The Storm is on this card. No one can use it this round.", "blocked.marker": "This card already has a marker.", "blocked.locked.kids": "You can’t use this card. The other player’s marker is on the card across from it.", "blocked.locked.std": "You can’t use this card this round. The other player’s marker is on the card across from it.", "blocked.done": "All your markers are down this round.", "info.square.empty.title": "Empty space", "info.square.empty": "This space was won, and the pile is empty. Winning it now does nothing.", "info.square.title": "{name}", "info.square.how.kids": "To win it, it has to be in front of 2 cards with your markers. One has to be on the top or bottom edge. The other has to be on the left or right edge.", "info.square.how.std": "To win it, it has to be in front of 2 cards with your markers: one on the top or bottom edge, and one on the left or right edge.", "info.square.reversal": "This is the Reversal space and a flag space. Win a card here to put your flag on it. If the other player’s field is on, their field becomes yours.", "info.square.point": "This is a flag space. Win a card here to put your flag on it. Hold 3 flags to turn your field on.", "info.frost.one": "{whose} ice is on this space. Only {whose_lc} Lightning cards can pick it up. An Ice card, a Fire card or Frozen Ground can take it off.", "info.frost.two": "{whose} ice is on this space. Only {whose} Lightning cards can pick it up. An Ice card, a Fire card or Frozen Ground can take it off.", "info.frost.plain": "Ice is on this space.", "info.corner.title": "Corner", "info.corner.1": "No cards go on the corners. The Storm stops on each corner on its way around the edge.", "info.corner.2": "If the Storm moves onto a corner, both soul wards lose 1.", "info.corner.2.here": "The Storm is on this corner, so it blocks no card this round. Each time it moves onto a corner, both soul wards lose 1.", "log.round": "Round {n}", "first.one": "{who} go first.", "first.two": "{who} goes first.", "start.narr.one": "Round {n}. {who} go first.", "start.narr.two": "Round {n}. {who} goes first.", "round.narr.one": "Round {n}. {who} go first.", "round.narr.two": "Round {n}. {who} goes first.", "place.log.one": "{who} put a marker on the {card} card, {at}. The {line} is in front of it.", "place.log.two": "{who} puts a marker on the {card} card, {at}. The {line} is in front of it.", "place.narr.one": "{who} put a marker on the {card} card.", "place.narr.two": "{who} puts a marker on the {card} card.", "skip.log.one": "No card is open for {whom}, so {who_lc} stop putting down markers this round.", "skip.log.two": "No card is open for {who}, so {who} stops putting down markers this round.", "round.acts.kids": "All markers are down. The cards do what they say, in order.", "round.acts.std": "All markers are down. The cards do what they say, in the order the markers went down. Then the won middle cards do what they say.", "stack.empty.log": "The pile is empty. From now on, won spaces stay empty.", "act.ice.kids.one": "{whose} Ice card puts {whose_lc} ice on its {dir}.", "act.ice.kids.two": "{whose} Ice card puts {whose} ice on its {dir}.", "act.ice.std.one": "{whose} Ice card puts {whose_lc} ice on its {dir}.", "act.ice.std.two": "{whose} Ice card puts {whose} ice on its {dir}.", "act.zap.kids.one": "{whose} Lightning card picks up {n} of {whose_lc} ice pieces. {foe_king} loses {dmg}.", "act.zap.kids.two": "{whose} Lightning card picks up {n} of {whose} ice pieces. {foe_king} loses {dmg}.", "act.zap.std.one": "{whose} Lightning card picks up {n} of {whose_lc} ice pieces. {foe_king} loses {dmg}.", "act.zap.std.one.n1": "{whose} Lightning card picks up {n} of {whose_lc} ice pieces. {foe_king} loses {dmg}.", "act.zap.std.two": "{whose} Lightning card picks up {n} of {whose} ice pieces. {foe_king} loses {dmg}.", "act.zap.std.two.n1": "{whose} Lightning card picks up {n} of {whose} ice pieces. {foe_king} loses {dmg}.", "act.nozap.kids.one": "{whose} Lightning card finds no ice to use. {foe_king} loses {dmg}.", "act.nozap.kids.two": "{whose} Lightning card finds no ice to use. {foe_king} loses {dmg}.", "act.nozap.std.one": "{whose} Lightning card finds no ice to use in its {dir}. {foe_king} loses {dmg}.", "act.nozap.std.two": "{whose} Lightning card finds no ice to use in its {dir}. {foe_king} loses {dmg}.", "act.fire.kids.one": "{whose} Fire card hits. {foe_king} loses {dmg}.{melt}", "act.fire.kids.two": "{whose} Fire card hits. {foe_king} loses {dmg}.{melt}", "act.fire.kids.melt": "It takes {n} ice pieces off.", "act.fire.kids.melt.n1": "It takes {n} ice piece off.", "act.fire.std.one": "{whose} Fire card hits. {foe_king} loses {dmg}.{melt}", "act.fire.std.two": "{whose} Fire card hits. {foe_king} loses {dmg}.{melt}", "act.fire.std.melt": "It takes {n} ice pieces off its {dir}.", "act.fire.std.melt.n1": "It takes {n} ice piece off its {dir}.", "act.fire.std.nomelt": "It finds no ice in its {dir}.", "act.light.one": "{whose} Light card gives {whose_lc} soul ward {n} back.", "act.light.two": "{whose} Light card gives {whose} soul ward {n} back.", "act.light.full.one": "{whose} Light card gives nothing back, because {whose_lc} soul ward is already at 30.", "act.light.full.two": "{whose} Light card gives nothing back, because {whose} soul ward is already at 30.", "act.shadow.one": "{whose} Shadow card hits. {foe_king} loses {dmg}.", "act.shadow.two": "{whose} Shadow card hits. {foe_king} loses {dmg}.", "claim.strike.one": "{who} win {square}. {foe_king} loses {dmg}.{flag}", "claim.strike.two": "{who} wins {square}. {foe_king} loses {dmg}.{flag}", "claim.bonus.light.one": "{whose} Light card adds 1.", "claim.bonus.light.two": "{whose} Light card adds 1.", "claim.bonus.shadow.one": "{whose} Shadow card takes 1 off.", "claim.bonus.shadow.two": "{whose} Shadow card takes 1 off.", "claim.bonus.field.one": "{whose} field adds 1.", "claim.bonus.field.two": "{whose} field adds 1.", "claim.frozen.kids.one": "{who} win {square}. {whose} ice now covers all 9 middle spaces.", "claim.frozen.kids.two": "{who} wins {square}. {whose} ice now covers all 9 middle spaces.", "claim.frozen.std.one": "{who} win {square}. {whose} ice now covers all 9 middle spaces.{flag}", "claim.frozen.std.two": "{who} wins {square}. {whose} ice now covers all 9 middle spaces.{flag}", "claim.sanctum.one": "{who} win {square}. {king} gets {n} back.{flag}", "claim.sanctum.two": "{who} wins {square}. {king} gets {n} back.{flag}", "claim.sanctum.full.one": "{who} win {square}. {king} is already at 30.{flag}", "claim.sanctum.full.two": "{who} wins {square}. {king} is already at 30.{flag}", "claim.scorched.one": "{who} win {square}. For the next 2 rounds, {whose_lc} Fire cards make the other soul ward lose 2 more.{flag}", "claim.scorched.two": "{who} wins {square}. For the next 2 rounds, {whose} Fire cards make the other soul ward lose 2 more.{flag}", "claim.reversal.swap.one": "{who} win {square} and take over the Scorched Ground.{flag}", "claim.reversal.swap.two": "{who} wins {square} and takes over the Scorched Ground.{flag}", "claim.reversal.hit.one": "{who} win {square}. {foe_king} loses {dmg}.{flag}", "claim.reversal.hit.two": "{who} wins {square}. {foe_king} loses {dmg}.{flag}", "claim.lockdown.one": "{who} win {square}. Next round, {other} put down only 2 markers.{flag}", "claim.lockdown.two": "{who} wins {square}. Next round, {other} puts down only 2 markers.{flag}", "claim.flag": "A flag goes on that space.", "storm.hit.kids": "The Storm moves onto a corner. Both soul wards lose 1.", "storm.hit.std": "The Storm moves onto a corner. Both soul wards lose 1.", "field.turnon.one": "{who} hold 3 flags, so {whose_lc} field is on through round {n}. Each of {whose_lc} hits makes the other soul ward lose 1 more.", "field.turnon.two": "{who} holds 3 flags, so {whose} field is on through round {n}. Each of {whose} hits makes the other soul ward lose 1 more.", "trap.one": "{whose} flags make a line through the center. Next round, {other} put down only 2 markers.", "trap.two": "{whose} flags make a line through the center. Next round, {other} puts down only 2 markers.", "over.title": "Game over", "over.draw": "It’s a tie", "over.win.one": "You win", "over.win.two": "{who} wins", "over.lose.one": "You lose", "over.body.one": "After {n} rounds, your soul ward has {a} and their soul ward has {b}.", "over.body.one.n1": "After {n} round, your soul ward has {a} and their soul ward has {b}.", "over.body.two": "After {n} rounds, Green’s soul ward has {a} and Red’s soul ward has {b}.", "over.body.two.n1": "After {n} round, Green’s soul ward has {a} and Red’s soul ward has {b}.", "over.next.some.one": "Next game, you help build the board. Take turns with them to put down {n} edge cards.", "over.next.some.two": "Next game, you help build the board. Take turns to put down {n} edge cards.", "over.next.all.one": "Next game, you build the whole board. Take turns with them to put down all 12 edge cards.", "over.next.all.two": "Next game, you build the whole board. Take turns to put down all 12 edge cards.", "over.log.one": "Game over. {result}. Your soul ward has {a} and their soul ward has {b}.", "over.log.two": "Game over. {result}. Green’s soul ward has {a} and Red’s soul ward has {b}.", "over.again": "Play again", "over.board": "See board", "log.title": "Game log", "log.help": "Every move, in order. Tap a line to see it on the board.", "menu.new": "New game", "menu.guide": "Guided round", "sel.mode.aria": "Which game", "sel.mode.standard": "Game: standard", "sel.mode.kids": "Game: Kids", "sel.players.aria": "Who plays", "sel.players.1": "Players: you against the computer", "sel.players.2": "Players: 2 people, 1 screen", "sel.setup.aria": "How the board is made", "sel.setup.steps": "Board: build it in steps", "sel.setup.draft": "Board: players build it", "sel.setup.random": "Board: random", "sel.variant.aria": "Which variant", "sel.variant.base": "Variant: none", "sel.variant.source": "Variant: Soul Chess (test)", "sel.level.aria": "How strong the computer is", "sel.level.normal": "Computer: normal", "sel.level.easy": "Computer: easy", "rules.summary": "Rules", "rules.std.1": "Your first {n} games start on a random board. After that, you build a little more of the board each game, until you build all of it. Game settings can change this. To build, take turns putting edge cards on the empty edge spaces. Don’t put 2 cards of the same kind next to each other on the same edge.", "rules.std.2": "Each round, take turns putting down your 3 markers on edge cards. The player who goes first changes every round.", "rules.std.3": "An edge card on the top or bottom edge has 3 middle spaces in front of it, in its column. An edge card on the left or right edge has 3 middle spaces in front of it, in its row.", "rules.std.4": "You can’t use a card if the other player has a marker on the card across from it. You can’t use the card the Storm is on.", "rules.std.5": "You can use the card across from a card with your marker. Both have the same 3 spaces in front of them, so you win no new middle card from it.", "rules.std.6": "You win a middle card if it is in front of 2 cards with your markers: one on the top or bottom edge, and one on the left or right edge.", "rules.std.7": "When all markers are down, the cards do what they say, in the order the markers went down. Then the won middle cards do what they say, starting with the player who went first.", "rules.std.8": "Ice belongs to the player who put it down. Only your Lightning cards can pick up your ice. Fire takes any ice off its 3 spaces, yours too. Ice goes away at the end of the round after the one it was put down in.", "rules.std.9": "The Storm moves one step around the edge each round. No one can use the card it is on. If it moves onto a corner, both soul wards lose 1.", "rules.std.10": "A won middle card leaves the game, and the top card of the pile goes on its space. When the pile is empty, won spaces stay empty.", "rules.std.11": "Each soul ward starts at 30. Get the other soul ward to 0 to win. If the Storm takes both soul wards to 0 at the same time, it is a tie. If no soul ward gets to 0 in 20 rounds, the player with the bigger number wins. If both numbers are the same, it is a tie. Tap any card to see what it does.", "rules.std.variant.title": "Soul Chess variant", "rules.std.variant.1": "5 middle spaces are flag spaces: the center and the 4 middle spaces nearest the corners. Take Scorched Ground, Reversal and Lockdown out of the pile.", "rules.std.variant.2": "When you win a card on a flag space, put your flag there. If you hold 3 flags at the end of a round, your field is on for the next 3 rounds. While it is on, each of your hits makes the other soul ward lose 1 more. The Storm’s hits stay at 1. Keeping the flags does not make it last longer. When the field ends, it can turn on again only after one round off.", "rules.std.variant.3": "The center is the Reversal space. Win a card there while the other player’s field is on, and their field becomes yours.", "rules.std.variant.4": "Hold 3 flags in a line through the center, and the other player puts down only 2 markers next round.", "rules.kids.1": "Your first {n} games start on a random board. After that, you build a little more of the board each game, until you build all of it. Game settings can change this. To build, take turns putting edge cards on the empty edge spaces. Do not put 2 of the same kind right next to each other on the same edge.", "rules.kids.2": "Each round, take turns putting your 3 markers on edge cards: 1, then 2, then 3.", "rules.kids.3": "Each edge card has 3 middle spaces in front of it.", "rules.kids.4": "You cannot use a card if the other player’s marker is on the card across from it. You cannot use the card the Storm is on.", "rules.kids.5": "If the Storm moves onto a corner, both soul wards lose 1.", "rules.kids.6": "You win a middle card if it is in front of 2 cards with your markers. One has to be on the top or bottom edge. The other has to be on the left or right edge.", "rules.kids.7": "Cards do what they say in the order the markers went down.", "rules.kids.8": "The Ice card: Take any ice off the 3 spaces in front of it. Put your ice there. The Fire card: Take any ice off the 3 spaces in front of it. The other soul ward loses 2. The Lightning card: Pick up your chain. Your chain starts with your ice on the 3 spaces in front of the Lightning card. Your ice directly above, below, left or right of a chain piece joins the chain. Keep going until no more can join. The other soul ward loses 1 for each piece, or 1 if there are none.", "rules.kids.9": "Your ice stays until a card takes it off.", "rules.kids.10": "Each soul ward starts at 30. If the other soul ward gets to 0, you win. If both get to 0 at the same time, it is a tie. If no soul ward gets to 0 in 20 rounds, the player with the bigger number wins. If both numbers are the same, it is a tie.", "coach.title": "Guided round", "guide.next": "Next", "guide.skip": "Skip the guide", "guide.gotit": "Got it", "guide.play": "Play the round", "guide.step": "Guided round: step {i} of {n}", "guide.log": "Guided round. You go first.", "guide.tapGlowing": "In the guide, tap the card that glows.", "guide.done.title": "Round done", "guide.done.kids": "Ice stays until a card takes it off. That was a practice round. In a game, get the other soul ward to 0 to win. Most games end in 3 to 5 rounds.", "guide.done.std": "Ice goes away at the end of the next round. When a middle card is won, the next card from the pile goes on its space. That was a practice round. In a game, get the other soul ward to 0 to win.", "guide.close": "Close", "guide.std.1": "This is the board. The edge cards go around the outside. The 9 middle cards are what you play for. Each one hurts their soul ward or helps you. Each player has a soul ward. Yours is the bar under the board. Get theirs to 0 to win.", "guide.std.2": "This is the Storm. In a normal game it starts on the bottom edge card next to the bottom left corner. Here it starts on the corner, so it blocks no card this round. It moves one step around the edge each round. No one can use the card it is on. If it moves onto a corner, both soul wards lose 1.", "guide.std.3": "Your turn. Tap the glowing Ice card, then tap it again to put your marker there. It will put your ice on the column below it. Only your Lightning cards can pick up your ice.", "guide.std.4": "They put a marker on the Fire card, on the left. That row is in front of it. Now look at the card across from it, on the right. It has a lock. You can’t use it this round.", "guide.std.5": "Tap the glowing Lightning card. The middle row is in front of it. Strike 3 is in front of both your cards, so you win it. This Lightning card will also pick up your ice.", "guide.std.6": "They put a marker on the Shadow card, at the top. Now the top right middle card is in front of 2 cards with their markers, so they will win it.", "guide.std.7": "Tap the glowing Light card at the bottom. Its column meets your Lightning card’s row, so you win a second middle card.", "guide.std.8": "Press Play the round. They put down their last marker, and then the cards do what they say, in the order the markers went down. Look at the numbers on the markers: the 1s go first, then the 2s, then the 3s.", "guide.kids.1": "This is the board. The edge cards go around the outside. The 9 middle cards are what you want to win. Most of them hurt the other soul ward. Each player has a soul ward. Yours is the bar under the board. Get the other one to 0 to win.", "guide.kids.2": "This is the Storm. It moves one step each round. No one can put a marker on the card it is on. If it moves onto a corner, both soul wards lose 1.", "guide.kids.3": "Tap the glowing Ice card. Tap it again to put your marker there. It puts your ice on the 3 spaces in front of it.", "guide.kids.4": "Now they put a marker on the Fire card, on the left. Look at the card across from it, on the right. It has a lock. You can’t use it now.", "guide.kids.5": "Tap the glowing Lightning card. Strike 3 is in front of both your cards, so you win it. Your Lightning card will also pick up your ice.", "guide.kids.6": "They put a marker on the Fire card at the top. The top right middle card is in front of 2 cards with their markers, so they win it.", "guide.kids.7": "Tap the glowing Fire card at the bottom. Another middle card is in front of it and your Lightning card. You win a second middle card.", "guide.kids.8": "Press Play the round. They put down their last marker. Then the cards do what they say, in order. Look at the numbers on the markers. The 1s go first.", "door.title": "Which game?", "door.kids": "Kids game", "door.kids.sub": "The simpler game, with Ice, Fire and Lightning cards", "door.std": "Standard game", "door.std.sub": "Adds Light and Shadow cards, and more to plan", "guide.done.won": "You won {n} middle cards.", "guide.done.won.n1": "You won {n} middle card.", "settings.summary": "Game settings", "ask.text": "Start a new game? This ends the game you are playing.", "ask.keep": "Keep playing", "setup.coach.kids.above": "Take turns putting the {n} edge cards on the empty edge spaces. Choose an edge card above the board, then choose a lit edge space. You can use only a lit edge space, so 2 cards of the same kind are never next to each other on one edge. When you play, either player can use any edge card.", "setup.sub.pick.above": "Choose an edge card above the board.", "setup.info.first.above": "First choose an edge card above the board. Then choose a lit edge space.", "territory.play.kids": "Play the Kids game", "territory.play.std": "Play the standard game", "log.keys": "Use the Up and Down arrow keys to go through the log. Press Enter to see that move on the board.", "claim.tip": "{who} would win this middle card.", "flag.tip.one": "{who} have a flag here.", "flag.tip.two": "{who} has a flag here.", "field.transfer.one": "{who} take over {theirs} field.", "field.transfer.two": "{who} takes over {theirs} field.", "sel.level.hard": "Computer: hard", "preview.ends.card": "{whose} {card} card goes first and ends the game, so this card does not get to go.", "preview.ends.this": "This card takes the other soul ward to 0, and that ends the game.", "preview.ends.this.short": "That ends the game.", "preview.ends.claim.one": "{who} win {square} first. That takes {mover} soul ward to 0, so the game ends.", "preview.ends.claim.two": "{who} wins {square} first. That takes {mover} soul ward to 0, so the game ends.", "preview.ends.claim.would.one": "If nothing changes, {who} win {square} first. That would take {mover} soul ward to 0 and end the game.", "preview.ends.claim.would.two": "If nothing changes, {who} wins {square} first. That would take {mover} soul ward to 0 and end the game.", "info.card.wouldwin.one": "You would win {squares}.", "info.card.wouldwin.one.many": "You would win {squares}.", "info.card.wouldwin.two": "{who} would win {squares}.", "info.card.wouldwin.two.many": "{who} would win {squares}.", "effect.scorched.one": "Scorched Ground: {whose_lc} Fire cards make the other soul ward lose 2 more through round {n}.", "effect.scorched.two": "Scorched Ground: {whose_lc} Fire cards make the other soul ward lose 2 more through round {n}.", "effect.lockdown.one": "Lockdown: in round {n}, {who_lc} can put down only 2 markers.", "effect.lockdown.two": "Lockdown: in round {n}, {who} can put down only 2 markers.", "guide.done.start": "Start a game", "cell.square.new": "new", "cell.square.new.tip": "This card is new from the pile.", "claim.tip.now.one": "{who} win this middle card.", "claim.tip.now.two": "{who} wins this middle card.", "sel.help.aria": "Where the help text shows", "sel.help.screen": "Help text: on the screen", "sel.help.log": "Help text: in the game log", "sub.count.one": "You have {n} markers left.", "sub.count.one.n1": "You have {n} marker left.", "sub.count.two": "{who} has {n} markers left.", "sub.count.two.n1": "{who} has {n} marker left.", "log.how.play": "Tap an edge card once to light up its 3 middle spaces. Tap it again to put your marker on it. Tap a middle card or a corner to read about it. What an edge card does goes in this log the first time you tap it.", "log.look": "{name}: {text}", "over.help.offer": "For less text on the screen, choose “{choice}” in Game settings.", "setup.guide.one.n1": "Put down the last edge card. Pick it under the board.", "setup.guide.two.n1": "{who}, put down the last edge card. Pick it under the board.", "over.next.more.one": "Next game, you build more of the board. Take turns with them to put down {n} edge cards.", "over.next.more.two": "Next game, you build more of the board. Take turns to put down {n} edge cards."};
+window.OASIS_STR = {"page.title": "Soulfield Oasis", "head.title": "SOULFIELD", "head.step": "Oasis · prototype v0.6", "site.back": "← Map the Wild", "name.you.who": "You", "name.you.who_lc": "you", "name.you.whom": "you", "name.you.whose": "Your", "name.you.whose_lc": "your", "name.they.who": "They", "name.they.who_lc": "they", "name.they.whom": "them", "name.they.whose": "Their", "name.they.whose_lc": "their", "name.green.who": "Green", "name.green.whose": "Green’s", "name.red.who": "Red", "name.red.whose": "Red’s", "king.one": "{whose} soul ward", "king.two": "{whose} soul ward", "card.name.ice": "Ice", "card.name.lightning": "Lightning", "card.name.fire": "Fire", "card.name.light": "Light", "card.name.shadow": "Shadow", "tile.strikeN": "Strike {n}", "tile.name.frozen": "Frozen Ground", "tile.name.scorched": "Scorched Ground", "tile.name.sanctum": "Sanctum", "tile.name.reversal": "Reversal", "tile.name.lockdown": "Lockdown", "text.card.ice": "Take any ice off the 3 middle spaces in front of it. Put your ice there. Your ice goes away at the end of the next round.", "text.card.lightning": "Pick up your chain. The chain starts with your ice on the 3 middle spaces in front of this card. Your ice directly above, below, left or right of a chain piece joins the chain, until no more can join. The other soul ward loses 1 for each piece, or 1 if there are none.", "text.card.fire": "Take any ice off the 3 middle spaces in front of this card, your ice too. The other soul ward loses 2.", "text.card.light": "Your soul ward gets 1 back. This round, if you win a Strike card in front of this card, the other soul ward loses 1 more.", "text.card.shadow": "The other soul ward loses 1.", "text.square.strike": "If you win it, the other soul ward loses {n}.", "text.square.frozen": "If you win it, take any ice off. Put your ice on all 9 middle spaces.", "text.square.scorched": "If you win it, your Fire cards make the other soul ward lose 2 more for the next 2 rounds.", "text.square.sanctum": "If you win it, your soul ward gets 3 back.", "text.square.reversal": "If you win it while the other player’s Scorched Ground has a round left, their Scorched Ground becomes yours. If you win it at any other time, the other soul ward loses 1.", "text.square.lockdown": "If you win it, the other player puts down only 2 markers next round.", "status.over": "Game over", "status.acting": "The cards do what they say…", "status.turn.one": "Round {n}: {whose_lc} turn", "status.turn.two": "Round {n}: {who}’s turn", "sub.armed": "Tap the card again to put your marker on it.", "sub.left.one": "You have {n} markers left. Tap a card to see what it would do.", "sub.left.one.n1": "You have {n} marker left. Tap a card to see what it would do.", "sub.left.two": "{who} has {n} markers left. Tap a card to see what it would do.", "sub.left.two.n1": "{who} has {n} marker left. Tap a card to see what it would do.", "hint.button": "Hint", "hint.setup": "Try the {card} card on the edge space {where}.", "hint.place": "Try the {card} card {where}. Tap it once to see what it would do.", "board.aria": "Board", "cell.corner": "corner", "cell.slot.empty": "empty", "cell.square.empty": "empty", "storm.label": "Storm", "storm.tip.corner": "Storm", "storm.tip.edge": "Storm: no one can use this card this round", "lock.tip": "You can’t use this card now", "mk.tip.one": "{whose} marker {num}. This card goes {nth} this round.", "mk.tip.two": "{whose} marker {num}. This card goes {nth} this round.", "mk.tip.done.one": "{whose} marker {num}. This card went {nth} this round and did what it says. The marker stays, and it counts for winning middle cards.", "mk.tip.done.two": "{whose} marker {num}. This card went {nth} this round and did what it says. The marker stays, and it counts for winning middle cards.", "ord.1": "{n}st", "ord.2": "{n}nd", "ord.3": "{n}rd", "ord.other": "{n}th", "frost.tip.one": "{whose} ice", "frost.tip.two": "{whose} ice", "frost.tip.plain": "ice", "mark.zap": "A Lightning card picked up the ice piece here.", "mark.gone": "The ice piece here is gone.", "point.plain": "flag", "point.reversal": "Reversal", "win.badge": "WIN", "king.hp": "{hp}/{max}", "float.hit": "−{n}", "float.heal": "+{n}", "strip.next": "Next middle cards in the pile:", "strip.empty": "The pile is empty. Won spaces now stay empty.", "field.on.one": "{whose} field is on through round {n}.", "field.on.two": "{whose} field is on through round {n}.", "flags.line.one": "Flags: you have {a}, they have {b}. {field0} {field1}", "flags.line.two": "Flags: Green has {a}, Red has {b}. {field0} {field1}", "setup.log.title": "Build the board", "setup.log.how": "Take turns putting the {n} edge cards on the empty edge spaces.", "setup.coach.title": "Build the board", "setup.hide": "Hide", "setup.how": "How to build the board", "setup.coach.kids": "Take turns putting the {n} edge cards on the empty edge spaces. Pick an edge card under the board, then tap a lit edge space. You can use only a lit edge space, so 2 cards of the same kind are never next to each other on one edge. When you play, either player can use any edge card.", "setup.coach.std": "Take turns putting the {n} edge cards on the empty edge spaces, in the order the numbers below show. You can use only a lit edge space, so 2 cards of the same kind are never next to each other on one edge. When you play, either player can use any edge card.", "pool.label": "Edge cards to put on the board:", "pool.item": "{card} ×{n}", "setup.status.one": "Build the board: {whose_lc} turn", "setup.status.two": "Build the board: {who}’s turn", "setup.sub.picked": "Now tap a lit edge space for the {card} card.", "setup.sub.pick": "Pick an edge card under the board.", "setup.info.first": "First pick an edge card under the board. Then tap a lit edge space.", "setup.info.cant": "The {card} card can’t go here. Tap a lit edge space.", "setup.step": "When you finish this game, the next one has {more} more edge cards to put down.", "setup.step.all": "Now you build the whole board. To play on a random board, use Game settings.", "setup.guide.one": "Take turns with them to put down the {n} edge cards left. Pick one under the board.", "setup.guide.two": "Take turns to put down the {n} edge cards left. {who}, pick one under the board.", "setup.guide.above.one": "Take turns with them to put down {n} edge cards. Choose one above the board.", "setup.guide.above.two": "Take turns to put down {n} edge cards. {who}, choose one above the board.", "setup.put.one": "{who} put the {card} card {where}.", "setup.put.two": "{who} puts the {card} card {where}.", "built.log.one": "The board is built. {who} go first.", "built.log.two": "The board is built. {who} goes first.", "built.narr.one": "The board is built. Round {n}: you go first.", "built.narr.two": "The board is built. Round {n}: {who} goes first.", "banner.turn": "{who}’s turn", "where": "{at} of the {line}", "side.top": "at the top", "side.bottom": "at the bottom", "side.left": "on the left", "side.right": "on the right", "line.col.1": "left column", "line.col.2": "middle column", "line.col.3": "right column", "line.row.1": "bottom row", "line.row.2": "middle row", "line.row.3": "top row", "line.dir.column": "column", "line.dir.row": "row", "tile.label.empty": "an empty space", "tile.label.strike": "Strike {n}", "tile.label.strike.kids": "Strike {n}", "list.and": "{a} and {b}", "info.default": "Tap a card or a space to see what it does.", "info.card.title": "{card} card", "info.card.line": "Its 3 middle spaces are in its {dir}.", "info.card.same.one": "Your marker is on the card across from this one. You win no new middle card with it.", "info.card.same.two": "{whose} marker is on the card across from this one. {who} wins no new middle card with it.", "info.card.wins.one": "You will win {squares}.", "info.card.wins.one.many": "You will win {squares}.", "info.card.wins.two": "{who} will win {squares}.", "info.card.wins.two.many": "{who} will win {squares}.", "hint.zap.kids": "This card will pick up {n} ice pieces. The other soul ward will lose {dmg}.", "hint.zap.kids.n1": "This card will pick up {n} ice piece. The other soul ward will lose {dmg}.", "hint.zap.std": "This card will pick up {n} ice pieces. The other soul ward will lose {dmg}.", "hint.zap.std.n1": "This card will pick up {n} ice piece. The other soul ward will lose {dmg}.", "hint.nozap": "This card will find no ice to use, so the other soul ward will lose only {dmg}.", "hint.why.used": "Your earlier Lightning card will pick up that ice first.", "hint.why.melted": "A Fire card goes first and takes that ice off.", "hint.why.taken": "The other player’s Ice card goes first and makes that ice theirs.", "hint.why.none.kids": "You have no ice there yet. Use an Ice card first.", "hint.why.none.std": "None of your ice is on the 3 spaces in front of this card, and the chain has to start there.", "blocked.storm": "The Storm is on this card. No one can use it this round.", "blocked.marker": "This card already has a marker.", "blocked.locked.kids": "You can’t use this card. The other player’s marker is on the card across from it.", "blocked.locked.std": "You can’t use this card this round. The other player’s marker is on the card across from it.", "blocked.done": "All your markers are down this round.", "info.square.empty.title": "Empty space", "info.square.empty": "This space was won, and the pile is empty. Winning it now does nothing.", "info.square.title": "{name}", "info.square.how.kids": "To win it, it has to be in front of 2 cards with your markers. One has to be on the top or bottom edge. The other has to be on the left or right edge.", "info.square.how.std": "To win it, it has to be in front of 2 cards with your markers: one on the top or bottom edge, and one on the left or right edge.", "info.square.reversal": "This is the Reversal space and a flag space. Win a card here to put your flag on it. If the other player’s field is on, their field becomes yours.", "info.square.point": "This is a flag space. Win a card here to put your flag on it. Hold 3 flags to turn your field on.", "info.frost.one": "{whose} ice is on this space. Only {whose_lc} Lightning cards can pick it up. An Ice card, a Fire card or Frozen Ground can take it off.", "info.frost.two": "{whose} ice is on this space. Only {whose} Lightning cards can pick it up. An Ice card, a Fire card or Frozen Ground can take it off.", "info.frost.plain": "Ice is on this space.", "info.corner.title": "Corner", "info.corner.1": "No cards go on the corners. The Storm stops on each corner on its way around the edge.", "info.corner.2": "If the Storm moves onto a corner, both soul wards lose 1.", "info.corner.2.here": "The Storm is on this corner, so it blocks no card this round. Each time it moves onto a corner, both soul wards lose 1.", "log.round": "Round {n}", "first.one": "{who} go first.", "first.two": "{who} goes first.", "start.narr.one": "Round {n}. {who} go first.", "start.narr.two": "Round {n}. {who} goes first.", "round.narr.one": "Round {n}. {who} go first.", "round.narr.two": "Round {n}. {who} goes first.", "place.log.one": "{who} put a marker on the {card} card, {at}. The {line} is in front of it.", "place.log.two": "{who} puts a marker on the {card} card, {at}. The {line} is in front of it.", "place.narr.one": "{who} put a marker on the {card} card.", "place.narr.two": "{who} puts a marker on the {card} card.", "skip.log.one": "No card is open for {whom}, so {who_lc} stop putting down markers this round.", "skip.log.two": "No card is open for {who}, so {who} stops putting down markers this round.", "round.acts.kids": "All markers are down. The cards do what they say, in order.", "round.acts.std": "All markers are down. The cards do what they say, in the order the markers went down. Then the won middle cards do what they say.", "stack.empty.log": "The pile is empty. From now on, won spaces stay empty.", "act.ice.kids.one": "{whose} Ice card puts {whose_lc} ice on its {dir}.", "act.ice.kids.two": "{whose} Ice card puts {whose} ice on its {dir}.", "act.ice.std.one": "{whose} Ice card puts {whose_lc} ice on its {dir}.", "act.ice.std.two": "{whose} Ice card puts {whose} ice on its {dir}.", "act.zap.kids.one": "{whose} Lightning card picks up {n} of {whose_lc} ice pieces. {foe_king} loses {dmg}.", "act.zap.kids.two": "{whose} Lightning card picks up {n} of {whose} ice pieces. {foe_king} loses {dmg}.", "act.zap.std.one": "{whose} Lightning card picks up {n} of {whose_lc} ice pieces. {foe_king} loses {dmg}.", "act.zap.std.one.n1": "{whose} Lightning card picks up {n} of {whose_lc} ice pieces. {foe_king} loses {dmg}.", "act.zap.std.two": "{whose} Lightning card picks up {n} of {whose} ice pieces. {foe_king} loses {dmg}.", "act.zap.std.two.n1": "{whose} Lightning card picks up {n} of {whose} ice pieces. {foe_king} loses {dmg}.", "act.nozap.kids.one": "{whose} Lightning card finds no ice to use. {foe_king} loses {dmg}.", "act.nozap.kids.two": "{whose} Lightning card finds no ice to use. {foe_king} loses {dmg}.", "act.nozap.std.one": "{whose} Lightning card finds no ice to use in its {dir}. {foe_king} loses {dmg}.", "act.nozap.std.two": "{whose} Lightning card finds no ice to use in its {dir}. {foe_king} loses {dmg}.", "act.fire.kids.one": "{whose} Fire card hits. {foe_king} loses {dmg}.{melt}", "act.fire.kids.two": "{whose} Fire card hits. {foe_king} loses {dmg}.{melt}", "act.fire.kids.melt": "It takes {n} ice pieces off.", "act.fire.kids.melt.n1": "It takes {n} ice piece off.", "act.fire.std.one": "{whose} Fire card hits. {foe_king} loses {dmg}.{melt}", "act.fire.std.two": "{whose} Fire card hits. {foe_king} loses {dmg}.{melt}", "act.fire.std.melt": "It takes {n} ice pieces off its {dir}.", "act.fire.std.melt.n1": "It takes {n} ice piece off its {dir}.", "act.fire.std.nomelt": "It finds no ice in its {dir}.", "act.light.one": "{whose} Light card gives {whose_lc} soul ward {n} back.", "act.light.two": "{whose} Light card gives {whose} soul ward {n} back.", "act.light.full.one": "{whose} Light card gives nothing back, because {whose_lc} soul ward is already at 30.", "act.light.full.two": "{whose} Light card gives nothing back, because {whose} soul ward is already at 30.", "act.shadow.one": "{whose} Shadow card hits. {foe_king} loses {dmg}.", "act.shadow.two": "{whose} Shadow card hits. {foe_king} loses {dmg}.", "claim.strike.one": "{who} win {square}. {foe_king} loses {dmg}.{flag}", "claim.strike.two": "{who} wins {square}. {foe_king} loses {dmg}.{flag}", "claim.bonus.light.one": "{whose} Light card adds 1.", "claim.bonus.light.two": "{whose} Light card adds 1.", "claim.bonus.shadow.one": "{whose} Shadow card takes 1 off.", "claim.bonus.shadow.two": "{whose} Shadow card takes 1 off.", "claim.bonus.field.one": "{whose} field adds 1.", "claim.bonus.field.two": "{whose} field adds 1.", "claim.frozen.kids.one": "{who} win {square}. {whose} ice now covers all 9 middle spaces.", "claim.frozen.kids.two": "{who} wins {square}. {whose} ice now covers all 9 middle spaces.", "claim.frozen.std.one": "{who} win {square}. {whose} ice now covers all 9 middle spaces.{flag}", "claim.frozen.std.two": "{who} wins {square}. {whose} ice now covers all 9 middle spaces.{flag}", "claim.sanctum.one": "{who} win {square}. {king} gets {n} back.{flag}", "claim.sanctum.two": "{who} wins {square}. {king} gets {n} back.{flag}", "claim.sanctum.full.one": "{who} win {square}. {king} is already at 30.{flag}", "claim.sanctum.full.two": "{who} wins {square}. {king} is already at 30.{flag}", "claim.scorched.one": "{who} win {square}. For the next 2 rounds, {whose_lc} Fire cards make the other soul ward lose 2 more.{flag}", "claim.scorched.two": "{who} wins {square}. For the next 2 rounds, {whose} Fire cards make the other soul ward lose 2 more.{flag}", "claim.reversal.swap.one": "{who} win {square} and take over the Scorched Ground.{flag}", "claim.reversal.swap.two": "{who} wins {square} and takes over the Scorched Ground.{flag}", "claim.reversal.hit.one": "{who} win {square}. {foe_king} loses {dmg}.{flag}", "claim.reversal.hit.two": "{who} wins {square}. {foe_king} loses {dmg}.{flag}", "claim.lockdown.one": "{who} win {square}. Next round, {other} put down only 2 markers.{flag}", "claim.lockdown.two": "{who} wins {square}. Next round, {other} puts down only 2 markers.{flag}", "claim.flag": "A flag goes on that space.", "storm.hit.kids": "The Storm moves onto a corner. Both soul wards lose 1.", "storm.hit.std": "The Storm moves onto a corner. Both soul wards lose 1.", "field.turnon.one": "{who} hold 3 flags, so {whose_lc} field is on through round {n}. Each of {whose_lc} hits makes the other soul ward lose 1 more.", "field.turnon.two": "{who} holds 3 flags, so {whose} field is on through round {n}. Each of {whose} hits makes the other soul ward lose 1 more.", "trap.one": "{whose} flags make a line through the center. Next round, {other} put down only 2 markers.", "trap.two": "{whose} flags make a line through the center. Next round, {other} puts down only 2 markers.", "over.title": "Game over", "over.draw": "It’s a tie", "over.win.one": "You win", "over.win.two": "{who} wins", "over.lose.one": "You lose", "over.body.one": "After {n} rounds, your soul ward has {a} and their soul ward has {b}.", "over.body.one.n1": "After {n} round, your soul ward has {a} and their soul ward has {b}.", "over.body.two": "After {n} rounds, Green’s soul ward has {a} and Red’s soul ward has {b}.", "over.body.two.n1": "After {n} round, Green’s soul ward has {a} and Red’s soul ward has {b}.", "over.next.some.one": "Next game, you help build the board. Take turns with them to put down {n} edge cards.", "over.next.some.two": "Next game, you help build the board. Take turns to put down {n} edge cards.", "over.next.all.one": "Next game, you build the whole board. Take turns with them to put down all 12 edge cards.", "over.next.all.two": "Next game, you build the whole board. Take turns to put down all 12 edge cards.", "over.log.one": "Game over. {result}. Your soul ward has {a} and their soul ward has {b}.", "over.log.two": "Game over. {result}. Green’s soul ward has {a} and Red’s soul ward has {b}.", "over.again": "Play again", "over.board": "See board", "log.title": "Game log", "log.help": "Every move, in order. Tap a line to see it on the board.", "menu.new": "New game", "menu.guide": "Guided round", "sel.mode.aria": "Which game", "sel.mode.standard": "Game: standard", "sel.mode.kids": "Game: Kids", "sel.players.aria": "Who plays", "sel.players.1": "Players: you against the computer", "sel.players.2": "Players: 2 people, 1 screen", "sel.setup.aria": "How the board is made", "sel.setup.steps": "Board: build it in steps", "sel.setup.draft": "Board: players build it", "sel.setup.random": "Board: random", "sel.variant.aria": "Which variant", "sel.variant.base": "Variant: none", "sel.variant.source": "Variant: Soul Chess (test)", "sel.level.aria": "How strong the computer is", "sel.level.normal": "Computer: normal", "sel.level.easy": "Computer: easy", "rules.summary": "Rules", "rules.std.1": "Your first {n} games start on a random board. After that, you build a little more of the board each game, until you build all of it. Game settings can change this. To build, take turns putting edge cards on the empty edge spaces. Don’t put 2 cards of the same kind next to each other on the same edge.", "rules.std.2": "Each round, take turns putting down your 3 markers on edge cards. The player who goes first changes every round.", "rules.std.3": "An edge card on the top or bottom edge has 3 middle spaces in front of it, in its column. An edge card on the left or right edge has 3 middle spaces in front of it, in its row.", "rules.std.4": "You can’t use a card if the other player has a marker on the card across from it. You can’t use the card the Storm is on.", "rules.std.5": "You can use the card across from a card with your marker. Both have the same 3 spaces in front of them, so you win no new middle card from it.", "rules.std.6": "You win a middle card if it is in front of 2 cards with your markers: one on the top or bottom edge, and one on the left or right edge.", "rules.std.7": "When all markers are down, the cards do what they say, in the order the markers went down. Then the won middle cards do what they say, starting with the player who went first.", "rules.std.8": "Ice belongs to the player who put it down. Only your Lightning cards can pick up your ice. Fire takes any ice off its 3 spaces, yours too. Ice goes away at the end of the round after the one it was put down in.", "rules.std.9": "The Storm moves one step around the edge each round. No one can use the card it is on. If it moves onto a corner, both soul wards lose 1.", "rules.std.10": "A won middle card leaves the game, and the top card of the pile goes on its space. When the pile is empty, won spaces stay empty.", "rules.std.11": "Each soul ward starts at 30. Get the other soul ward to 0 to win. If the Storm takes both soul wards to 0 at the same time, it is a tie. If no soul ward gets to 0 in 20 rounds, the player with the bigger number wins. If both numbers are the same, it is a tie. Tap any card to see what it does.", "rules.std.variant.title": "Soul Chess variant", "rules.std.variant.1": "5 middle spaces are flag spaces: the center and the 4 middle spaces nearest the corners. Take Scorched Ground, Reversal and Lockdown out of the pile.", "rules.std.variant.2": "When you win a card on a flag space, put your flag there. If you hold 3 flags at the end of a round, your field is on for the next 3 rounds. While it is on, each of your hits makes the other soul ward lose 1 more. The Storm’s hits stay at 1. Keeping the flags does not make it last longer. When the field ends, it can turn on again only after one round off.", "rules.std.variant.3": "The center is the Reversal space. Win a card there while the other player’s field is on, and their field becomes yours.", "rules.std.variant.4": "Hold 3 flags in a line through the center, and the other player puts down only 2 markers next round.", "rules.kids.1": "Your first {n} games start on a random board. After that, you build a little more of the board each game, until you build all of it. Game settings can change this. To build, take turns putting edge cards on the empty edge spaces. Do not put 2 of the same kind right next to each other on the same edge.", "rules.kids.2": "Each round, take turns putting your 3 markers on edge cards: 1, then 2, then 3.", "rules.kids.3": "Each edge card has 3 middle spaces in front of it.", "rules.kids.4": "You cannot use a card if the other player’s marker is on the card across from it. You cannot use the card the Storm is on.", "rules.kids.5": "If the Storm moves onto a corner, both soul wards lose 1.", "rules.kids.6": "You win a middle card if it is in front of 2 cards with your markers. One has to be on the top or bottom edge. The other has to be on the left or right edge.", "rules.kids.7": "Cards do what they say in the order the markers went down.", "rules.kids.8": "The Ice card: Take any ice off the 3 spaces in front of it. Put your ice there. The Fire card: Take any ice off the 3 spaces in front of it. The other soul ward loses 2. The Lightning card: Pick up your chain. Your chain starts with your ice on the 3 spaces in front of the Lightning card. Your ice directly above, below, left or right of a chain piece joins the chain. Keep going until no more can join. The other soul ward loses 1 for each piece, or 1 if there are none.", "rules.kids.9": "Your ice stays until a card takes it off.", "rules.kids.10": "Each soul ward starts at 30. If the other soul ward gets to 0, you win. If both get to 0 at the same time, it is a tie. If no soul ward gets to 0 in 20 rounds, the player with the bigger number wins. If both numbers are the same, it is a tie.", "coach.title": "Guided round", "guide.next": "Next", "guide.skip": "Skip the guide", "guide.gotit": "Got it", "guide.play": "Play the round", "guide.step": "Guided round: step {i} of {n}", "guide.log": "Guided round. You go first.", "guide.tapGlowing": "In the guide, tap the card that glows.", "guide.done.title": "Round done", "guide.done.kids": "Ice stays until a card takes it off. That was a practice round. In a game, get the other soul ward to 0 to win. Most games end in 3 to 5 rounds.", "guide.done.std": "Ice goes away at the end of the next round. When a middle card is won, the next card from the pile goes on its space. That was a practice round. In a game, get the other soul ward to 0 to win.", "guide.close": "Close", "guide.std.1": "This is the board. The edge cards go around the outside. The 9 middle cards are what you play for. Each one hurts their soul ward or helps you. Each player has a soul ward. Yours is the bar under the board. Get theirs to 0 to win.", "guide.std.2": "This is the Storm. In a normal game it starts on the bottom edge card next to the bottom left corner. Here it starts on the corner, so it blocks no card this round. It moves one step around the edge each round. No one can use the card it is on. If it moves onto a corner, both soul wards lose 1.", "guide.std.3": "Your turn. Tap the glowing Ice card, then tap it again to put your marker there. It will put your ice on the column below it. Only your Lightning cards can pick up your ice.", "guide.std.4": "They put a marker on the Fire card, on the left. That row is in front of it. Now look at the card across from it, on the right. It has a lock. You can’t use it this round.", "guide.std.5": "Tap the glowing Lightning card. The middle row is in front of it. Strike 3 is in front of both your cards, so you win it. This Lightning card will also pick up your ice.", "guide.std.6": "They put a marker on the Shadow card, at the top. Now the top right middle card is in front of 2 cards with their markers, so they will win it.", "guide.std.7": "Tap the glowing Light card at the bottom. Its column meets your Lightning card’s row, so you win a second middle card.", "guide.std.8": "Press Play the round. They put down their last marker, and then the cards do what they say, in the order the markers went down. Look at the numbers on the markers: the 1s go first, then the 2s, then the 3s.", "guide.kids.1": "This is the board. The edge cards go around the outside. The 9 middle cards are what you want to win. Most of them hurt the other soul ward. Each player has a soul ward. Yours is the bar under the board. Get the other one to 0 to win.", "guide.kids.2": "This is the Storm. It moves one step each round. No one can put a marker on the card it is on. If it moves onto a corner, both soul wards lose 1.", "guide.kids.3": "Tap the glowing Ice card. Tap it again to put your marker there. It puts your ice on the 3 spaces in front of it.", "guide.kids.4": "Now they put a marker on the Fire card, on the left. Look at the card across from it, on the right. It has a lock. You can’t use it now.", "guide.kids.5": "Tap the glowing Lightning card. Strike 3 is in front of both your cards, so you win it. Your Lightning card will also pick up your ice.", "guide.kids.6": "They put a marker on the Fire card at the top. The top right middle card is in front of 2 cards with their markers, so they win it.", "guide.kids.7": "Tap the glowing Fire card at the bottom. Another middle card is in front of it and your Lightning card. You win a second middle card.", "guide.kids.8": "Press Play the round. They put down their last marker. Then the cards do what they say, in order. Look at the numbers on the markers. The 1s go first.", "door.title": "Which game?", "door.kids": "Kids game", "door.kids.sub": "The simpler game, with Ice, Fire and Lightning cards", "door.std": "Standard game", "door.std.sub": "Adds Light and Shadow cards, and more to plan", "guide.done.won": "You won {n} middle cards.", "guide.done.won.n1": "You won {n} middle card.", "settings.summary": "Game settings", "ask.text": "Start a new game? This ends the game you are playing.", "ask.keep": "Keep playing", "setup.coach.kids.above": "Take turns putting the {n} edge cards on the empty edge spaces. Choose an edge card above the board, then choose a lit edge space. You can use only a lit edge space, so 2 cards of the same kind are never next to each other on one edge. When you play, either player can use any edge card.", "setup.sub.pick.above": "Choose an edge card above the board.", "setup.info.first.above": "First choose an edge card above the board. Then choose a lit edge space.", "territory.play.kids": "Play the Kids game", "territory.play.std": "Play the standard game", "log.keys": "Use the Up and Down arrow keys to go through the log. Press Enter to see that move on the board.", "claim.tip": "{who} would win this middle card.", "flag.tip.one": "{who} have a flag here.", "flag.tip.two": "{who} has a flag here.", "field.transfer.one": "{who} take over {theirs} field.", "field.transfer.two": "{who} takes over {theirs} field.", "sel.level.hard": "Computer: hard", "sel.pace.aria": "How the cards act", "sel.pace.step": "Cards act: one at a time", "sel.pace.auto": "Cards act: on their own", "pace.next": "Next", "pace.pause": "Pause", "preview.ends.card": "{whose} {card} card goes first and ends the game, so this card does not get to go.", "preview.ends.this": "This card takes the other soul ward to 0, and that ends the game.", "preview.ends.this.short": "That ends the game.", "preview.ends.claim.one": "{who} win {square} first. That takes {mover} soul ward to 0, so the game ends.", "preview.ends.claim.two": "{who} wins {square} first. That takes {mover} soul ward to 0, so the game ends.", "preview.ends.claim.would.one": "If nothing changes, {who} win {square} first. That would take {mover} soul ward to 0 and end the game.", "preview.ends.claim.would.two": "If nothing changes, {who} wins {square} first. That would take {mover} soul ward to 0 and end the game.", "info.card.wouldwin.one": "You would win {squares}.", "info.card.wouldwin.one.many": "You would win {squares}.", "info.card.wouldwin.two": "{who} would win {squares}.", "info.card.wouldwin.two.many": "{who} would win {squares}.", "effect.scorched.one": "Scorched Ground: {whose_lc} Fire cards make the other soul ward lose 2 more through round {n}.", "effect.scorched.two": "Scorched Ground: {whose_lc} Fire cards make the other soul ward lose 2 more through round {n}.", "effect.lockdown.one": "Lockdown: in round {n}, {who_lc} can put down only 2 markers.", "effect.lockdown.two": "Lockdown: in round {n}, {who} can put down only 2 markers.", "guide.done.start": "Start a game", "cell.square.new": "new", "cell.square.new.tip": "This card is new from the pile.", "claim.tip.now.one": "{who} win this middle card.", "claim.tip.now.two": "{who} wins this middle card.", "sel.help.aria": "Where the help text shows", "sel.help.screen": "Help text: on the screen", "sel.help.log": "Help text: in the game log", "sub.count.one": "You have {n} markers left.", "sub.count.one.n1": "You have {n} marker left.", "sub.count.two": "{who} has {n} markers left.", "sub.count.two.n1": "{who} has {n} marker left.", "log.how.play": "Tap an edge card once to light up its 3 middle spaces. Tap it again to put your marker on it. Tap a middle card or a corner to read about it. What an edge card does goes in this log the first time you tap it.", "log.look": "{name}: {text}", "over.help.offer": "For less text on the screen, choose “{choice}” in Game settings.", "setup.guide.one.n1": "Put down the last edge card. Pick it under the board.", "setup.guide.two.n1": "{who}, put down the last edge card. Pick it under the board.", "over.next.more.one": "Next game, you build more of the board. Take turns with them to put down {n} edge cards.", "over.next.more.two": "Next game, you build more of the board. Take turns to put down {n} edge cards.", "live.button": "Play a friend online", "live.making": "Getting the game ready.", "live.invite.how": "Send this link to your friend. The game starts when they open it and tap Join.", "live.copy": "Copy link", "live.share": "Share link", "live.copied": "The link is copied. Paste it in a message to your friend.", "live.copy.fail": "Copy did not work. Select the link above and copy it.", "live.waiting": "Waiting for your friend to join.", "live.cancel": "Cancel", "live.join.title": "Join your friend’s game?", "live.join.how": "You each play on a different screen.", "live.join": "Join", "live.notnow": "Not now", "live.full.title": "This game is full", "live.newlink": "Ask your friend for a new link.", "live.gone.title": "This game has ended", "live.gone.left": "{who} left the game.", "live.gone.time": "Online games close after 2 hours with no moves, or 1 day after they start.", "live.ok": "OK", "live.old.title": "This page is out of date", "live.old": "Tap Reload to get the newest game page.", "live.reload": "Reload", "live.updating": "The game is being updated. Try again in a few minutes.", "live.cant.title": "Can’t connect", "live.cant": "We could not reach the game. Check your internet, or try again later.", "live.retry": "Try again", "live.replaced": "This game is already open on another page. Play it there.", "live.you": "You are {who}.", "live.lost": "Connection lost. Trying again.", "live.away": "{who} is not connected. The game waits for them.", "live.wait": "Wait for {who} to move.", "live.leave.ask": "Leave this online game? It ends the game for both of you.", "live.leave": "Leave game"};
 window.OASIS_KIDS = {"ice": {"name": "Ice", "text": "Take any ice off the 3 spaces in front of it. Put your ice there."}, "fire": {"name": "Fire", "text": "Take any ice off the 3 spaces in front of it. The other soul ward loses 2."}, "lightning": {"name": "Lightning", "text": "Pick up your chain. The other soul ward loses 1 per piece, or 1 if none."}, "strike1": {"name": "Strike 1", "text": "If you win it, the other soul ward loses 1."}, "strike2": {"name": "Strike 2", "text": "If you win it, the other soul ward loses 2."}, "strike3": {"name": "Strike 3", "text": "If you win it, the other soul ward loses 3."}, "frozen": {"name": "Frozen Ground", "text": "If you win it, take any ice off. Put your ice on all 9 middle spaces."}};
 </script>
 <script>
@@ -780,6 +803,54 @@ window.OASIS_KIDS = {"ice": {"name": "Ice", "text": "Take any ice off the 3 spac
   const api = { chooseHard, chooseHardSetup, previewAct, startSetup, canSetup, setupPlace, legalSetups, setupSquares, chooseSetup, usableFrostForLine: (s, line, side) => chain(s, line, side).length, POINTS, REVERSAL, EDGE, RING, CENTER, EDGE_CARDS, ACTION_TEXT, TILE_TEXT, KING_HP, key, isCorner, opposite, lineOf, newGame, clone, markerAt, stormSq,
     canPlace, legalPlacements, claims, place, skip, choosePlacement, placed, rngFrom };
   if (typeof module !== 'undefined') module.exports = api; else root.Oasis = api;
+})(this);
+</script>
+<script>
+(function (root) {
+  const O = typeof module !== 'undefined' ? require('./oasis-core.js') : root.Oasis;
+  const LIVE = 1, ENGINE = '20cc56c0';
+  const MODES = ['kids', 'standard'], VARIANTS = ['base', 'source'], BUILDS = [0, 4, 8, 12], SEEDS = 1e9;
+  const whole = (v, lo, hi) => Number.isInteger(v) && v >= lo && v <= hi;
+  function partialBoard(seed, n, variant, mode) {
+    const st = O.newGame(seed, null, variant, 'random', mode), rng = O.rngFrom(seed ^ 0x5bd1e995);
+    const mix = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+    let take = [];
+    for (let t = 0; t < 20; t++) { take = mix(O.EDGE).slice(0, n); if (new Set(take.map(([x, y]) => st.edge[O.key(x, y)])).size >= 2) break; }
+    const cards = take.map(([x, y]) => st.edge[O.key(x, y)]);
+    for (const [x, y] of take) delete st.edge[O.key(x, y)];
+    O.startSetup(st); st.pool = cards; st.setupOrder = st.setupOrder.slice(0, n); st.toMove = st.setupOrder[0];
+    return st;
+  }
+  function startState(rec) {
+    const { seed, mode, variant, build } = rec;
+    return build && build < 12 ? partialBoard(seed, build, variant, mode) : O.newGame(seed, null, variant, build ? 'draft' : 'random', mode);
+  }
+  function makeRecord(o, seed, green) {
+    if (!o || typeof o !== 'object' || !MODES.includes(o.mode) || !VARIANTS.includes(o.variant) || !BUILDS.includes(o.build)) return null;
+    if (!whole(seed, 0, SEEDS - 1) || (green !== 0 && green !== 1)) return null;
+    return { v: LIVE, e: ENGINE, seed, mode: o.mode, variant: o.mode === 'kids' ? 'base' : o.variant, build: o.build, green };
+  }
+  function checkRecord(r) {
+    return !!r && typeof r === 'object' && r.v === LIVE && r.e === ENGINE && whole(r.seed, 0, SEEDS - 1) && MODES.includes(r.mode)
+      && VARIANTS.includes(r.variant) && !(r.mode === 'kids' && r.variant !== 'base') && BUILDS.includes(r.build) && (r.green === 0 || r.green === 1);
+  }
+  const sideOf = (rec, seat) => seat === rec.green ? 0 : 1;
+  const isSetupMove = m => Array.isArray(m) && m.length === 3 && typeof m[0] === 'string' && whole(m[1], 0, 4) && whole(m[2], 0, 4);
+  const isPlaceMove = m => Array.isArray(m) && m.length === 2 && whole(m[0], 0, 4) && whole(m[1], 0, 4);
+  function legal(s, side, m) {
+    if (isSetupMove(m)) return s.phase === 'setup' && s.toMove === side && O.canSetup(s, m[0], m[1], m[2]);
+    if (isPlaceMove(m)) return O.canPlace(s, side, m[0], m[1]);
+    return false;
+  }
+  function settle(s) { while (s.phase === 'place' && !O.legalPlacements(s).length) O.skip(s); return s; }
+  function apply(s, m) { if (m.length === 3) O.setupPlace(s, m[0], m[1], m[2]); else O.place(s, m[0], m[1]); return settle(s); }
+  function replay(rec, moves) {
+    const s = settle(startState(rec));
+    for (const m of moves) { if (!legal(s, s.toMove, m)) return null; apply(s, m); }
+    return s;
+  }
+  const api = { LIVE, ENGINE, MODES, VARIANTS, BUILDS, SEEDS, partialBoard, startState, makeRecord, checkRecord, sideOf, isSetupMove, isPlaceMove, legal, settle, apply, replay };
+  if (typeof module !== 'undefined') module.exports = api; else root.OasisRecord = api;
 })(this);
 </script>
 <script>
@@ -1546,15 +1617,20 @@ const stepFor = done => done < BUILD_AFTER ? 0 : done - BUILD_AFTER < BUILD_STEP
 const buildSize = (m = mode) => choiceIn(m) === 'draft' ? 12 : choiceIn(m) === 'random' ? 0 : stepFor(doneIn(m));
 const setupNow = () => buildSize() ? 'draft' : 'random';
 let buildN = 0, guideSides = new Set();
+const PACE_AFTER = BUILD_AFTER;
+let paceChoices = perType('oa-pace'), stepping = false, stepGo = null;
+const paceIn = m => window.__oaPace || (paceChoices[m] === 'step' || paceChoices[m] === 'auto' ? paceChoices[m] : doneIn(m) < PACE_AFTER ? 'step' : 'auto');
 const HELP_AFTER = BUILD_AFTER + BUILD_STEPS.length + 1;
 let helpWhere = perType('oa-help'), helpSeen = new Set(), infoAsk = false;
 const helpOffered = (m = cur.mode) => doneIn(m) >= HELP_AFTER;
 const quiet = () => !tut && !doorOpen && helpOffered() && helpWhere[cur.mode] === 'log';
 let cur = { mode, players };
 let gen = 0;
+let net = null;
+const online = () => !!(net && cur.online);
 const two = () => cur.players === 2 && !tut;
 const kids = () => cur.mode === 'kids';
-const human = side => two() || side === 0;
+const human = side => online() ? !!net.ready && !net.ended && side === net.side : two() || side === 0;
 const nameKey = side => two() ? (side === 0 ? 'green' : 'red') : side === 0 ? 'you' : 'they';
 function forms(side) {
   const n = nameKey(side), g = two(), who = T(`name.${n}.who`), whose = T(`name.${n}.whose`);
@@ -1665,36 +1741,38 @@ function helpChanged() {
   syncMenus(); if (s) draw();
   requestAnimationFrame(() => requestAnimationFrame(() => { for (const el of roots) el.style.overflowAnchor = ''; }));
 }
-function partialBoard(seed, n) {
-  const st = O.newGame(seed, null, variant, 'random', mode), rng = O.rngFrom(seed ^ 0x5bd1e995);
-  const mix = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-  let take = [];
-  for (let t = 0; t < 20; t++) { take = mix(O.EDGE).slice(0, n); if (new Set(take.map(([x, y]) => st.edge[O.key(x, y)])).size >= 2) break; }
-  const cards = take.map(([x, y]) => st.edge[O.key(x, y)]);
-  for (const [x, y] of take) delete st.edge[O.key(x, y)];
-  O.startSetup(st); st.pool = cards; st.setupOrder = st.setupOrder.slice(0, n); st.toMove = st.setupOrder[0];
-  return st;
-}
 function start() {
+  if (net) liveEnd();
   gen++; cur = { mode, players };
   buildN = buildSize();
   guideSides = new Set(!choiceIn(mode) && BUILD_STEPS.length && doneIn(mode) === BUILD_AFTER ? (two() ? [0, 1] : [0]) : []);
   $('setupSel').value = choiceIn(mode) || 'steps';
   const seed = Math.floor(Math.random() * 1e9);
-  s = buildN && buildN < 12 ? partialBoard(seed, buildN) : O.newGame(seed, null, variant, buildN ? 'draft' : 'random', mode); armed = null; busy = false; beat = null; poolSel = null; hintAt = null; view = null; fx = [];
-  acting = false; note = null; $('narrate').textContent = ''; infoDefault(); $('coachSkip').hidden = false;
-  setOver(false); $('coach').hidden = true; $('coach').classList.remove('hushed'); document.querySelector('main').style.minHeight = ''; clearLog(); applyLabels();
+  freshBoard(OasisRecord.startState({ seed, mode, variant, build: buildN }));
   if (s.phase === 'setup') { beginSetup(); return; }
+  firstRound();
+  afterMove();
+}
+function freshBoard(state) {
+  s = state; armed = null; busy = false; beat = null; poolSel = null; hintAt = null; view = null; fx = [];
+  acting = false; note = null; $('narrate').textContent = ''; infoDefault(); $('coachSkip').hidden = false;
+  stepping = false; releaseStep(); paceShow();
+  $('again').disabled = false; $('boardAgain').disabled = false;
+  setOver(false); $('coach').hidden = true; $('coach').classList.remove('hushed'); document.querySelector('main').style.minHeight = ''; clearLog(); applyLabels();
+}
+function firstRound() {
   addLog(F('log.round', { n: 1 }), 'round'); addLog(W('first', 0), null);
   $('narrate').textContent = W('start.narr', 0, { n: 1 });
-  afterMove();
 }
 function applyLabels() {
   $('name0').textContent = kingOf(0); $('name1').textContent = kingOf(1);
   $('rulesBody').innerHTML = rulesHTML();
   syncMenus();
 }
-function syncMenus() { $('variantSel').hidden = mode === 'kids'; $('level').hidden = players === 2;
+function syncMenus() {
+  const on = !!net; $('modeSel').hidden = on; $('playersSel').hidden = on; $('setupSel').hidden = on; $('liveBtn').hidden = !LIVE_URL || on;
+  $('variantSel').hidden = on || mode === 'kids'; $('level').hidden = on || players === 2;
+  $('paceSel').hidden = !!tut; $('paceSel').value = paceIn(cur.mode) === 'step' ? 'step' : 'auto';
   $('helpSel').hidden = !helpOffered() || !!tut; $('helpSel').value = helpWhere[cur.mode] === 'log' ? 'log' : 'screen'; }
 function cellOf(x, y) { return $('grid').children[(4 - y) * 5 + x]; }
 function forecast(side, x, y) {
@@ -1725,7 +1803,7 @@ function forecastLine(side, fc, afterLoss = false) {
   return WK(fc.last ? 'info.card.wins' : 'info.card.wouldwin', side, fc.list.length > 1 ? '.many' : '', { squares: joinAnd(fc.list.map(k => tileLabel(s.tiles[k]))) });
 }
 function banner(side, text) {
-  if (!two()) return;
+  if (!two() || (online() && net.quiet)) return;
   const old = document.getElementById('turnBanner'); if (old) old.remove();
   const b = document.createElement('div'); b.id = 'turnBanner'; b.className = 'p' + side; cz(b, text);
   document.body.appendChild(b); setTimeout(() => b.remove(), 1700);
@@ -1903,7 +1981,7 @@ function draw() {
   const [sx, sy] = O.RING[Dv.storm % O.RING.length];
   const focus = beat || (armed ? { src: armed, line: O.lineOf(...armed), el: s.edge[O.key(...armed)] } : null);
   const lineSet = focus && focus.line ? new Set((focus.lit || focus.line).map(([a, b]) => O.key(a, b))) : new Set();
-  const lockSide = two() ? mover : 0, locksOn = two() ? !view && s.phase === 'place' && human(mover) : !!view || s.phase === 'place';
+  const lockSide = online() ? net.side : two() ? mover : 0, locksOn = two() && !online() ? !view && s.phase === 'place' && human(mover) : !!view || s.phase === 'place';
   const fc = armed && !view && s.phase === 'place' ? forecast(mover, ...armed) : null;
   const wins = new Set(fc ? fc.badge : []);
   const won = [0, 1].map(sd => new Set(O.claims(Dv, sd).map(([a, b]) => O.key(a, b))));
@@ -1994,7 +2072,7 @@ function draw() {
   $('nextStrip').innerHTML = strip;
   const left = s.limit[mover] - O.placed(s, mover);
   $('status').textContent = acting ? T('status.acting') : s.phase === 'over' ? T('status.over') : W('status.turn', mover, { n: s.round });
-  setHTML($('sub'), s.phase !== 'place' || busy || !human(mover) ? '' : armed
+  setHTML($('sub'), s.phase !== 'place' || busy || !human(mover) ? esc(liveWait()) : armed
     ? `<div class="mk-preview">${previewHTML(mover, armed[0], armed[1], fc)}${hush ? '' : `<div>${esc(T('sub.armed'))}</div>`}</div>`
     : esc(note || W(hush ? 'sub.count' : 'sub.left', mover, {}, left)));
   $('hintBtn').disabled = busy || !human(mover) || s.phase === 'over' || !!tut;
@@ -2027,14 +2105,16 @@ function turnCandidates() {
   const notes = ['blocked.storm', 'blocked.marker', 'blocked.locked.' + md, 'blocked.done', 'setup.sub.pick', 'setup.info.first'].map(T)
     .concat(sides.flatMap(sd => [W('sub.left', sd, {}, 3), W('sub.left', sd, {}, 1), W('sub.count', sd, {}, 3), W('sub.count', sd, {}, 1)]),
       sides.map(sd => W('setup.guide', sd, { n: Math.max(0, ...BUILD_STEPS) })),
-      F('hint.place', { card, where }), F('hint.setup', { card, where }), F('setup.sub.picked', { card }), F('setup.info.cant', { card }));
+      F('hint.place', { card, where }), F('hint.setup', { card, where }), F('setup.sub.picked', { card }), F('setup.info.cant', { card }),
+      online() ? sides.map(sd => F('live.wait', { who: forms(sd).who })) : []);
   const status = longest(sides.flatMap(sd => [W('status.turn', sd, { n: 20 }), W('setup.status', sd)]).concat(T('status.acting'), T('status.over')));
-  return { previews, notes, status };
+  const live = online() ? longest([T('live.lost'), F('live.away', { who: forms(1 - net.side).who })].map(t => F('live.you', { who: forms(net.side).who }) + ' ' + t)) : '';
+  return { previews, notes, status, live };
 }
 function sizeTurn() {
   const box = $('turn');
   if (!s || box.hidden || !mq(MQ_COL)) { if (box.style.minHeight) box.style.minHeight = ''; turnFit = ''; return; }
-  const key = [box.clientWidth, cur.mode, cur.players].join();
+  const key = [box.clientWidth, cur.mode, cur.players, online() ? 'live' + net.side : ''].join();
   if (key === turnFit) return;
   turnFit = key; box.style.minHeight = '';
   const floor = parseFloat(getComputedStyle(box).minHeight) || 0, c = turnCandidates();
@@ -2045,9 +2125,12 @@ function sizeTurn() {
   box.parentNode.insertBefore(m, box.nextSibling);
   const sub = m.querySelector('#sub'), nar = m.querySelector('#narrate'), narLines = 3 * 14 * 1.4;
   m.querySelector('#status').textContent = c.status; nar.textContent = '';
+  const ll = m.querySelector('#liveLine'); ll.hidden = !c.live; ll.textContent = c.live;
   let max = 0;
   for (const html of c.previews) { sub.innerHTML = html; max = Math.max(max, m.offsetHeight); }
   for (const text of c.notes) { sub.textContent = text; max = Math.max(max, m.offsetHeight + narLines); }
+  const pb = m.querySelector('#paceBtn'); sub.textContent = ''; nar.style.minHeight = (3 * 15 * 1.4) + 'px'; pb.hidden = false; pb.textContent = T('pace.pause');
+  max = Math.max(max, m.offsetHeight);
   m.remove();
   box.style.minHeight = Math.ceil(Math.max(floor, max)) + 'px';
 }
@@ -2087,7 +2170,7 @@ function beginSetup() {
 }
 function howShow(open) { $('coach').classList.toggle('howopen', open); $('howBuild').setAttribute('aria-expanded', String(open)); setText($('howBuild'), T('setup.how')); }
 function stepLine() {
-  if (choiceIn(cur.mode) || (buildN === 12 && buildSeen[cur.mode] === 12)) return '';
+  if (online() || choiceIn(cur.mode) || (buildN === 12 && buildSeen[cur.mode] === 12)) return '';
   return buildN < 12 ? F('setup.step', { more: stepFor(doneIn(cur.mode) + 1) - buildN }) : T('setup.step.all');
 }
 function drawSetupUI() {
@@ -2121,7 +2204,7 @@ function drawSetupUI() {
   pool.classList.toggle('guide', guideNow);
   const todo = guideNow && !wide ? W('setup.guide', mover, { n: s.pool.length }, s.pool.length) : T(up('setup.sub.pick')), hush = quiet();
   if (hush && human(mover) && !busy && !note && !poolSel) helpLine(todo);
-  setText($('sub'), human(mover) && !busy ? (note || (poolSel ? F('setup.sub.picked', { card: faceName(poolSel) }) : hush ? '' : todo)) : '');
+  setText($('sub'), human(mover) && !busy ? (note || (poolSel ? F('setup.sub.picked', { card: faceName(poolSel) }) : hush ? '' : todo)) : liveWait());
   $('nextStrip').innerHTML = s.deck.length ? `<span>${esc(T('strip.next'))}</span>` + s.deck.slice(0, 3).map(stripChip).join('') : '';
   $('hintBtn').disabled = busy || !human(mover);
 }
@@ -2139,25 +2222,30 @@ function setupTap(x, y) {
   if (!poolSel) { infoDefault(); note = T(up('setup.info.first')); draw(); return; }
   if (!O.canSetup(s, poolSel, x, y)) { infoDefault(); note = F('setup.info.cant', { card: faceName(poolSel) }); draw(); nope(x, y); return; }
   note = null; infoDefault();
-  const side = s.toMove, card = poolSel; poolSel = null; hintAt = null; O.setupPlace(s, card, x, y); addFx('set', { k: O.key(x, y) });
-  const text = W('setup.put', side, { card: faceName(card), where: whereWord(x, y) });
-  addLog(text, side, { src: [x, y], line: O.lineOf(x, y), el: card }); $('narrate').textContent = text;
+  const card = poolSel; poolSel = null; hintAt = null;
+  if (online()) liveMove([card, x, y]);
+  doSetup(card, x, y);
   draw(); setupNext();
 }
+function doSetup(card, x, y) {
+  const side = s.toMove; O.setupPlace(s, card, x, y); addFx('set', { k: O.key(x, y) });
+  const text = W('setup.put', side, { card: faceName(card), where: whereWord(x, y) });
+  addLog(text, side, { src: [x, y], line: O.lineOf(x, y), el: card }); $('narrate').textContent = text;
+}
 async function setupNext() {
+  if (online() && net.quiet) return;
   if (s.phase !== 'setup') { endSetup(); return; }
   if (human(s.toMove)) { if (two()) banner(s.toMove, F('banner.turn', { who: forms(s.toMove).who })); draw(); return; }
+  if (online()) { if (net.ready) banner(s.toMove, F('banner.turn', { who: forms(s.toMove).who })); draw(); pump(); return; }
   const g = gen; busy = true; draw(); await wait(buildN < 12 && s.setupAt === 0 ? 1200 : 500); if (g !== gen) return;
-  const m = O.chooseSetup(s, level); O.setupPlace(s, ...m); addFx('set', { k: O.key(m[1], m[2]) }); note = null;
-  const text = W('setup.put', 1, { card: faceName(m[0]), where: whereWord(m[1], m[2]) });
-  addLog(text, 1, { src: [m[1], m[2]], line: O.lineOf(m[1], m[2]), el: m[0] }); $('narrate').textContent = text;
+  const m = O.chooseSetup(s, level); doSetup(...m); note = null;
   busy = false; draw(); setupNext();
 }
 function nope(x, y) { nopeAt = { x, y, note }; const c = cellOf(x, y); if (!c) return; c.classList.remove('nope'); void c.offsetWidth; c.classList.add('nope'); }
 function endSetup() {
   $('howBuild').hidden = true; howShow(false);
   const roots = [document.documentElement, document.body]; for (const el of roots) el.style.overflowAnchor = 'none';
-  if (!choiceIn(cur.mode)) { buildSeen[cur.mode] = buildN; store.set('oa-build-seen', buildSeen); }
+  if (!choiceIn(cur.mode) && !online()) { buildSeen[cur.mode] = buildN; store.set('oa-build-seen', buildSeen); }
   $('coach').hidden = true; $('pool').hidden = true; $('coach').classList.remove('folded', 'hushed');
   $('coachReply').hidden = true; $('pool').classList.remove('guide');
   addLog(F('log.round', { n: 1 }), 'round'); addLog(W('built.log', s.toMove), null);
@@ -2173,7 +2261,7 @@ function tap(x, y) {
   if (busy || s.phase !== 'place' || !human(mover)) { showCard(x, y, undefined, true); return; }
   if (hintAt && !(hintAt[0] === x && hintAt[1] === y)) hintAt = null;
   if (!O.canPlace(s, mover, x, y)) { armed = null; note = whyBlocked(mover, x, y); showCard(x, y, note); draw(); return; }
-  if (armed && armed[0] === x && armed[1] === y) { armed = null; hintAt = null; doPlace(x, y); return; }
+  if (armed && armed[0] === x && armed[1] === y) { armed = null; hintAt = null; if (online()) liveMove([x, y]); doPlace(x, y); return; }
   armed = [x, y]; note = null; showCard(x, y); draw();
 }
 function whyBlocked(side, x, y) {
@@ -2264,6 +2352,7 @@ async function doPlace(x, y) {
   afterMove();
 }
 async function afterMove() {
+  if (online() && net.quiet) return;
   const g = gen;
   while (s.phase === 'place' && !O.legalPlacements(s).length) {
     const who = s.toMove, before = s.log.length, round = s.round, pre = O.clone(s); O.skip(s);
@@ -2273,6 +2362,7 @@ async function afterMove() {
   }
   draw();
   if (s.phase !== 'place') return;
+  if (!human(s.toMove) && online()) { if (net.ready) banner(s.toMove, F('banner.turn', { who: forms(s.toMove).who })); pump(); return; }
   if (!human(s.toMove)) return foeTurn();
   if (two()) banner(s.toMove, F('banner.turn', { who: forms(s.toMove).who }));
 }
@@ -2378,6 +2468,7 @@ let roundEntries = null;
 async function playRound(entries) {
   roundEntries = entries; acting = true;
   const slow = !!tut, pace = slow ? 2600 : 1300, g = gen;
+  stepping = paceIn(cur.mode) === 'step'; paceShow();
   addLog(T(kids() ? 'round.acts.kids' : 'round.acts.std'), null);
   for (const b of beatsOf(entries)) {
     const e = b.head;
@@ -2392,6 +2483,7 @@ async function playRound(entries) {
       }
       if (s.phase === 'over') { draw(); await waitFinalEffects(); if (g !== gen) return; }
       beat = null; acting = false; note = null; infoDefault(); draw();
+      paceShow();
       if (s.phase !== 'over') { const t = W('round.narr', s.start, { n: e.round }); say(t, slow); addLog(F('log.round', { n: e.round }), 'round'); addLog(W('first', s.start), null); await wait(slow ? 1200 : 400); if (g !== gen) return; }
       continue;
     }
@@ -2402,17 +2494,33 @@ async function playRound(entries) {
     rememberEffect(b, text); say(text, slow); draw();
     addLog(text, e.side === undefined ? null : e.side, look);
     for (const q of b.parts) { if (q.kind === 'hit') floatOn(q.side, F('float.hit', { n: q.n }), 'hit'); if (q.kind === 'heal') floatOn(q.side, F('float.heal', { n: q.n }), 'heal'); }
-    if (e.kind === 'claim') { const t0 = performance.now(); await wait(pace / 2); if (g !== gen) return; refill(b); draw(); await wait(Math.max(0, pace - (performance.now() - t0))); }
-    else await wait(pace);
+    if (e.kind === 'claim') { const t0 = performance.now(); await wait(pace / 2); if (g !== gen) return; refill(b); draw(); await stepWait(Math.max(0, pace - (performance.now() - t0)), slow); }
+    else await stepWait(pace, slow);
     if (g !== gen) return;
   }
   keepPlates(view); view = null; beat = null; acting = false; endMarks(); draw();
+  stepping = false; paceShow();
   if (!s.deck.length && !stackNoted && s.phase !== 'over') { stackNoted = true; addLog(T('stack.empty.log'), null); }
 }
 function waitFinalEffects() {
   const left = Math.max(0, ...fx.map(f => f.t0 + f.dur - performance.now()));
   return left > 0 ? wait(left) : Promise.resolve();
 }
+function paceShow() {
+  const b = $('paceBtn'), on = !!(acting && !tut && s && s.phase !== 'over');
+  b.hidden = !on;
+  if (on) setText(b, T(stepping ? 'pace.next' : 'pace.pause'));
+  b.classList.toggle('primary', on && stepping);
+}
+function stepWait(ms, slow) {
+  if (!stepping) return wait(ms).then(() => stepping ? nextStep(slow) : undefined);
+  return nextStep(slow);
+}
+function nextStep(slow) {
+  if (slow) return coachButton(T('guide.next'));
+  return new Promise(res => { stepGo = res; paceShow(); });
+}
+function releaseStep() { const go = stepGo; stepGo = null; if (go) go(); }
 function say(t, slow) { setText($('narrate'), t); if (slow) setText($('coachP'), t); }
 function floatOn(side, txt, cls) {
   const el = $('king' + side); if (!el) return;
@@ -2420,7 +2528,7 @@ function floatOn(side, txt, cls) {
 }
 function finish() {
   let next = '', tip = '';
-  if (!tut) { const before = doneIn(cur.mode); gamesDone[cur.mode] = before + 1; store.set('oa-games', gamesDone); next = overNextLine(before);
+  if (!tut && liveCounts()) { const before = doneIn(cur.mode); gamesDone[cur.mode] = before + 1; store.set('oa-games', gamesDone); next = online() ? '' : overNextLine(before);
     if (before + 1 === HELP_AFTER) tip = F('over.help.offer', { choice: T('sel.help.log') });
     syncMenus(); }
   setText($('overNext'), next); $('overNext').hidden = !next;
@@ -2440,7 +2548,7 @@ function overNextLine(before) {
 function setOver(show) {
   $('over').hidden = !show;
   if (!show) { $('overNext').hidden = true; setText($('overNext'), ''); $('overTip').hidden = true; setText($('overTip'), ''); $('over').setAttribute('aria-describedby', 'overP overNext'); }
-  for (const el of [document.querySelector('main'), document.querySelector('.topbar'), document.querySelector('.foot')]) if (el) el.inert = show;
+  for (const el of [document.querySelector('main'), document.querySelector('.topbar'), document.querySelector('.foot')]) if (el) el.inert = show || !$('live').hidden;
   if (show) $('again').focus();
 }
 function dismissOver() {
@@ -2467,10 +2575,12 @@ const TUT = {
 };
 function startTutorial() {
   $('howBuild').hidden = true; $('coach').classList.remove('howopen');
+  if (net) liveEnd();
   gen++; cur = { mode, players };
   tut = { i: 0, target: null, lit: null, seen: -1, steps: TUT[kids() ? 'kids' : 'standard'] };
   s = O.newGame(7, kids() ? TUT_KIDS : TUT_BOARD, 'base', 'random', mode); s.storm = 0; armed = null; busy = false; beat = null; hintAt = null; view = null; fx = [];
   acting = false; note = null; $('narrate').textContent = ''; infoDefault(); $('coach').classList.remove('folded', 'hushed');
+  stepping = false; releaseStep(); paceShow();
   document.querySelector('main').style.minHeight = '';
   clearLog(); applyLabels(); addLog(F('log.round', { n: 1 }), 'round'); addLog(T('guide.log'), null);
   setOver(false); $('coach').hidden = false; $('coachSkip').textContent = T('guide.skip'); $('coachSkip').hidden = false;
@@ -2577,11 +2687,11 @@ async function boot() {
   $('doorKidsG').innerHTML = ['ice', 'fire', 'lightning'].map(glyphSVG).join('');
   $('doorStdG').innerHTML = ['ice', 'fire', 'lightning', 'light', 'shadow'].map(glyphSVG).join('');
   $('doorKids').onclick = () => pickDoor('kids'); $('doorStd').onclick = () => pickDoor('standard');
-  $('howBtn').onclick = () => { startTutorial(); $('coachNext').focus({ preventScroll: true }); toTop(); };
+  $('howBtn').onclick = () => liveAskLeave(() => { startTutorial(); $('coachNext').focus({ preventScroll: true }); toTop(); });
   $('howBuild').onclick = () => howShow(!$('coach').classList.contains('howopen'));
   $('coachSkip').onclick = () => { $('coach').hidden = true; if (tut) { tut = null; store.set('oa-intro', true); start(); toTop(); } focusBoard(); };
-  $('newGame').onclick = () => { restart(); toTop(); };
-  $('again').onclick = () => { start(); focusBoard(); toTop(); };
+  $('newGame').onclick = () => liveAskLeave(() => { restart(); toTop(); });
+  $('again').onclick = () => { if (online()) { liveAgain(); return; } start(); focusBoard(); toTop(); };
   $('boardAgain').onclick = $('again').onclick;
   $('seeBoard').onclick = dismissOver;
   $('hintBtn').onclick = hint;
@@ -2590,8 +2700,15 @@ async function boot() {
   $('setupSel').value = choiceIn(mode) || 'steps'; $('setupSel').onchange = () => change($('setupSel'), choiceIn(mode) || 'steps', v => { if (v === 'steps') delete setupChoices[mode]; else setupChoices[mode] = v; store.set('oa-setup', setupChoices); });
   $('variantSel').value = variant; $('variantSel').onchange = () => change($('variantSel'), variant, v => { variant = v; store.set('oa-variant', variant); });
   $('level').value = level; $('level').onchange = () => { level = $('level').value; store.set('oa-level', level); };
+  $('paceBtn').onclick = () => { if (!stepping) { stepping = true; paceShow(); } else releaseStep(); };
+  $('paceSel').onchange = () => {
+    paceChoices[cur.mode] = $('paceSel').value === 'step' ? 'step' : 'auto'; store.set('oa-pace', paceChoices);
+    if (acting && !tut) { stepping = paceChoices[cur.mode] === 'step'; if (!stepping) releaseStep(); paceShow(); }
+  };
   $('helpSel').onchange = () => { helpWhere[cur.mode] = $('helpSel').value === 'log' ? 'log' : 'screen'; store.set('oa-help', helpWhere); helpChanged(); };
   $('askYes').onclick = () => closeAsk(true); $('askNo').onclick = () => closeAsk(false);
+  $('liveBtn').onclick = liveOpen;
+  $('liveYes').onclick = () => liveAct('yes'); $('liveNo').onclick = () => liveAct('no'); $('liveShare').onclick = liveShareLink;
   $('settings').open = !!store.get('oa-settings-open', false);
   $('settings').addEventListener('toggle', () => store.set('oa-settings-open', $('settings').open));
   $('log').open = !!store.get('oa-log-open', false);
@@ -2616,29 +2733,35 @@ async function boot() {
   });
   for (const q of [MQ_COL, MQ_PHONE]) { try { matchMedia(q).addEventListener('change', () => { if (s) draw(); }); } catch (e) {} }
   document.addEventListener('keydown', e => {
-    const modal = ['ask', 'over', 'door'].map($).find(el => !el.hidden);
+    const modal = ['live', 'ask', 'over', 'door'].map($).find(el => !el.hidden);
     if (modal && e.key === 'Tab') {
       const buttons = [...modal.querySelectorAll('button:not([disabled])')].filter(el => !el.hidden);
       const at = buttons.indexOf(document.activeElement);
       e.preventDefault(); buttons[(at + (e.shiftKey ? -1 : 1) + buttons.length) % buttons.length].focus(); return;
     }
     if (e.key === 'Escape') {
+      if (!$('live').hidden) { e.preventDefault(); liveAct($('liveNo').hidden ? 'yes' : 'no', true); return; }
       if (!$('ask').hidden) { e.preventDefault(); closeAsk(false); return; }
       if (!$('over').hidden) { e.preventDefault(); dismissOver(); return; }
       if (modal) return;
       armed = null; draw();
     }
   });
-  window.__oa = { get s() { return s; }, tap, setupTap, human, get busy() { return busy; }, get tut() { return tut; }, get view() { return view; }, get fx() { return fx; }, turnCandidates, forecast };
+  window.__oa = { get s() { return s; }, tap, setupTap, human, get busy() { return busy; }, get tut() { return tut; }, get view() { return view; }, get fx() { return fx; }, turnCandidates, forecast, get net() { return net; } };
   let want = null;
   try { const g = new URLSearchParams(location.search).get('game'); want = g === 'kids' || g === 'standard' ? g : null; } catch (e) {}
   if (want) { mode = want; store.set('oa-mode', mode); $('modeSel').value = mode; try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) {} }
   syncMenus();
-  if (!store.get('oa-intro', false)) { if (want) startTutorial(); else showDoor(); } else start();
+  const link = LIVE_URL ? liveLink() : null;
+  if (link) { start(); liveFromLink(link); }
+  else if (!store.get('oa-intro', false)) { if (want) startTutorial(); else showDoor(); } else start();
+  window.addEventListener('hashchange', () => { const l = LIVE_URL && !net ? liveLink() : null; if (l) liveFromLink(l); });
+  document.addEventListener('visibilitychange', liveWake);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { for (const k in FIT) delete FIT[k]; turnFit = ''; if (s) draw(); if (tut) { sizeCoach(); tut.seen = -1; guideInView(); } });
 }
 function restart() { tut = null; start(); }
 function showDoor() {
+  if (net) liveEnd();
   gen++; tut = null; cur = { mode: 'kids', players: 1 };
   s = O.newGame(7, TUT_KIDS, 'base', 'random', 'kids'); s.storm = 0; armed = null; busy = false; beat = null; hintAt = null; view = null; fx = [];
   $('coach').hidden = true; clearLog(); applyLabels(); doorOpen = true; draw();
@@ -2655,18 +2778,24 @@ function pickDoor(m) {
 const underway = () => !!s && !tut && ((s.phase === 'place' && (s.markers.length > 0 || s.round > 1)) || (s.phase === 'setup' && s.pool.length < buildN));
 let askNext = null;
 function change(sel, prev, apply) {
+  if (net) { sel.value = String(prev); return; }
   const go = () => { apply(sel.value); syncMenus(); restart(); focusBoard(); toTop(); };
   if (!underway()) return go();
-  askNext = { go, back: () => { sel.value = String(prev); sel.focus({ preventScroll: true }); } };
+  askFirst(T('ask.text'), T('menu.new'), go, () => { sel.value = String(prev); sel.focus({ preventScroll: true }); });
+}
+function askFirst(text, yes, go, back) {
+  setText($('askP'), text); setText($('askYes'), yes);
+  askNext = { go, back };
   $('ask').hidden = false;
   for (const el of [document.querySelector('main'), document.querySelector('.topbar'), document.querySelector('.foot')]) if (el) el.inert = true;
   $('askNo').focus();
 }
 function closeAsk(yes) {
   const a = askNext; askNext = null; $('ask').hidden = true;
-  for (const el of [document.querySelector('main'), document.querySelector('.topbar'), document.querySelector('.foot')]) if (el) el.inert = false;
+  for (const el of [document.querySelector('main'), document.querySelector('.topbar'), document.querySelector('.foot')]) if (el) el.inert = !$('live').hidden;
   if (!a) return;
   if (yes) a.go(); else a.back();
+  pump();
 }
 function toTop() {
   const el = tut && !$('coach').hidden ? $('coach') : $('turn'); if (!el || el.hidden) return;
@@ -2675,6 +2804,352 @@ function toTop() {
   const y = window.scrollY + r.top - 12;
   window.scrollTo({ top: y < 160 ? 0 : y, behavior: reduce() ? 'auto' : 'smooth' });
 }
+const LIVE_URL = (() => { const u = String(window.__oaLive || window.OASIS_LIVE || '').trim().replace(/\/+$/, ''); return /^wss?:\/\/[^\s/?#]+$/.test(u) ? u : ''; })();
+const LIVE_ID = /^[A-Za-z0-9_-]{22}$/;
+const LIVE_KEEP = 26 * 3600 * 1000;
+const liveVer = () => ({ v: OasisRecord.LIVE, e: OasisRecord.ENGINE });
+const liveSame = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+function liveLink() {
+  let h = location.hash || '';
+  try { h = decodeURIComponent(h); } catch (e) {}
+  const m = /(?:^|[^a-z])live=([A-Za-z0-9_-]*)/i.exec(h);
+  if (!m) return null;
+  if (m[1].length < 22) return { broken: true };
+  const g = /(?:^|[^a-z])game=(kids|standard)/i.exec(h);
+  return { room: m[1].slice(0, 22), game: g ? g[1].toLowerCase() : null };
+}
+const liveAddress = n => location.origin + location.pathname + `#live=${n.room}&game=${n.game}`;
+function liveHash(n) { try { history.replaceState(null, '', location.pathname + location.search + (n ? `#live=${n.room}&game=${n.game}` : '')); } catch (e) {} }
+function liveSeats() { const v = store.get('oa-live', {}); return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; }
+function liveSave(room, patch) {
+  const all = liveSeats(), now = Date.now();
+  for (const k of Object.keys(all)) if (!all[k] || typeof all[k] !== 'object' || now - (+all[k].at || 0) > LIVE_KEEP) delete all[k];
+  all[room] = { ...(all[room] || {}), ...patch, at: now }; store.set('oa-live', all);
+}
+function liveForget(room) { const all = liveSeats(); if (room && all[room]) { delete all[room]; store.set('oa-live', all); } }
+function liveCounts() {
+  if (!online()) return true;
+  const had = liveSeats()[net.room];
+  if (had && +had.done >= net.g) return false;
+  liveSave(net.room, { done: net.g }); return true;
+}
+function newNet(room, game) {
+  return { room, game, token: null, seat: null, side: 0, g: 0, rec: null, known: [], acked: 0, done: 0, ready: false, peer: 'here',
+    ws: null, conn: 'connecting', synced: false, tries: 0, retry: null, beat: null, pong: null, started: false, quiet: false,
+    ended: false, leaving: false, joining: false, again: 0, next: null, rebuild: false, rebuilds: 0, box: null, copied: '' };
+}
+function liveOpen() {
+  if (!LIVE_URL || net) return;
+  const go = () => { net = newNet(null, mode); syncMenus(); liveBox('making'); liveConnect(); };
+  if (!underway()) return go();
+  askFirst(T('ask.text'), T('menu.new'), go, () => $('liveBtn').focus({ preventScroll: true }));
+}
+function liveFromLink(link) {
+  if (net) return;
+  if (link.broken) { liveBox('badlink'); return; }
+  net = newNet(link.room, link.game);
+  const had = liveSeats()[link.room];
+  if (had && LIVE_ID.test(had.token || '')) net.token = had.token;
+  syncMenus(); liveConnect();
+}
+function liveAskLeave(go) {
+  if (!online()) return go();
+  askFirst(T('live.leave.ask'), T('live.leave'), () => { liveLeave(); go(); }, () => {});
+}
+function liveConnect() {
+  const n = net; if (!n || n.ended) return;
+  clearTimeout(n.retry); n.retry = null;
+  let ws;
+  try { ws = new WebSocket(LIVE_URL + (n.room ? '/room/' + n.room : '/new')); } catch (e) { liveDropped(n); return; }
+  n.ws = ws; n.synced = false;
+  ws.onopen = () => { if (n.ws === ws) liveGreet(n); };
+  ws.onmessage = e => { if (n.ws === ws && net === n) liveMessage(n, e.data); };
+  ws.onclose = () => { if (n.ws !== ws) return; n.ws = null; liveDropped(n); };
+}
+function liveRaw(n, msg) {
+  if (!n.ws || n.ws.readyState !== 1) return false;
+  try { n.ws.send(typeof msg === 'string' ? msg : JSON.stringify(msg)); return true; } catch (e) { return false; }
+}
+function liveGreet(n) {
+  clearInterval(n.beat); n.beat = setInterval(() => livePing(n), 25000);
+  if (n.token) return liveRaw(n, { t: 'hello', ...liveVer(), token: n.token });
+  if (!n.room) return liveRaw(n, { t: 'create', ...liveVer(), mode: n.game, variant, build: buildSize(n.game) });
+  liveRaw(n, { t: n.joining ? 'join' : 'peek', ...liveVer() });
+}
+function livePing(n) {
+  if (net !== n || !n.ws || n.ws.readyState !== 1) return;
+  liveRaw(n, 'ping'); clearTimeout(n.pong);
+  n.pong = setTimeout(() => { const ws = n.ws; if (!ws || net !== n) return; n.ws = null; ws.onopen = ws.onmessage = ws.onclose = null; try { ws.close(); } catch (e) {} liveDropped(n); }, 10000);
+}
+function liveDropped(n) {
+  clearInterval(n.beat); clearTimeout(n.pong); n.synced = false;
+  if (net !== n || n.ended) return;
+  if (!n.started) { liveBox('cant'); return; }
+  n.conn = 'lost'; liveShow();
+  const ms = Math.min(30000, 1000 * 2 ** Math.min(n.tries, 5)) * (0.75 + Math.random() / 2); n.tries++;
+  clearTimeout(n.retry); n.retry = setTimeout(liveConnect, ms);
+}
+function liveWake() {
+  const n = net; if (!n || n.ended || document.visibilityState !== 'visible') return;
+  if (n.ws) livePing(n); else if (n.started) { n.tries = 0; liveConnect(); }
+}
+function liveLeave() {
+  const n = net; if (!n) return;
+  liveForget(n.room);
+  if (n.seat !== null && liveRaw(n, { t: 'leave' })) n.leaving = true;
+  liveEnd();
+}
+function liveEnd() {
+  const n = net; if (!n) return null;
+  net = null; n.ended = true;
+  clearTimeout(n.retry); clearInterval(n.beat); clearTimeout(n.pong);
+  const ws = n.ws; n.ws = null;
+  if (ws) { ws.onopen = ws.onmessage = ws.onclose = null; setTimeout(() => { try { ws.close(); } catch (e) {} }, n.leaving ? 800 : 0); }
+  if (!$('ask').hidden) { askNext = null; $('ask').hidden = true; }
+  liveHash(null); liveBox(null); lockPage(); liveShow(); syncMenus();
+  return n;
+}
+function liveFail(n, kind) {
+  if (net !== n || n.ended) return;
+  if (kind === 'left' && !n.started) kind = 'gone';
+  n.ended = true; n.quiet = false;
+  if (kind !== 'version' && kind !== 'updating' && kind !== 'replaced') liveForget(n.room);
+  clearTimeout(n.retry); clearInterval(n.beat); clearTimeout(n.pong);
+  const ws = n.ws; n.ws = null;
+  if (ws) { ws.onopen = ws.onmessage = ws.onclose = null; try { ws.close(); } catch (e) {} }
+  liveBox(kind, kind === 'left' ? { who: forms(1 - n.side).who } : {});
+  liveShow(); if (s) draw();
+}
+function liveMessage(n, data) {
+  if (data === 'pong') { clearTimeout(n.pong); return; }
+  let m = null; try { m = JSON.parse(data); } catch (e) { return; }
+  if (!m || typeof m !== 'object') return;
+  if (m.t === 'state') return liveState(n, m);
+  if (m.t === 'moved') return liveMoved(n, m);
+  if (m.t === 'open') return liveBox('join');
+  if (m.t === 'full') return liveFail(n, 'full');
+  if (m.t === 'gone') return liveFail(n, m.why === 'version' ? liveOlder(m, 'gone') : m.why === 'left' || m.why === 'time' ? m.why : 'gone');
+  if (m.t === 'peer-left' || m.t === 'peer-back') { n.peer = m.t === 'peer-left' ? 'away' : 'here'; liveShow(); return; }
+  if (m.t === 'error') return liveError(n, m.code, m);
+}
+function liveOlder(m, same = 'version') {
+  const v = m && m.v;
+  if (v === OasisRecord.LIVE && m.e === OasisRecord.ENGINE) return same;
+  return Number.isInteger(v) && v < OasisRecord.LIVE ? 'updating' : 'version';
+}
+function liveError(n, code, m = {}) {
+  if (code === 'version') return liveFail(n, liveOlder(m));
+  if (code === 'replaced') return liveFail(n, 'replaced');
+  if (code === 'wrong-token') {
+    liveForget(n.room); n.token = null;
+    if (n.started) return liveFail(n, 'gone');
+    return liveRaw(n, { t: n.joining ? 'join' : 'peek', ...liveVer() });
+  }
+  if (code === 'too-fast' || code === 'too-big') return;
+  liveResync(n, true);
+}
+function liveResync(n, rebuild) {
+  if (!n.synced || !n.token) return;
+  if (rebuild && ++n.rebuilds > 3) return liveFail(n, 'version');
+  if (rebuild) n.rebuild = true;
+  liveRaw(n, { t: 'hello', ...liveVer(), token: n.token });
+}
+function liveState(n, st) {
+  if (net !== n || n.ended) return;
+  const rec = st.rec;
+  if (!rec || !OasisRecord.checkRecord(rec) || !Array.isArray(st.moves) || !Array.isArray(st.seats) || (st.seat !== 0 && st.seat !== 1) || !Number.isInteger(st.g)) return liveFail(n, 'version');
+  if (typeof st.token === 'string' && LIVE_ID.test(st.token)) { n.token = st.token; liveSave(st.room, { token: st.token }); }
+  if (typeof st.room === 'string' && LIVE_ID.test(st.room)) n.room = st.room;
+  n.game = rec.mode; liveHash(n);
+  n.synced = true; n.conn = 'open'; n.tries = 0; n.joining = false;
+  const wasReady = n.ready, rebuild = n.rebuild; n.rebuild = false;
+  n.ready = st.seats[0] !== 'open' && st.seats[1] !== 'open'; n.peer = st.seats[1 - st.seat] === 'away' ? 'away' : 'here';
+  let fresh = !n.started || rebuild || st.g < n.g;
+  const nextGame = n.started && st.g > n.g;
+  if (!fresh && st.g > n.g) {
+    const finishing = s.phase === 'over' || busy || n.done < n.known.length;
+    if (n.again === n.g || !finishing) fresh = true; else n.next = { ...st, moves: st.moves.map(m => m.slice()) };
+  } else if (!fresh && st.g === n.g && !liveCatchUp(n, st.moves)) fresh = true;
+  if (fresh) startOnline(n, st);
+  if (net !== n || n.ended) return;
+  if (!n.ready) liveBox('invite');
+  else if (n.box === 'making' || n.box === 'invite' || n.box === 'join') { liveBox(null); focusBoard(); toTop(); }
+  if (fresh && nextGame) toTop();
+  if (n.ready && !wasReady && !fresh) { resume(); liveColour(); }
+  if (!fresh && n.again === n.g && st.g === n.g && st.phase === 'over') liveRaw(n, { t: 'again', g: n.g, build: buildSize(n.rec.mode) });
+  liveShow(); draw(); pump();
+}
+function liveCatchUp(n, sm) {
+  let k = 0; while (k < sm.length && k < n.known.length && liveSame(sm[k], n.known[k])) k++;
+  if (k === sm.length) {
+    n.acked = k;
+    for (let i = k; i < n.known.length; i++) liveRaw(n, { t: 'move', g: n.g, n: i + 1, m: n.known[i] });
+    return true;
+  }
+  if (k < n.done) return false;
+  n.known = sm.map(m => m.slice()); n.acked = sm.length;
+  return true;
+}
+function liveMoved(n, mv) {
+  if (!Number.isInteger(mv.g) || !Number.isInteger(mv.n) || !Array.isArray(mv.m)) return;
+  if (n.next && mv.g === n.next.g) { if (mv.n === n.next.moves.length + 1) n.next.moves.push(mv.m.slice()); return; }
+  if (mv.g !== n.g) { if (mv.g > n.g) liveResync(n, false); return; }
+  if (mv.n <= n.acked) return;
+  if (mv.n > n.acked + 1) return liveResync(n, true);
+  if (mv.n <= n.known.length) {
+    if (!liveSame(n.known[mv.n - 1], mv.m)) return liveResync(n, true);
+    n.acked = mv.n; n.rebuilds = 0; return;
+  }
+  n.known.push(mv.m.slice()); n.acked = mv.n;
+  pump();
+}
+function liveMove(m) {
+  const n = net; n.known.push(m); n.done = n.known.length;
+  if (n.synced) liveRaw(n, { t: 'move', g: n.g, n: n.known.length, m });
+}
+function pump() {
+  const n = net;
+  if (!online() || n.quiet || n.ended || !n.ready || busy || tut || !$('ask').hidden || n.done >= n.known.length) return;
+  const m = n.known[n.done], side = s.toMove;
+  if (human(side) || !OasisRecord.legal(s, side, m)) return liveResync(n, true);
+  n.done++; n.rebuilds = 0;
+  if (m.length === 3) { doSetup(m[0], m[1], m[2]); note = null; draw(); setupNext(); }
+  else doPlace(m[0], m[1]);
+}
+function liveAgain() {
+  const n = net; if (!n || s.phase !== 'over') return;
+  if (n.next) { const st = n.next; n.next = null; startOnline(n, st); liveShow(); draw(); pump(); toTop(); return; }
+  if (n.again === n.g) return;
+  n.again = n.g; $('again').disabled = true; $('boardAgain').disabled = true;
+  if (n.synced) liveRaw(n, { t: 'again', g: n.g, build: buildSize(n.rec.mode) });
+}
+function startOnline(n, st) {
+  gen++; tut = null; n.started = true; n.next = null; n.again = 0;
+  n.g = st.g; n.rec = st.rec; n.seat = st.seat; n.side = st.side === 0 || st.side === 1 ? st.side : OasisRecord.sideOf(st.rec, st.seat);
+  n.known = st.moves.map(m => m.slice()); n.acked = n.known.length; n.done = 0;
+  cur = { mode: st.rec.mode, players: 2, online: true };
+  buildN = st.rec.build;
+  guideSides = new Set(buildN > 0 && buildN < 12 && doneIn(cur.mode) <= BUILD_AFTER ? [n.side] : []);
+  freshBoard(OasisRecord.startState(st.rec));
+  n.quiet = true;
+  if (s.phase === 'setup') beginSetup(); else firstRound();
+  for (const m of n.known) {
+    if (!OasisRecord.legal(s, s.toMove, m)) return liveFail(n, 'version');
+    quietMove(m); n.done++;
+  }
+  n.quiet = false; fx = []; marks = null; plates = null; view = null; beat = null; acting = false; busy = false;
+  if (n.known.length) $('narrate').textContent = $('logLast').textContent;
+  liveShow();
+  if (s.phase === 'over') { finish(); return; }
+  if (n.ready) { resume(); liveColour(); } else draw();
+}
+function resume() { if (s.phase === 'setup') setupNext(); else if (s.phase === 'place') afterMove(); }
+function liveColour() { banner(net.side, F('live.you', { who: forms(net.side).who })); }
+function quietMove(m) {
+  if (m.length === 3) { doSetup(m[0], m[1], m[2]); if (s.phase !== 'setup') endSetup(); return; }
+  const side = s.toMove, before = s.log.length, round = s.round, pre = O.clone(s);
+  logPlace(side, m[0], m[1]); O.place(s, m[0], m[1]);
+  if (s.round !== round || s.phase === 'over') quietRound(pre, { side, x: m[0], y: m[1] }, s.log.slice(before + 1));
+  while (s.phase === 'place' && !O.legalPlacements(s).length) {
+    const who = s.toMove, b2 = s.log.length, r2 = s.round, p2 = O.clone(s); O.skip(s);
+    addLog(W('skip.log', who), who);
+    if (s.round !== r2 || s.phase === 'over') quietRound(p2, null, s.log.slice(b2));
+  }
+}
+function quietRound(pre, mk, entries) {
+  roundEntries = entries; view = viewOf(pre, mk);
+  addLog(T(kids() ? 'round.acts.kids' : 'round.acts.std'), null);
+  for (const b of beatsOf(entries)) {
+    const e = b.head;
+    if (e.kind === 'round') { view = null; if (s.phase !== 'over') { addLog(F('log.round', { n: e.round }), 'round'); addLog(W('first', s.start), null); } continue; }
+    const look = e.kind === 'act' ? { src: [e.x, e.y], line: O.lineOf(e.x, e.y), el: e.card } : e.kind === 'claim' ? { square: [e.x, e.y] } : null;
+    applyBeat(b);
+    const text = sentence(b);
+    if (text) { rememberEffect(b, text); addLog(text, e.side === undefined ? null : e.side, look); }
+    refill(b);
+  }
+  view = null; marks = null; fx = [];
+  if (!s.deck.length && !stackNoted && s.phase !== 'over') { stackNoted = true; addLog(T('stack.empty.log'), null); }
+}
+function liveShow() {
+  const el = $('liveLine'), on = online();
+  el.hidden = !on;
+  if (!on) { setHTML(el, ''); return; }
+  const n = net, extra = n.ended ? '' : n.conn !== 'open' ? T('live.lost') : n.ready && n.peer === 'away' ? F('live.away', { who: forms(1 - n.side).who }) : '';
+  setHTML(el, `<span class="you p${n.side}">${esc(F('live.you', { who: forms(n.side).who }))}</span>` + (extra ? ` <span class="conn">${esc(extra)}</span>` : ''));
+  if (n.box === 'invite') setText($('liveNote'), n.conn !== 'open' ? T('live.lost') : n.copied || T('live.waiting'));
+}
+function liveWait() { return online() && net.ready && !net.ended && !busy && s.phase !== 'over' && !human(s.toMove) ? F('live.wait', { who: forms(s.toMove).who }) : ''; }
+function lockPage() {
+  const any = ['live', 'ask', 'over', 'door'].some(id => !$(id).hidden);
+  for (const el of [document.querySelector('main'), document.querySelector('.topbar'), document.querySelector('.foot')]) if (el) el.inert = any;
+}
+const LIVE_BOX = {
+  making: ['live.button', ['live.making'], null, 'live.cancel'],
+  invite: ['live.button', ['live.invite.how'], 'live.copy', 'live.cancel'],
+  join: ['live.join.title', ['live.join.how'], 'live.join', 'live.notnow'],
+  full: ['live.full.title', ['live.newlink'], 'live.ok', null],
+  gone: ['live.gone.title', ['live.newlink'], 'live.ok', null],
+  left: ['live.gone.title', ['live.gone.left'], 'live.ok', null],
+  time: ['live.gone.title', ['live.gone.time'], 'live.ok', null],
+  version: ['live.old.title', ['live.old'], 'live.reload', 'live.ok'],
+  updating: [null, ['live.updating'], 'live.ok', null],
+  cant: ['live.cant.title', ['live.cant'], 'live.retry', 'live.ok'],
+  replaced: [null, ['live.replaced'], 'live.ok', null],
+  badlink: [null, ['live.newlink'], 'live.ok', null],
+};
+function liveBox(kind, v = {}) {
+  const n = net, box = $('live'), was = box.hidden ? null : box.dataset.kind;
+  if (n) n.box = kind;
+  if (!kind) { if (!box.hidden) { box.hidden = true; box.dataset.kind = ''; lockPage(); } return; }
+  const [title, lines, yes, no] = LIVE_BOX[kind];
+  const words = (kind === 'join' && n && n.game ? [T('sel.mode.' + n.game)] : []).concat(lines.map(k => F(k, v)));
+  cz($('liveH'), title ? T(title) : '');
+  box.setAttribute('aria-labelledby', title ? 'liveH' : 'liveP'); box.setAttribute('aria-describedby', title ? 'liveP liveNote' : 'liveNote');
+  setHTML($('liveP'), words.map(t => `<span class="ln">${esc(t)}</span>`).join(''));
+  const link = kind === 'invite' && n && n.room ? liveAddress(n) : '';
+  $('liveLink').hidden = !link; setText($('liveLink'), link);
+  $('liveYes').hidden = !yes; if (yes) setText($('liveYes'), T(yes)); $('liveYes').disabled = false;
+  $('liveNo').hidden = !no; if (no) setText($('liveNo'), T(no));
+  $('liveShare').hidden = kind !== 'invite' || !link || typeof navigator.share !== 'function';
+  if (kind !== 'invite') setText($('liveNote'), ''); else if (n) { if (was !== 'invite') n.copied = ''; liveShow(); }
+  box.dataset.kind = kind; box.hidden = false; lockPage();
+  if (was !== kind) (yes ? $('liveYes') : $('liveNo')).focus({ preventScroll: true });
+}
+function liveAct(which) {
+  const n = net, kind = n ? n.box : null;
+  if (!n && $('live').dataset.kind === 'badlink') { liveHash(null); liveBox(null); if (!store.get('oa-intro', false)) showDoor(); else focusBoard(); return; }
+  if (!n || !kind) { liveBox(null); return; }
+  if (kind === 'invite' && which === 'yes') return liveCopy();
+  if (kind === 'join' && which === 'yes') {
+    n.joining = true; $('liveYes').disabled = true;
+    if (liveRaw(n, { t: 'join', ...liveVer() })) livePing(n); else liveConnect();
+    return;
+  }
+  if (kind === 'cant' && which === 'yes') { if (!n.room) liveBox('making'); else liveBox(null); n.tries = 0; liveConnect(); return; }
+  if (kind === 'version' && which === 'yes') { liveReload(); return; }
+  const started = n.started;
+  if (kind === 'making' || kind === 'invite') liveLeave(); else liveEnd();
+  if (started) { restart(); focusBoard(); }
+  else if (!store.get('oa-intro', false)) showDoor();
+  else focusBoard();
+}
+async function liveReload() {
+  $('liveYes').disabled = true;
+  try { if (typeof window.OASIS_FRESH === 'function') await window.OASIS_FRESH(); } catch (e) {}
+  try { location.reload(); } catch (e) {}
+}
+async function liveCopy() {
+  const n = net, el = $('liveLink'); let ok = false;
+  try { await navigator.clipboard.writeText(el.textContent); ok = true; } catch (e) {}
+  if (!ok) { try { const r = document.createRange(); r.selectNodeContents(el); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); ok = document.execCommand('copy'); } catch (e) {} }
+  if (net !== n || !n) return;
+  n.copied = T(ok ? 'live.copied' : 'live.copy.fail'); liveShow();
+}
+function liveShareLink() {
+  const url = $('liveLink').textContent; if (!url) return;
+  try { const p = navigator.share({ title: T('page.title'), url }); if (p && p.catch) p.catch(() => {}); } catch (e) {}
+}
 boot().catch(e => console.error(e));
 </script>
 <script>
@@ -2682,6 +3157,17 @@ boot().catch(e => console.error(e));
   try {
     if (!('serviceWorker' in navigator) || !/^https?:$/.test(location.protocol) || window.self !== window.top) return;
     window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+    window.OASIS_FRESH = function () {
+      var sw = navigator.serviceWorker;
+      if (!sw.controller) return Promise.resolve();
+      return sw.getRegistration().then(function (reg) {
+        if (!reg) return;
+        var took = new Promise(function (res) { sw.addEventListener('controllerchange', res, { once: true }); });
+        return reg.update().then(function () {
+          if (reg.installing || reg.waiting) return Promise.race([took, new Promise(function (res) { setTimeout(res, 10000); })]);
+        });
+      }).catch(function () {});
+    };
   } catch (e) {}
 })();
 </script>
