@@ -1,4 +1,4 @@
-const CACHE = 'soulfield-oasis-5b81f94fe8';
+const CACHE = 'soulfield-oasis-046b9172df';
 const FILES = ["./", "fonts/Andika-Bold.woff2", "fonts/Andika-Regular.woff2", "fonts/Cinzel-Bold.woff2", "fonts/OFL-Andika.txt", "fonts/OFL-Cinzel.txt", "icons/apple-touch-icon.png", "icons/icon-192.png", "icons/icon-512.png", "index.html", "manifest.webmanifest"];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES.map(u => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
