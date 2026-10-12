@@ -9,6 +9,12 @@ import { bracketParser } from './src/lib/bracketParser.ts';
 export default defineConfig({
   site: 'https://mapthewild.github.io',
   base: '/mapthewild',
+  // Nowbrary became two posts (Oct 2026); the old addresses of parts 3 to 5 forward.
+  redirects: {
+    '/posts/nowbrary-architecture': '/mapthewild/posts/starting-your-nowbrary',
+    '/posts/what-nowbrary-isnt': '/mapthewild/posts/nowbrary-living-constellation',
+    '/posts/sharing-your-nowbrary': '/mapthewild/posts/starting-your-nowbrary',
+  },
   markdown: {
     remarkPlugins: [bracketParser],
   },

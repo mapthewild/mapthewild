@@ -84,7 +84,10 @@ const standaloneForIsland = standaloneEssays
   .filter(essay => essay.data.islands.includes(island))
 
 const islandPosts = [...collectionPosts, ...standaloneForIsland]
-  .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf())
+  // Nowbrary reads in order (part 1 first); other territories list newest first.
+  .sort((a, b) => island === 'nowbrary'
+    ? new Date(a.data.date).valueOf() - new Date(b.data.date).valueOf()
+    : new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf())
 
 function formatDate(date: Date) {
   return date.toLocaleDateString('en-US', {
