@@ -33,6 +33,11 @@ jobs:
       - name: Build Astro site
         run: npm run build
 
+      # The site lives at mapthewild.xyz now. Pages here send readers there;
+      # pictures and files stay so links to them keep working.
+      - name: Forward pages to mapthewild.xyz
+        run: python3 scripts/xyz/forward-pages.py dist
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
