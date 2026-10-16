@@ -39,3 +39,4 @@ pnpm-debug.log*
 # Internal planning (not needed in public repo)
 TODO.md
 docs/
+dist-xyz/
