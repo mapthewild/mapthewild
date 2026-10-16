@@ -1,0 +1,12 @@
+# Map the Wild on mapthewild.xyz (Cloudflare). Served as plain files; no server code runs.
+# Built by scripts/publish-xyz.sh from the same commit GitHub Pages publishes.
+name = "mapthewild"
+compatibility_date = "2026-10-01"
+
+routes = [
+  { pattern = "mapthewild.xyz", custom_domain = true },
+  { pattern = "www.mapthewild.xyz", custom_domain = true },
+]
+
+[assets]
+directory = "../../dist-xyz"

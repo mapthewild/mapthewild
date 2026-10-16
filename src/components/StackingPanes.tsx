@@ -40,6 +40,9 @@ const COLORS = {
 const TRUSTED_ORIGINS = [
   'https://focusedition.github.io',
   'https://mapthewild.github.io',
+  'https://mapthewild.xyz',
+  'https://www.mapthewild.xyz',
+  'https://mapthewild.soulward.workers.dev',
   'https://claude.site',
   'http://localhost:4321',
   'http://localhost:4322',
