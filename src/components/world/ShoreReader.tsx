@@ -29,7 +29,7 @@ export default function ShoreReader({selected,essays,bodies,origin,motion,ashore
   useEffect(()=>{
     if(selected&&!dialog.current?.open){
       returnFocus.current=document.activeElement instanceof HTMLElement?document.activeElement:null;
-      setFullPage(false);openingUntil.current=performance.now()+1100;
+      setFullPage(matchMedia('(max-width: 640px)').matches);openingUntil.current=performance.now()+1100;
       closingRef.current=false;setClosing(false);dialog.current?.showModal();
     }else if(!selected&&dialog.current?.open){
       dialog.current.close();returnFocus.current?.focus({preventScroll:true});
@@ -113,11 +113,11 @@ export default function ShoreReader({selected,essays,bodies,origin,motion,ashore
     <div className="shore-reading-veil" aria-hidden="true"/>
     <div className="shore-reading-reveal">
       <header className="shore-reading-toolbar">
-        <span><SpyglassIcon/> <span>THE READING COAST <i/> NOWBRARY</span></span>
-        <button onClick={()=>close()} aria-label="Close island notes">Lower the spyglass <span aria-hidden="true">×</span></button>
+        <span><SpyglassIcon/> <span>NOWBRARY</span></span>
+        <button onClick={()=>close()} aria-label="Close the posts"><span aria-hidden="true">×</span></button>
       </header>
       <div className="shore-reading-options">
-        <nav className="shore-lens-essays" aria-label="Nowbrary essays" hidden={fullPage}>
+        <nav className="shore-lens-essays" aria-label="Nowbrary posts" hidden={fullPage}>
           {essays.map((essay,i)=><button key={essay.slug} onClick={()=>select(essay.slug)} aria-current={current.slug===essay.slug?'page':undefined}>
             <small>0{i+1}</small><span>{essay.title}</span>
           </button>)}
@@ -129,12 +129,11 @@ export default function ShoreReader({selected,essays,bodies,origin,motion,ashore
       <div className="shore-paper">
         <aside className="shore-reading-index">
           <div className="shore-chart-mark" aria-hidden="true"><span>✳</span></div>
-          <p className="shore-small-label">A NOTE FROM<br/>THIS SHORE</p>
-          <p className="shore-index-intro">{ashore?'From this':'Before you'}<br/><em>{ashore?'reading coast.':'step ashore.'}</em></p>
-          <nav aria-label="Nowbrary essays">{essays.map((essay,i)=><button key={essay.slug} onClick={()=>select(essay.slug)} aria-current={current.slug===essay.slug?'page':undefined}>
+          <p className="shore-small-label">NOWBRARY<br/>POSTS</p>
+          <p className="shore-index-intro">{ashore?'Before you go':'Before you'}<br/><em>{ashore?'into the bookshop.':'step ashore.'}</em></p>
+          <nav aria-label="Nowbrary posts">{essays.map((essay,i)=><button key={essay.slug} onClick={()=>select(essay.slug)} aria-current={current.slug===essay.slug?'page':undefined}>
             <span className="shore-essay-number">0{i+1}</span><span>{essay.title}<small>{essay.minutes} min read</small></span>
           </button>)}</nav>
-          <p className="shore-index-foot">Books kept close.<br/>Ideas carried further.</p>
         </aside>
         <div className="shore-reading-scroll" ref={scroller} onScroll={updateProgress} onFocusCapture={revealFocusedLink} tabIndex={0} aria-label="Essay text">
           {essays.map((essay,i)=><article key={essay.slug} hidden={current.slug!==essay.slug}>
@@ -150,9 +149,8 @@ export default function ShoreReader({selected,essays,bodies,origin,motion,ashore
               const other=essays.find(item=>link.pathname.replace(/\/$/,'')===`/mapthewild/posts/${item.slug}`&&link.origin===location.origin);
               if(other){event.preventDefault();select(other.slug);}
             }}>{bodies[essay.slug]}</div>
-            <div className="shore-essay-end"><span aria-hidden="true">❧</span><p>{i===0?'A few books within reach.':'Room for what matters now.'}</p></div>
             {next&&current.slug===essay.slug&&<button className="shore-next-essay" onClick={()=>select(next.slug)}><span><small>CONTINUE READING</small>{next.title}</span><span aria-hidden="true">→</span></button>}
-            <a className="shore-plain-link" href={`/mapthewild/posts/${essay.slug}`} target="_blank" rel="noopener noreferrer">Open reading page <span aria-hidden="true">↗</span><span className="shore-sr-only"> in a new tab</span></a>
+            <a className="shore-plain-link" href={`/mapthewild/posts/${essay.slug}`} target="_blank" rel="noopener noreferrer">Open as a blog post <span aria-hidden="true">↗</span><span className="shore-sr-only"> in a new tab</span></a>
           </article>)}
         </div>
         <div className="shore-reading-progress" aria-hidden="true"><span/></div>
@@ -162,8 +160,8 @@ export default function ShoreReader({selected,essays,bodies,origin,motion,ashore
       </div>
       <footer className="shore-reading-footer">
         <button onClick={()=>close()}><span aria-hidden="true">←</span> {ashore?'Back to Nowbrary':'Back to the boat'}</button>
-        <span>{fullPage?'Your place in the world is waiting.':<>{motion&&<span className="shore-mouse-hint">Move the glass · </span>}Scroll to read</>}</span>
-        {!ashore&&<button className="shore-step-ashore" onClick={()=>close(true)}>Step ashore <span aria-hidden="true">↗</span></button>}
+        <span>{fullPage?'Scroll to read':<>{motion&&<span className="shore-mouse-hint">Move the glass · </span>}Scroll to read</>}</span>
+        {!ashore&&<button className="shore-step-ashore" onClick={()=>close(true)}>Step ashore</button>}
       </footer>
     </div>
   </dialog>;

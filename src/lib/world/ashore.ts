@@ -10,7 +10,7 @@ export const FOOT_POINTS: Record<FootNode, FootPoint> = {
 export const WALK_PLACES:Record<WalkPlace,{title:string;action:string;point:FootPoint}>={
   quay:{title:'The quay',action:'Walk to the quay',point:FOOT_POINTS.quay},
   shop:{title:'Nowbrary',action:'Enter the bookshop',point:FOOT_POINTS.shop},
-  garden:{title:'Shaded terrace',action:'Walk to the shade',point:FOOT_POINTS.garden},
+  garden:{title:'Shaded terrace',action:'Walk to the shaded terrace',point:FOOT_POINTS.garden},
   moe:{title:'Moe',action:'Walk to Moe’s shelf',point:FOOT_POINTS.moe},
   melville:{title:'Melville',action:'Walk to Melville’s shelf',point:FOOT_POINTS.melville},
   montaigne:{title:'Montaigne',action:'Walk to Montaigne’s shelf',point:FOOT_POINTS.montaigne},
