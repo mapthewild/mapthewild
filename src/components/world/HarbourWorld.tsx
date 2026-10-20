@@ -9,10 +9,9 @@ import type {ShoreEssay,ShoreEssaySlug,LensOrigin} from '../../lib/world/shore-r
 import '../../styles/world/harbour.css';
 
 type World=ReturnType<typeof createWorld>;
-const base='/mapthewild';
 export default function HarbourWorld({essays,nowbraryPost,startingPost}:{essays:ShoreEssay[];nowbraryPost:ReactNode;startingPost:ReactNode}){
   const mount=useRef<HTMLDivElement>(null),engine=useRef<World|null>(null),labels=useRef<Partial<Record<Port,HTMLButtonElement>>>({}),panel=useRef<HTMLElement>(null),footLabels=useRef<Partial<Record<WalkPlace|'boat',HTMLButtonElement>>>({}),shopButton=useRef<HTMLButtonElement>(null);
-  const [ready,setReady]=useState(false),[failed,setFailed]=useState(false),[entered,setEntered]=useState(false),[selected,setSelected]=useState<Port|null>(null),[sailing,setSailing]=useState<Port|null|false>(false),[motion,setMotion]=useState(true),[readHref,setReadHref]=useState(base+'/'),[social,setSocial]=useState('Sunday Ritual');
+  const [ready,setReady]=useState(false),[failed,setFailed]=useState(false),[entered,setEntered]=useState(false),[selected,setSelected]=useState<Port|null>(null),[sailing,setSailing]=useState<Port|null|false>(false),[motion,setMotion]=useState(true),[readHref,setReadHref]=useState('/mapthewild/'),[social,setSocial]=useState('Sunday Ritual');
   const [foot,setFoot]=useState<FootState>(null),[book,setBook]=useState<BookChoice|null>(null),[shelves,setShelves]=useState<ShelfReader[]>([]),[bookMenu,setBookMenu]=useState(false);
   const [paintedReady,setPaintedReady]=useState(false);
   const [essay,setEssay]=useState<ShoreEssaySlug|null>(null),[lensOrigin,setLensOrigin]=useState<LensOrigin>({x:500,y:400});
@@ -57,7 +56,7 @@ export default function HarbourWorld({essays,nowbraryPost,startingPost}:{essays:
     <div className="world-canvas" ref={mount}/>
     <div className="world-edge" aria-hidden="true"/>
     <header className="world-header">
-      <a className="world-brand" href={base+'/'}><span className="world-emblem" aria-hidden="true">✳</span><span>Map the Wild</span></a>
+      <a className="world-brand" href={'/mapthewild/'}><span className="world-emblem" aria-hidden="true">✳</span><span>Map the Wild</span></a>
       <nav className="world-mode" aria-label="View mode"><a href={readHref} onClick={read}>Read</a><span aria-current="page">Explore</span></nav>
     </header>
     {!ready&&!failed&&<div className="world-loading" role="status"><span className="loading-sun" aria-hidden="true">✳</span><p>Finding the first shore…</p></div>}
@@ -95,14 +94,14 @@ export default function HarbourWorld({essays,nowbraryPost,startingPost}:{essays:
         <p>A few books within reach. A place to return to them, and notice what they’re saying now.</p>
         <button className="world-primary step-ashore" onClick={()=>engine.current?.stepAshore()}>Step ashore <span aria-hidden="true">↗</span></button>
         <p className="arrival-hint">Walk to the bookshop. The shelves are inside.</p>
-        <a className="landing-story" href={base+'/posts/nowbrary-living-constellation'} onClick={event=>openEssay(event,'nowbrary-living-constellation')} aria-haspopup="dialog"><span><small>BEGIN HERE</small>The Nowbrary</span><SpyglassIcon/></a>
-        <a className="landing-story" href={base+'/posts/starting-your-nowbrary'} onClick={event=>openEssay(event,'starting-your-nowbrary')} aria-haspopup="dialog"><span><small>MAKE IT YOURS</small>Starting your Nowbrary</span><SpyglassIcon/></a>
+        <a className="landing-story" href={'/mapthewild/posts/nowbrary-living-constellation'} onClick={event=>openEssay(event,'nowbrary-living-constellation')} aria-haspopup="dialog"><span><small>BEGIN HERE</small>The Nowbrary</span><SpyglassIcon/></a>
+        <a className="landing-story" href={'/mapthewild/posts/starting-your-nowbrary'} onClick={event=>openEssay(event,'starting-your-nowbrary')} aria-haspopup="dialog"><span><small>MAKE IT YOURS</small>Starting your Nowbrary</span><SpyglassIcon/></a>
         <p className="landing-aside">As the readings and notes grow, new topic neighbourhoods can take shape along this shore.</p>
       </>:selected==='together'?<>
         <p>Different ways to spend time with one another, with a shared landing between them.</p>
         <div className="social-tabs" role="tablist" aria-label="Places to gather">{['Sunday Ritual','Life in 5','Soulfield'].map(name=><button key={name} role="tab" tabIndex={social===name?0:-1} onKeyDown={event=>{const names=['Sunday Ritual','Life in 5','Soulfield'];const index=names.indexOf(name);const next=event.key==='ArrowRight'?(index+1)%3:event.key==='ArrowLeft'?(index+2)%3:event.key==='Home'?0:event.key==='End'?2:-1;if(next>=0){event.preventDefault();setSocial(names[next]);document.getElementById(`tab-${names[next].replaceAll(' ','-')}`)?.focus();}}} aria-selected={social===name} aria-controls="social-description" id={`tab-${name.replaceAll(' ','-')}`} onClick={()=>setSocial(name)}>{name}</button>)}</div>
         <div role="tabpanel" id="social-description" aria-labelledby={`tab-${social.replaceAll(' ','-')}`}>
-          {social==='Sunday Ritual'?<><p className="social-copy">A weekly practice for two. Answer separately, then come back together.</p><a className="world-primary" href={base+'/sundayritual'} onClick={()=>engine.current?.save()}>Begin Sunday Ritual <span aria-hidden="true">↗</span></a></>:<><p className="social-copy">{social==='Life in 5'?'A short story can open a real conversation.':'A place to sit down and play together.'}</p><p className="landing-aside">This landing is still being prepared. Sunday Ritual is open across the courtyard.</p><button className="world-text-button" onClick={()=>setSocial('Sunday Ritual')}>Visit Sunday Ritual →</button></>}
+          {social==='Sunday Ritual'?<><p className="social-copy">A weekly practice for two. Answer separately, then come back together.</p><a className="world-primary" href={'/mapthewild/sundayritual'} onClick={()=>engine.current?.save()}>Begin Sunday Ritual <span aria-hidden="true">↗</span></a></>:<><p className="social-copy">{social==='Life in 5'?'A short story can open a real conversation.':'A place to sit down and play together.'}</p><p className="landing-aside">This landing is still being prepared. Sunday Ritual is open across the courtyard.</p><button className="world-text-button" onClick={()=>setSocial('Sunday Ritual')}>Visit Sunday Ritual →</button></>}
         </div>
       </>:<>
         <p>This is the beginning of Map the Wild. As more reading, writing and shared experiences arrive, these shores will gain new rooms, gardens and neighbourhoods.</p>
@@ -119,7 +118,7 @@ export default function HarbourWorld({essays,nowbraryPost,startingPost}:{essays:
           <p role="status">{foot.walking?`Walking to ${WALK_PLACES[foot.destination as WalkPlace]?.title||'the courtyard'}…`:reader?'The books we keep near us.':'Three readers. Different things to return to.'}</p>
           <div>{(['moe','melville','montaigne'] as ReaderId[]).map(id=><button key={id} disabled={!ready||foot.walking} aria-pressed={foot.place===id} onClick={()=>walk(id)}>{WALK_PLACES[id].title}</button>)}<button onClick={()=>walk('quay')} disabled={foot.walking}>Courtyard ↗</button></div>
           {reader&&<button ref={shopButton} className="choose-book" aria-expanded={bookMenu} onClick={()=>setBookMenu(v=>!v)} disabled={foot.walking}>Choose a book <span aria-hidden="true">{bookMenu?'−':'+'}</span></button>}
-          {!shelves.length&&<a href={base+'/world/nowbrary/gallery.html#moe'}>Open the shelves directly ↗</a>}
+          {!shelves.length&&<a href={'/mapthewild/world/nowbrary/gallery.html#moe'}>Open the shelves directly ↗</a>}
         </nav>
         {reader&&bookMenu&&<section className="shelf-titles" aria-label={`Books on ${reader.name}’s shelf`}><button className="shelf-titles-close" aria-label="Close book titles" onClick={()=>setBookMenu(false)}>×</button><p>{reader.name}’s nowbrary</p>{reader.books.filter((b,i,all)=>all.findIndex(a=>a.id===b.id)===i).map(b=><button key={b.id} onClick={()=>engine.current?.openBook(reader.id,b.id,b.volIndex||0)}>{b.title}<small>{b.author}</small><span aria-hidden="true">↗</span></button>)}</section>}
       </>:<nav className="ashore-actions" aria-label="Explore Nowbrary on foot">
@@ -134,10 +133,10 @@ export default function HarbourWorld({essays,nowbraryPost,startingPost}:{essays:
       <button onClick={overview} aria-label={foot?'Look around Nowbrary':'Show the whole bay'} title={foot?'The quay':'The whole bay'}>⌖</button>
       <button onClick={toggleMotion} aria-label={motion?'Pause ambient motion':'Resume ambient motion'} aria-pressed={!motion} title={motion?'Pause motion':'Resume motion'}>{motion?'Ⅱ':'▷'}</button>
     </div>}
-    {failed&&<section className="world-fallback" role="status"><p className="world-kicker">The first shores</p><h1>The harbour needs<br/>a clearer day.</h1><p>The 3D world couldn’t open on this device. The reading and Sunday Ritual are ready below.</p><a className="world-primary" href={base+'/posts/nowbrary-living-constellation'}>Read the Nowbrary ↗</a><a href={base+'/sundayritual'}>Begin Sunday Ritual →</a><button className="world-text-button" onClick={()=>location.reload()}>Try the world again</button></section>}
+    {failed&&<section className="world-fallback" role="status"><p className="world-kicker">The first shores</p><h1>The harbour needs<br/>a clearer day.</h1><p>The 3D world couldn’t open on this device. The reading and Sunday Ritual are ready below.</p><a className="world-primary" href={'/mapthewild/posts/nowbrary-living-constellation'}>Read the Nowbrary ↗</a><a href={'/mapthewild/sundayritual'}>Begin Sunday Ritual →</a><button className="world-text-button" onClick={()=>location.reload()}>Try the world again</button></section>}
     <footer className="world-footer"><span>FIRST SHORES <i/> GROWING OVER TIME</span><span className="world-help">{inside?'Choose a shelf · touch a spine to read':foot?'Choose a place · drag to look · scroll or pinch to zoom':entered?'Choose a shore · drag to look · scroll or pinch to zoom':'An inhabited corner of the internet'}</span></footer>
     <BookReader choice={book} motion={motion} onClose={closeBook} onTaken={()=>engine.current?.setBookTaken(true)}/>
     <ShoreReader selected={essay} essays={essays} bodies={{'nowbrary-living-constellation':nowbraryPost,'starting-your-nowbrary':startingPost}} origin={lensOrigin} motion={motion} ashore={!!foot} onSelect={setEssay} onClose={closeEssay} onStepAshore={()=>engine.current?.stepAshore()}/>
-    <noscript><div className="world-fallback"><h1>Map the Wild</h1><p>Exploration uses JavaScript. You can read everything directly.</p><a href={base+'/posts/nowbrary-living-constellation'}>The Nowbrary</a><a href={base+'/sundayritual'}>Sunday Ritual</a></div></noscript>
+    <noscript><div className="world-fallback"><h1>Map the Wild</h1><p>Exploration uses JavaScript. You can read everything directly.</p><a href={'/mapthewild/posts/nowbrary-living-constellation'}>The Nowbrary</a><a href={'/mapthewild/sundayritual'}>Sunday Ritual</a></div></noscript>
   </main>;
 }

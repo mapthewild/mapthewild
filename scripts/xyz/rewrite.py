@@ -37,7 +37,11 @@ for root, _, names in os.walk(out):
     for name in names:
         if os.path.splitext(name)[1].lower() in TEXT:
             with open(os.path.join(root, name), encoding='utf-8', errors='ignore') as f:
-                if re.search(r'(?<![\w.])/mapthewild/', f.read()):
+                text = f.read()
+                # Also the forms the rewrite can't fix: an address in a pattern (\/mapthewild\/)
+                # and the bare base ('/mapthewild' joined to a path while the page runs).
+                if (re.search(r'(?<![\w.])/mapthewild/', text) or '\\/mapthewild\\/' in text
+                        or re.search(r'''["'`]/mapthewild["'`]''', text)):
                     left.append(name)
 print(f'rewrote {rewrites} links in {files} files')
 if left:
