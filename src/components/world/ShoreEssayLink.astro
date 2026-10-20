@@ -1,0 +1,5 @@
+---
+// Every source link remains usable without replacing the ongoing voyage.
+const props=Astro.props;
+---
+<a {...props} target="_blank" rel="noopener noreferrer"><slot />{props.target !== '_blank' && <span class="shore-sr-only"> (opens in a new tab)</span>}</a>

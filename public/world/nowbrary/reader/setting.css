@@ -1,0 +1,156 @@
+/* The place around the book. Paper, binding and turn-renderer styles stay in
+   shelf.css; these surfaces never participate in the page-turn compositor. */
+body {
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  background: radial-gradient(ellipse at 12% 0, #f5f4e8 0, transparent 65%), #e3e6dd;
+}
+.afternoon { z-index: -1; }
+.afternoon::after {
+  content: ''; position: absolute; inset: 0;
+  background: url('assets/paper-grain.svg') repeat; opacity: .32;
+}
+.window-light {
+  top: -35vh; right: -5vw; width: 61vw; height: 160vh;
+  transform: rotate(29deg);
+  background: linear-gradient(90deg, transparent 3%, #fff9df50 4% 47%, transparent 48% 51%, #fff9df50 52% 96%, transparent 97%);
+  filter: blur(2px);
+}
+.branch-shadow {
+  inset: -28% -23% 2% 31%; opacity: .038;
+  background-position: right top; transform: rotate(-6deg); filter: blur(5px);
+}
+.nowbrary { width: min(840px, calc(100% - 96px)); padding: 39px 0 28px; }
+.page-header { display: block; margin-bottom: 31px; padding: 0; }
+.shelf-wordmark {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 24px;
+  color: #5a6354; font: 11px/1.2 Georgia, serif; letter-spacing: .16em; text-transform: uppercase;
+}
+.nowbrary-mark { display: inline-flex; align-items: end; gap: 3px; height: 17px; }
+.nowbrary-mark i { display: block; width: 5px; height: 16px; border-radius: 1px; background: #88412f; }
+.nowbrary-mark i + i { height: 14px; background: #3a5147; transform: rotate(-10deg); transform-origin: bottom; }
+.shelf-introduction { display: flex; align-items: end; justify-content: space-between; gap: 34px; }
+.page-header h1 {
+  margin: 0 0 -3px -2px; color: #3e493d;
+  font-size: clamp(32px, 3.65vw, 47px); line-height: 1.12; letter-spacing: -.045em; font-weight: 400;
+}
+.shelf-introduction p { flex: 0 0 228px; margin: 0; font: 13px/1.65 Georgia, serif; text-wrap: pretty; color: #68705f; }
+.shelf-introduction p em { color: #68705f; }
+.bookcase {
+  gap: 12px; padding: 13px; border: 1px solid #b29b77; border-bottom: 4px solid #ae9168;
+  background: url('assets/oak-grain.svg') 0 0/640px 160px,
+    linear-gradient(100deg, #d1b68b, #e0c69c 34%, #c8aa7c 100%);
+  border-radius: 2px 2px 1px 1px;
+  box-shadow: inset 0 1px 0 #f6e6c3, inset 1px 0 0 #e7d3ac,
+    0 2px 0 #dec59d, 0 5px 0 #a68b62, 0 7px 0 #e2cba5,
+    5px 17px 15px -10px #4b4f3c60, 11px 28px 32px -20px #4b4f3c42;
+}
+.bookcase::before {
+  content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: linear-gradient(119deg, transparent 30%, #fff7d632 30.3% 58%, transparent 58.3% 59.5%, #fff7d632 59.8% 86%, transparent 86.3%);
+}
+.bookcase::after {
+  background-position: 145% 36%; background-size: 115% auto;
+  opacity: .035; filter: blur(3px);
+}
+.cubby {
+  padding: 0 15%;
+  background: linear-gradient(90deg, #a9a88e36 0, transparent 18%, #e6d9b91f 86%, #9d94752e),
+    linear-gradient(170deg, #b6bba6, #d1d0b9 60%, #d6c7a5);
+  box-shadow: inset 7px 10px 16px -6px #454c3d6b, inset -1px 0 0 #f2dfb178, inset 0 -1px 0 #a38b64;
+}
+.cubby::before {
+  inset: 0 auto 0 0; width: 8px; opacity: 1;
+  background: linear-gradient(90deg, #a68f6970, #ccb89450);
+  clip-path: polygon(0 0, 100% 7px, 100% calc(100% - 12px), 0 100%);
+}
+.cubby::after {
+  height: 12px; background: url('assets/oak-grain.svg') 0 0/640px 160px, linear-gradient(#c4b18c, #dec49b);
+  border-top: 1px solid #a89c7750; clip-path: polygon(8px 0, calc(100% - 4px) 0, 100% 100%, 0 100%);
+}
+.book { width: 32px; height: 90%; font-size: clamp(9px, 9cqw, 13px); }
+.book[data-variant="1"] { width: 29px; height: 79%; }
+.book::after { width: 63px; height: 9px; filter: blur(3px); background: #45473365; }
+.page-footer { padding: 27px 1px 0; font-size: 11px; }
+.page-footer a { color: #666e5e; }
+.page-footer .home-link { color: #77806f; }
+.page-footer a:hover { color: #3e493d; }
+
+/* A linen reading cloth on the same oak. One light direction and no ambient
+   animation: opening the book is what brings the surface into view. */
+.open-book::backdrop { background: #ddd6c7; backdrop-filter: none; }
+.reading-light {
+  filter: none;
+  background: linear-gradient(118deg, #fff3d545 0 40%, transparent 40.3% 42%, #fff3d52b 42.3% 71%, transparent 71.3%),
+    linear-gradient(#d2c3a35c, #d2c3a35c),
+    url('assets/oak-grain.svg') 0 0/900px 225px,
+    linear-gradient(135deg, #d4c6aa, #c4b69b);
+}
+.reading-surface {
+  position: absolute; left: 50%; top: calc(var(--reading-top, 85px) - 39px);
+  width: min(calc(var(--reading-width, 764px) + 108px), calc(100% - 30px));
+  height: calc(var(--reading-height, 570px) + 84px);
+  transform: translateX(-50%); pointer-events: none; opacity: var(--arrival, 0);
+  border: 1px solid #bac2ae; border-radius: 4px 5px 3px 4px;
+  background: linear-gradient(115deg, #edf0da50, transparent 60%),
+    repeating-linear-gradient(0deg, transparent 0 2px, #eff0dd09 2px 3px),
+    repeating-linear-gradient(90deg, transparent 0 2px, #394e3606 2px 3px), #aeb8a2;
+  box-shadow: inset 0 0 0 3px #b8c0ab, inset 0 0 0 4px #8c9a7d38,
+    0 1px 1px #626d4b47, 2px 4px 7px #6b694f20;
+}
+.reading-branches {
+  inset: -30% -30% 5% 38%; opacity: calc(var(--arrival, 0) * .055);
+  transform: rotate(-6deg); filter: blur(6px);
+}
+.reading-context {
+  position: absolute; left: 30px; top: 24px; margin: 0;
+  opacity: var(--arrival, 0); font: 12px/1.5 Georgia, serif; color: #5b614e;
+  pointer-events: none;
+}
+.close-book {
+  display: flex; align-items: center; gap: 7px; top: 16px; right: 28px;
+  min-height: 40px; padding: 6px 0; color: #48543f; font: 13px/1.5 Georgia, serif;
+}
+.close-book span { font-size: 19px; line-height: 1; }
+.close-book:hover { color: #293c29; }
+.reader-nav { color: #5d6852; }
+.reader-nav button { color: #47543e; }
+@media (min-width: 640px) {
+  .reader-nav { margin-top: 10px; }
+}
+
+@media (min-width: 640px) and (max-width: 900px) {
+  .nowbrary { width: calc(100% - 64px); }
+  .page-header h1 { font-size: 36px; }
+  .shelf-introduction p { flex-basis: 206px; font-size: 12px; }
+  .book { width: 28px; }
+  .book[data-variant="1"] { width: 26px; }
+}
+@media (max-width: 639px) {
+  .nowbrary { width: calc(100% - 40px); padding-top: 27px; }
+  .page-header { margin-bottom: 25px; }
+  .shelf-wordmark { margin-bottom: 22px; font-size: 10px; }
+  .shelf-introduction { display: block; }
+  .page-header h1 { font-size: 36px; line-height: 1.08; margin-bottom: 16px; letter-spacing: -.04em; }
+  .shelf-introduction p { font-size: 12px; max-width: 275px; line-height: 1.65; }
+  .shelf-introduction p em { display: inline; }
+  .bookcase { gap: 10px; padding: 11px; }
+  .book { width: 28px; }
+  .book[data-variant="1"] { width: 26px; }
+  .branch-shadow { inset: -10% -90% 20% 10%; }
+  .window-light { right: -30vw; width: 90vw; }
+  .page-footer { gap: 14px; font-size: 10px; padding-top: 24px; }
+  .about-link span { margin-left: 3px; }
+  .reading-surface { top: calc(var(--reading-top, 85px) - 22px); height: calc(var(--reading-height, 570px) + 48px); width: calc(100% - 18px); }
+  .reading-context { top: 21px; left: 18px; font-size: 10px; max-width: 48%; }
+  .close-book { top: 9px; right: 18px; font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .window-light, .branch-shadow, .reading-branches { animation: none; }
+}
+
+.gallery-reader .open-book::backdrop { background:#e5dcc4ed;opacity:var(--arrival,0); }
+.gallery-reader .reading-light { background:radial-gradient(ellipse at 38% 25%,#fff9e250,transparent 70%); }
+.gallery-link { margin-left:auto;font:12px/1.4 Georgia,serif;text-transform:none;letter-spacing:0;text-decoration:none;color:#66705c; }
+.gallery-link:hover { text-decoration:underline;text-underline-offset:4px; }

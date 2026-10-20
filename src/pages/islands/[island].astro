@@ -2,6 +2,9 @@
 import { getCollection } from 'astro:content'
 import Layout from '../../layouts/Layout.astro'
 import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import { standaloneEssays } from '../../lib/standaloneEssays'
+import { futureDadsEpisodes, FUTURE_DADS_SITE } from '../../lib/futureDadsEpisodes'
+import { getRoutePosts, getTerritoryRouteMode } from '../../lib/voyageGraph'
 
 const islandMeta: Record<string, { name: string; description: string }> = {
   map: {
@@ -15,6 +18,10 @@ const islandMeta: Record<string, { name: string; description: string }> = {
   nowbrary: {
     name: 'Nowbrary',
     description: 'Living constellation of books'
+  },
+  futuredads: {
+    name: 'Future Dads Club',
+    description: 'Because you want to become a present dad'
   }
 }
 
@@ -28,6 +35,9 @@ export async function getStaticPaths() {
     post.data.islands?.forEach(island => islands.add(island))
   })
 
+  // Future Dads Club's episodes live on their own site but get a territory page here.
+  islands.add('futuredads')
+
   return Array.from(islands).map(island => ({
     params: { island },
     props: { island }
@@ -36,40 +46,6 @@ export async function getStaticPaths() {
 
 const { island } = Astro.props
 const meta = islandMeta[island] || { name: island, description: '' }
-
-// Standalone HTML essays in public/ (outside content collection)
-const standaloneEssays = [
-  {
-    slug: '_standalone_sorting-class',
-    href: '/mapthewild/the-sorting-class.html',
-    data: {
-      title: 'The Sorting Class',
-      date: new Date('2026-03-08'),
-      description: 'How the industrial model sorted knowledge into employability tiers — and what craft traditions lost in the process.',
-      islands: ['map'],
-    },
-  },
-  {
-    slug: '_standalone_glass-blower',
-    href: '/mapthewild/the-glass-blower.html',
-    data: {
-      title: 'The Glass Blower',
-      date: new Date('2026-03-10'),
-      description: 'A conversation about what happens when nobody\'s watching — and the kind of knowledge that can\'t be recorded.',
-      islands: ['map'],
-    },
-  },
-  {
-    slug: '_standalone_mapping-problem',
-    href: '/mapthewild/the-mapping-problem.html',
-    data: {
-      title: 'The Mapping Problem',
-      date: new Date('2026-04-11'),
-      description: 'AI\'s bottleneck isn\'t the tool. It\'s finding where to point it.',
-      islands: ['territory'],
-    },
-  },
-]
 
 const posts = await getCollection('posts')
 const collectionPosts = posts
@@ -80,17 +56,20 @@ const collectionPosts = posts
     data: post.data,
   }))
 
-const standaloneForIsland = standaloneEssays
+const standaloneForIsland = [...standaloneEssays, ...futureDadsEpisodes]
   .filter(essay => essay.data.islands.includes(island))
 
-const islandPosts = [...collectionPosts, ...standaloneForIsland]
-  .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf())
+// A series reads in order (part 1 first); dated territories list newest first.
+const isSeries = getTerritoryRouteMode(island) === 'series'
+const inReadingOrder = getRoutePosts([...collectionPosts, ...standaloneForIsland])
+const islandPosts = isSeries ? inReadingOrder : [...inReadingOrder].reverse()
 
 function formatDate(date: Date) {
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
-    day: 'numeric'
+    day: 'numeric',
+    timeZone: 'UTC'
   })
 }
 ---
@@ -112,6 +91,9 @@ function formatDate(date: Date) {
       {meta.description && (
         <p class="text-xl text-ink-muted">{meta.description}</p>
       )}
+      {island === 'futuredads' && (
+        <p class="mt-4"><a href={FUTURE_DADS_SITE}>Listen on futuredadsclub.com →</a></p>
+      )}
     </header>
 
     <div class="space-y-4">
@@ -124,7 +106,7 @@ function formatDate(date: Date) {
           class={`post-item post-item-${colorClass}`}
         >
           <time class="post-item-date">
-            {formatDate(post.data.date)}
+            {isSeries && `Part ${index + 1} of ${islandPosts.length} · `}{formatDate(post.data.date)}
           </time>
           <h2 class="post-item-title">
             {post.data.title}

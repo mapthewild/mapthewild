@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content'
 import Layout from '../../layouts/Layout.astro'
 import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import { standaloneEssays } from '../../lib/standaloneEssays'
+import { futureDadsEpisodes } from '../../lib/futureDadsEpisodes'
 
 const islandMeta: Record<string, { name: string; description: string; dedicatedPage?: boolean }> = {
   nowbrary: {
@@ -15,6 +17,10 @@ const islandMeta: Record<string, { name: string; description: string; dedicatedP
   territory: {
     name: 'Territory',
     description: 'Developed work — established, complete, structured'
+  },
+  futuredads: {
+    name: 'Future Dads Club',
+    description: 'Because you want to become a present dad'
   },
   sundayritual: {
     name: 'Sunday Ritual',
@@ -33,6 +39,17 @@ publishedPosts.forEach(post => {
     islandCounts[island] = (islandCounts[island] || 0) + 1
   })
 })
+
+// Standalone essays count too, so these numbers match each territory page.
+// Only for territories that have a page (pages come from collection posts).
+standaloneEssays.forEach(essay => {
+  essay.data.islands.forEach(island => {
+    if (islandCounts[island]) islandCounts[island] += 1
+  })
+})
+
+// Future Dads Club's episodes live on their own site; its territory page lists them.
+islandCounts['futuredads'] = futureDadsEpisodes.length
 
 // Get islands that have posts, ordered by count
 const postBasedIslands = Object.entries(islandCounts)

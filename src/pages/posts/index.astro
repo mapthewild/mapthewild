@@ -1,40 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import PostVisualCard from '../../components/PostVisualCard.astro';
+import { standaloneEssays } from '../../lib/standaloneEssays';
 
 const posts = await getCollection('posts');
 const publishedPosts = posts.filter(post => !post.data.draft);
-
-// Standalone HTML essays in public/ (outside content collection)
-const standaloneEssays = [
-  {
-    slug: '_standalone_sorting-class',
-    href: '/mapthewild/the-sorting-class.html',
-    data: {
-      title: 'The Sorting Class',
-      date: new Date('2026-03-08'),
-      description: 'How the industrial model sorted knowledge into employability tiers — and what craft traditions lost in the process.',
-    },
-  },
-  {
-    slug: '_standalone_glass-blower',
-    href: '/mapthewild/the-glass-blower.html',
-    data: {
-      title: 'The Glass Blower',
-      date: new Date('2026-03-10'),
-      description: 'A conversation about what happens when nobody\'s watching — and the kind of knowledge that can\'t be recorded.',
-    },
-  },
-  {
-    slug: '_standalone_mapping-problem',
-    href: '/mapthewild/the-mapping-problem.html',
-    data: {
-      title: 'The Mapping Problem',
-      date: new Date('2026-04-11'),
-      description: 'AI\'s bottleneck isn\'t the tool. It\'s finding where to point it.',
-    },
-  },
-];
 
 const allPosts = [
   ...publishedPosts.map(post => ({
@@ -46,86 +17,30 @@ const allPosts = [
 ];
 
 const sortedPosts = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-
-function formatDate(date: Date) {
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  });
-}
 ---
 
 <Layout title="Posts - Map the Wild">
-  <main class="relative z-10 max-w-2xl mx-auto px-6 py-16 md:py-24">
+  <main class="relative z-10 max-w-5xl mx-auto px-6 py-16 md:py-24">
     <h1 class="text-3xl md:text-4xl font-display text-ink mb-12">
       All Posts <span class="text-ink-muted">({sortedPosts.length})</span>
     </h1>
 
-    <div class="space-y-4">
-      {sortedPosts.map((post) => (
-        <a
+    <div class="post-card-stack">
+      {sortedPosts.map((post, index) => (
+        <PostVisualCard
+          post={post}
           href={post.href}
-          class="post-item"
-        >
-          <time class="post-item-date">
-            {formatDate(post.data.date)}
-          </time>
-          <h2 class="post-item-title">
-            {post.data.title}
-          </h2>
-          <p class="post-item-excerpt">
-            {post.data.description}
-          </p>
-        </a>
+          featured={index === 0}
+          imageSide={index % 2 === 0 ? 'left' : 'right'}
+        />
       ))}
     </div>
   </main>
 </Layout>
 
 <style>
-  /* Hover items with colored left border - from design system */
-  .post-item {
-    display: block;
-    padding: var(--space-lg);
-    background: var(--color-white);
-    border-radius: var(--radius-lg);
-    border-left: 3px solid var(--color-ochre);
-    box-shadow: var(--shadow-card);
-    transition: all 0.2s ease;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  .post-item:hover {
-    transform: translateX(4px);
-    background: rgba(196, 160, 53, 0.05);
-    box-shadow: var(--shadow-hover);
-  }
-
-  .post-item-date {
-    font-size: 13px;
-    color: var(--color-ink-muted);
-    display: block;
-    margin-bottom: var(--space-sm);
-  }
-
-  .post-item-title {
-    font-size: 18px;
-    font-family: 'Fraunces', Georgia, serif;
-    font-variation-settings: 'WONK' 1, 'SOFT' 50;
-    color: var(--color-ochre);
-    margin-bottom: var(--space-sm);
-    transition: color 0.2s;
-  }
-
-  .post-item:hover .post-item-title {
-    color: var(--color-ochre-dark);
-  }
-
-  .post-item-excerpt {
-    font-size: 15px;
-    color: var(--color-ink-light);
-    line-height: 1.6;
+  .post-card-stack {
+    display: grid;
+    gap: var(--space-lg);
   }
 </style>
