@@ -1,0 +1,286 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+
+const GAME = '/mapthewild/soulfield-oasis/'
+const PDF_COLOR = '/mapthewild/soulfield-oasis/soulfield-oasis-kids-full-color.pdf'
+const PDF_LOW = '/mapthewild/soulfield-oasis/soulfield-oasis-kids-daylight.pdf'
+---
+
+<Layout title="Soulfield Oasis - Map the Wild">
+  <main class="relative z-10 max-w-2xl mx-auto px-6 py-16 md:py-24">
+    <Breadcrumbs
+      items={[
+        { label: 'Home', href: '/mapthewild/' },
+        { label: 'Territories', href: '/mapthewild/islands' },
+        { label: 'Soulfield Oasis' }
+      ]}
+    />
+
+    <header class="mb-8">
+      <h1 class="text-3xl md:text-4xl font-display text-ink mb-4">
+        Soulfield Oasis
+      </h1>
+      <p class="text-lg text-ink-light italic">
+        Soulfield is a short card game for two players to duke it out on the soul field. Players create the fields they play in and attempt to reduce their opposing player's soul ward. We are not responsible for any irreparable harm to your soul that may or may not occur. Will you wield ice and lightning to outmaneuver your opponent and destroy their foothold at the Soul Oasis. Play it here, or print and play the game at your table.
+      </p>
+    </header>
+
+    <!-- App Link Card -->
+    <a href={GAME} class="app-card group">
+      <div class="app-card-image">
+        <img
+          src="/mapthewild/images/territory-soulfield.jpeg"
+          alt="A Soulfield Oasis board drawn to look like stained glass, with Ice, Fire and Lightning cards around the edge, Strike and Frozen Ground cards in the middle, and green and red pieces on them"
+          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+      </div>
+      <div class="app-card-content">
+        <span class="app-card-label">Play Soulfield Oasis</span>
+        <span class="app-card-arrow">&rarr;</span>
+      </div>
+    </a>
+
+    <p class="print-line">
+      <strong>Print and play:</strong>
+      <a href={PDF_COLOR}>color PDF</a> &middot; <a href={PDF_LOW}>low-ink PDF</a>
+      <span class="print-note">15 pages each. In your print settings, pick "Actual size" (100%).</span>
+    </p>
+
+    <!-- Content Section -->
+    <article class="prose mt-12">
+      <h2>Why I made it</h2>
+      <p>
+        I built this game to help my kid stay interested in chess, initially I wanted to add elemental damage to chess pieces and that got complex quick. I definitely got an appreciation for chess and its mathematical foundation. The game is meant to help kids plan ahead by laying out the field and thinking through the possibilities, and then following through on the strategies that may or may not be possible by that forethought. Being able to switch their plan midgame was something I noticed was a little challenging for 6 to 7 year olds. So my hope is that this simple game can allow for that practice.
+      </p>
+      <p>
+        The idea is that further cards can be shuffled and introduced to the board to allow more combinations and to ensure the game stays fresh. I play tested the game using AI to ensure the maths made sense, and that combinations didn't allow for unfair plays or stale games. Most challenging was how to visually communicate what is happening in the digital version of the game. With the print and play, I could simply introduce the rules and calculate the moves. Approximating that digitally made me gain an appreciation for both board games, and the designers who port them to a digital medium.
+      </p>
+      <p>
+        I'll be working through the game for some time, iterating the play cards, the visuals which I believe are a little busy, and the rules to ensure the simplest version is accessible to children, and to appropriately layer on the kind of rules that make it a little more strategic and fun.
+      </p>
+
+      <hr />
+
+      <h2>Why it's fun</h2>
+      <p>
+        <strong>All is revealed.</strong> This is a fast moving game with no hidden movement, once the board is set, the game becomes about your ability to direct and misdirect your opponent.
+      </p>
+      <p>
+        When you put a marker on a card, the other player can't put a marker on the card across from it. Each turn you pick between the card you want and the card you want to keep your opponent away from.
+      </p>
+      <p>
+        If your ice covers all 9 middle spaces, one Lightning card can take 9 hitpoints from your opponent.
+      </p>
+      <p>
+        The Storm moves one step around the edge each round and blocks the card it's on. If it lands at a corner, then both soul wards lose 1 hitpoint. Race to use the most impactful middle cards, they leave the game once someone wins them.
+      </p>
+
+      <hr />
+
+      <h2>The rules</h2>
+      <p>
+        The print and play is just the Kids game. For a different taste, try the online game, which also has more options including Light and Shadow cards. It's a work in progress, so share your feedback!
+      </p>
+      <p>These rules are for the Kids game. To play it online, open "Game settings" under "New game" and pick "Game: Kids".</p>
+      <p><strong>To win.</strong> Each player has a soul ward. It starts at 30, and your objective is to get the other player's soul ward to 0. The game ends as soon as a soul ward gets to 0, even in the middle of a step.</p>
+      <p><strong>Get ready.</strong></p>
+      <ul class="setup-list">
+        <li>One player is Green and the other is Red. Each player has a soul ward track. Your player token on it shows your soul ward.</li>
+        <li>Mix the 14 middle cards. Put 9 face up, 1 on each middle space, and the other 5 face up in a pile.</li>
+        <li>Put the 12 edge cards (Ice, Fire and Lightning) on the 12 edge spaces. Red puts down 1 card, then Green puts down 2, then Red 2, and so on. Red puts down the last card. Don't put 2 cards of the same kind next to each other on the same edge.</li>
+        <li>Put the Storm on the edge card next to the words "Storm starts here". Green goes first in round 1.</li>
+      </ul>
+      <p><strong>Each round has 4 steps.</strong></p>
+      <ol>
+        <li>
+          <strong>Put down markers.</strong> Take turns putting your 3 markers on edge cards: 1, then 2, then 3. You can't put a marker on a card if it already has one, if the Storm is on it, or if the other player has a marker on the card across from it.
+        </li>
+        <li>
+          <strong>Do what each card says,</strong> in the order the markers were put down. Each card has 3 middle spaces in front of it. Ice stays on the board from round to round until a card takes it off.
+          <ul>
+            <li><strong>Ice:</strong> take all existing ice tokens off those 3 spaces on the row/column that your marker is on. Replace it with your ice tokens on all 3 spaces.</li>
+            <li><strong>Fire:</strong> the other player's soul ward loses 2. It also takes all ice tokens off the 3 spaces on the row/column that your marker is on. Be careful, it can take yours off too.</li>
+            <li><strong>Lightning:</strong> If played after your ice tokens are placed, you can chain damage through your ice on the 3 spaces, plus any of your ice directly above, below, left or right of it, and so on. Once chained damage is counted, pick up your ice tokens in the chain. The other player's soul ward loses 1 for each piece of ice the lightning chained through, or 1 if you have no ice there.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Win middle cards.</strong> You win a middle card if it is in front of 2 cards with your markers: one on the top or bottom edge, and one on the left or right edge. If you win a Strike, the other player's soul ward loses the number on it. If you win Frozen Ground, take any ice off the middle spaces, then put your ice on all 9. Then take the card you won out of the game, and put the top card of the pile on its space. The player who went first this round does their middle cards first.
+        </li>
+        <li>
+          <strong>End the round.</strong> Take your markers back. Move the Storm one step along the Storm arrows on the board. Corners count as steps. If it moves onto a corner, both soul wards lose 1. The other player goes first next round.
+        </li>
+      </ol>
+      <p>The print and play has the full rules, with pictures.</p>
+
+      <hr />
+
+      <h3>Credits</h3>
+      <p>Game design by Moe. AI tools helped make this game.</p>
+      <p>
+        Putting down markers, blocking the card across from your marker, winning the middle card in front of 2 cards with your markers, and the Storm that moves around the edge come from the card game Targi, by Andreas Steiger (Kosmos, 2012). Taking turns to build the board comes from Twilight Imperium, by Christian T. Petersen (Fantasy Flight Games, 1997).
+      </p>
+      <p>All pictures were drawn by computer code written for this game.</p>
+
+      <p>
+        <a href={GAME} class="cta-link">Play Soulfield Oasis &rarr;</a>
+      </p>
+    </article>
+  </main>
+</Layout>
+
+<style>
+  .app-card {
+    display: block;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 2px solid var(--color-ochre);
+    background: var(--color-white);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.2s;
+  }
+
+  .app-card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+  }
+
+  .app-card-image {
+    aspect-ratio: 16/9;
+    overflow: hidden;
+  }
+
+  .app-card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md) var(--space-lg);
+    border-top: 1px solid var(--color-grid);
+    background: var(--color-cream);
+  }
+
+  .app-card-label {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.125rem;
+    color: var(--color-ochre);
+    font-weight: 500;
+  }
+
+  .app-card-arrow {
+    font-size: 1.25rem;
+    color: var(--color-ochre);
+    transition: transform 0.2s;
+  }
+
+  .app-card:hover .app-card-arrow {
+    transform: translateX(4px);
+  }
+
+  .print-line {
+    margin-top: var(--space-md);
+    color: var(--color-ink-light);
+    line-height: 1.6;
+  }
+
+  .print-line a {
+    color: var(--color-ochre);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .print-line a:hover {
+    color: var(--color-ochre-dark);
+  }
+
+  .print-note {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--color-ink-muted);
+  }
+
+  .prose {
+    color: var(--color-ink-light);
+    line-height: 1.7;
+  }
+
+  .prose h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: 'WONK' 1, 'SOFT' 50;
+    font-size: 1.5rem;
+    color: var(--color-ink);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose h3 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: 'WONK' 1, 'SOFT' 50;
+    font-size: 1.25rem;
+    color: var(--color-ink);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .prose p {
+    margin-bottom: 1.25rem;
+  }
+
+  .prose ol {
+    list-style: decimal;
+    padding-left: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .prose ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+    margin: 0.5rem 0;
+  }
+
+  .prose li {
+    margin-bottom: 0.75rem;
+  }
+
+  .prose ul li {
+    margin-bottom: 0.4rem;
+  }
+
+  .prose .setup-list {
+    margin-bottom: 1.25rem;
+  }
+
+  .prose strong {
+    color: var(--color-ink);
+  }
+
+  .prose a {
+    color: var(--color-ochre);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .prose a:hover {
+    color: var(--color-ochre-dark);
+  }
+
+  .prose hr {
+    border: none;
+    border-top: 1px solid var(--color-grid);
+    margin: 2.5rem 0;
+  }
+
+  .prose .cta-link {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-ochre);
+    color: var(--color-white) !important;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+
+  .prose .cta-link:hover {
+    background: var(--color-ochre-dark);
+  }
+</style>

@@ -47,7 +47,6 @@ export async function getStaticPaths() {
       islandLink = {
         name: islandMeta[primaryIsland] || primaryIsland,
         href: `/mapthewild/islands/${primaryIsland}`,
-        detail: isSeries ? (route.length === 2 ? 'both parts' : `all ${route.length} parts`) : 'all posts',
       }
     } else {
       // No island: chronological nav across all posts
@@ -128,9 +127,9 @@ const { Content } = await post.render();
           href={islandLink.href}
           class="flex-1 group text-left hover-shift hover-shift-verdigris p-3 -m-3 rounded-md"
         >
-          <div class="text-sm text-ink-muted mb-2">← Back to</div>
+          <div class="text-sm text-ink-muted mb-2">← All</div>
           <div class="text-lg text-ink-light group-hover:text-verdigris transition-colors">
-            {islandLink.name} · {islandLink.detail}
+            {islandLink.name} posts
           </div>
         </a>
       ) : (
@@ -152,9 +151,9 @@ const { Content } = await post.render();
           href={islandLink.href}
           class="flex-1 group text-right hover-shift hover-shift-verdigris p-3 -m-3 rounded-md"
         >
-          <div class="text-sm text-ink-muted mb-2">Back to →</div>
+          <div class="text-sm text-ink-muted mb-2">All →</div>
           <div class="text-lg text-ink-light group-hover:text-verdigris transition-colors">
-            {islandLink.name} · {islandLink.detail}
+            {islandLink.name} posts
           </div>
         </a>
       ) : (

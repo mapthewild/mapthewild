@@ -11,11 +11,11 @@ export default defineConfig({
   site: 'https://mapthewild.github.io',
   base: '/mapthewild',
   // Nowbrary became two posts (Oct 2026); the old addresses of parts 3 to 5 forward.
-  // Moe's own /nowbrary, as the posts suggest for every reader (Oct 2026).
   redirects: {
     '/posts/nowbrary-architecture': '/mapthewild/posts/starting-your-nowbrary',
     '/posts/what-nowbrary-isnt': '/mapthewild/posts/nowbrary-living-constellation',
     '/posts/sharing-your-nowbrary': '/mapthewild/posts/starting-your-nowbrary',
+    // Moe's own /nowbrary, as the posts suggest for every reader (Oct 2026).
     '/nowbrary': 'https://nowbrary.com/gallery#moe',
   },
   markdown: {
