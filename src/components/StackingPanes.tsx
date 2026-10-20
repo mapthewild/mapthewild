@@ -283,7 +283,7 @@ export default function StackingPanes() {
     // Click handler - works in both parent and iframe contexts
     const handleClick = (event: Event) => {
       const target = event.target as HTMLElement;
-      if (!target.classList.contains('bracket-link')) return;
+      if (!target.classList?.contains('bracket-link')) return;
 
       event.preventDefault();
       event.stopPropagation();
@@ -350,7 +350,7 @@ export default function StackingPanes() {
 
     const handleMouseEnter = (event: Event) => {
       const target = event.target as HTMLElement;
-      if (!target.classList.contains('bracket-link')) return;
+      if (!target.classList?.contains('bracket-link')) return;
 
       const content = target.getAttribute('data-content');
       const trigger = target.getAttribute('data-trigger');
@@ -378,7 +378,7 @@ export default function StackingPanes() {
 
     const handleMouseLeave = (event: Event) => {
       const target = event.target as HTMLElement;
-      if (!target.classList.contains('bracket-link')) return;
+      if (!target.classList?.contains('bracket-link')) return;
 
       if (hoverTimeoutRef.current) {
         clearTimeout(hoverTimeoutRef.current);
@@ -401,7 +401,7 @@ export default function StackingPanes() {
       // Handle Enter/Space on bracket links for keyboard accessibility
       if (event.key === 'Enter' || event.key === ' ') {
         const target = event.target as HTMLElement;
-        if (!target.classList.contains('bracket-link')) return;
+        if (!target.classList?.contains('bracket-link')) return;
 
         event.preventDefault();
         const content = target.getAttribute('data-content');

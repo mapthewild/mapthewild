@@ -1,5 +1,7 @@
 /* Import Fraunces for display headings with variable axes */
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..700,0..100,0..1&display=swap');
+@import './voyage-header.css';
+@import './editorial-cards.css';
 
 @tailwind base;
 @tailwind components;

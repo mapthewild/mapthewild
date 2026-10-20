@@ -1,0 +1,28 @@
+---
+import { assetPath } from '../lib/assetPath';
+
+type Props = {
+  title: string;
+  description: string;
+  href: string;
+  image: string;
+  selected?: boolean;
+};
+
+const { title, description, href, image, selected = false } = Astro.props;
+const src = image.startsWith('http')
+  ? image
+  : assetPath(image.replace(/^\/mapthewild\//, '').replace(/^\//, ''));
+---
+
+<a class:list={['mtw-territory-card', selected && 'is-selected']} href={href}>
+  <span class="mtw-territory-card__image-wrap">
+    <img class="mtw-territory-card__image" src={src} alt="" loading="lazy" decoding="async" />
+  </span>
+
+  <span class="mtw-territory-card__body">
+    <span class="mtw-territory-card__title">{title}</span>
+    <span class="mtw-territory-card__ornament" aria-hidden="true"></span>
+    <span class="mtw-territory-card__description">{description}</span>
+  </span>
+</a>

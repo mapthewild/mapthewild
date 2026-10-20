@@ -1,0 +1,19 @@
+{
+  "_about": "Moe's nowbrary shelf, from ~/Documents/mapthewild/NOWBRARY-SHELF.md (13 Oct 2026). The 'why' text is Moe's, copied exactly as he wrote it, typos included. Do not edit it. Titles and authors were looked up by Claude.",
+  "books": [
+    {
+      "id": "pedagogy-of-the-oppressed",
+      "title": "Pedagogy of the Oppressed",
+      "author": "Paulo Freire",
+      "why": "i found it while walking the open office halls of a past employer and i found a tattered copy, stood their thumbing through it when i realized i'd gone 3 chapters in, it's probably what had me understand what facilitation was and the shapes it took and probably planted a seed on what good facilitation could be",
+      "highlights": []
+    },
+    {
+      "id": "nasreddin-hoca",
+      "title": "Nasreddin Hoca stories",
+      "author": "",
+      "why": "were the kind of childhood stories that had me wonder about the people who thought differently, and the way they subverted the known world by being playful",
+      "highlights": []
+    }
+  ]
+}
