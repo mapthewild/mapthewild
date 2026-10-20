@@ -14,7 +14,7 @@ const { showMode = true } = Astro.props;
     const link=(event.target as Element)?.closest?.('a');
     if(!link || event.defaultPrevented || event instanceof MouseEvent && (event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||event.button!==0))return;
     const target=new URL(link.href,location.href);
-    if(target.origin!==location.origin||!/^\/mapthewild\/explore\/?$/.test(target.pathname))return;
+    if(target.origin!==location.origin||target.pathname.replace(/\/$/,'')+'/'!=='/mapthewild/explore/')return;
     const path=location.pathname+location.search+location.hash;
     try{
       sessionStorage.setItem('mtw-read-return',JSON.stringify({href:safeReadHref(path),scroll:window.scrollY}));

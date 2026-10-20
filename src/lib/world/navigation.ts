@@ -82,5 +82,5 @@ export function parseMemory(value: string|null): WorldMemory|null {
   } catch{return null;}
 }
 export function safeReadHref(value:unknown) {
-  return typeof value==='string'&&value.startsWith('/mapthewild/')&&!value.startsWith('/mapthewild/explore')&&!/[\\\r\n]/.test(value)?value:'/mapthewild/';
+  return typeof value==='string'&&value.startsWith('/mapthewild/')&&!value.startsWith('//')&&!value.startsWith('/mapthewild/explore')&&!/[\\\r\n]/.test(value)?value:'/mapthewild/';
 }
