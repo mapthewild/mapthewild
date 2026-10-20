@@ -25,3 +25,10 @@
 .has-painted-visit .ashore-actions>div,.has-painted-visit .inside-actions>div{background:#f3eddbed;backdrop-filter:blur(8px)}
 .has-painted-visit .world-footer{font-size:8px}
 @media(max-width:600px){.has-painted-visit .ashore-caption,.has-painted-visit .inside-caption{top:78px;left:20px;padding:8px 11px;max-width:255px}.has-painted-visit .ashore-caption h1,.has-painted-visit .inside-caption h1{font-size:20px}.has-painted-visit .foot-pin{font-size:10px!important;padding:9px 12px;gap:10px}}
+/* A line from each reader under the shelf name (Moe, 20 Oct): shown in the painted visit too. */
+.has-painted-visit .inside-caption p.inside-line,.has-painted-visit .inside-caption p.inside-cite{display:block}
+.inside-caption p.inside-line{max-width:270px;margin:8px 0 0;font:italic 13px/1.55 Georgia,serif;color:#f5edd9}
+.inside-caption p.inside-cite{max-width:270px;margin:6px 0 0;font:11px/1.45 Georgia,serif;font-style:normal;opacity:.85}
+@media(max-width:600px){.inside-caption p.inside-line{font-size:11.5px;max-width:230px}.inside-caption p.inside-cite{font-size:10px}}
+/* On a laptop, "Choose a book" sits beside the shelf buttons so the bar stays clear of the lower shelves. */
+@media(min-width:601px){.inside-actions{display:grid;grid-template-columns:auto auto;align-items:center;column-gap:8px;bottom:34px}.inside-actions>p{grid-column:1/-1}.inside-actions .choose-book{margin-top:0}}

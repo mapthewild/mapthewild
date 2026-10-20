@@ -51,11 +51,19 @@ for (const [name, viewport] of [['laptop', { width: 1280, height: 800 }], ['phon
     await prose.waitFor({ state: 'visible', timeout: 10000 });
     const text = await prose.innerText();
     if (!text.includes('On walks in my neighbourhood')) throw new Error('the post text is not in the reader');
+    const full = await page.locator('dialog.shore-reader.is-full-page').count();
+    if (name === 'phone') {
+      if (!full) throw new Error('on a phone the post should open as a full page');
+      await page.locator('.shore-view-toggle').first().click(); await wait(1500);
+      if (!(await page.locator('.shore-lens-rim').first().isVisible())) throw new Error('no lens after choosing the spyglass');
+      return 'opened as a full page; the spyglass is one tap away';
+    }
+    if (full) throw new Error('on a laptop the post should open in the spyglass');
     if (!(await page.locator('.shore-lens-rim').first().isVisible())) throw new Error('no lens rim after the entrance');
     return 'writing and lens visible after 4 s';
   });
   if (name === 'laptop') {
-    await step('move the lens; the writing holds still', async () => {
+    await step('move the lens over the writing, which stays put', async () => {
       const lens0 = await box('.shore-lens-rim'), head0 = await box('.shore-essay-heading');
       await page.mouse.move(400, 400); await wait(600);
       await page.mouse.move(900, 450); await wait(900);
@@ -86,13 +94,13 @@ for (const [name, viewport] of [['laptop', { width: 1280, height: 800 }], ['phon
     return `place ${(before * 100).toFixed(0)}% then ${(after * 100).toFixed(0)}%`;
   });
   await step('switch to "Starting your Nowbrary"', async () => {
-    await page.locator('nav[aria-label="Nowbrary essays"] >> text=Starting').first().click(); await wait(1500);
+    await page.locator('nav[aria-label="Nowbrary posts"] >> text=Starting').first().click(); await wait(1500);
     const text = (await page.locator('.shore-essay-prose:visible').first().innerText()).replace(/\s+/g, ' ');
     if (!text.includes('nowbrary usually fits in one bookcase')) throw new Error('part 2 text not shown');
     return 'part 2 shown in the lens';
   });
   await step('lower the spyglass, back on the boat', async () => {
-    await page.locator('button[aria-label="Close island notes"]').first().click(); await wait(1500);
+    await page.locator('button[aria-label="Close the posts"]').first().click(); await wait(1500);
     if (await page.locator('.shore-essay-prose').first().isVisible().catch(() => false)) throw new Error('reader still open');
     return 'reader closed';
   });
@@ -132,10 +140,10 @@ for (const [name, viewport] of [['laptop', { width: 1280, height: 800 }], ['phon
   });
   await step('close the book and walk back to the boat', async () => {
     await page.keyboard.press('Escape'); await wait(1500);
-    await page.locator('nav[aria-label="Walk between the shelves"] button', { hasText: /Courtyard/ }).first().click();
-    await page.getByRole('button', { name: /Back to boat/ }).waitFor({ state: 'visible', timeout: 30000 });
-    await page.waitForFunction(() => { const b = [...document.querySelectorAll('nav[aria-label="Explore Nowbrary on foot"] button')].find(x => /Back to boat/.test(x.textContent)); return b && !b.disabled; }, null, { timeout: 30000 });
-    await page.getByRole('button', { name: /Back to boat/ }).click(); await wait(6000);
+    await page.locator('nav[aria-label="Walk between the shelves"] button', { hasText: /Go outside/ }).first().click();
+    await page.locator('nav[aria-label="Explore Nowbrary on foot"] button', { hasText: /Back to the boat/ }).waitFor({ state: 'visible', timeout: 30000 });
+    await page.waitForFunction(() => { const b = [...document.querySelectorAll('nav[aria-label="Explore Nowbrary on foot"] button')].find(x => /Back to the boat/.test(x.textContent)); return b && !b.disabled; }, null, { timeout: 30000 });
+    await page.locator('nav[aria-label="Explore Nowbrary on foot"] button', { hasText: /Back to the boat/ }).click(); await wait(6000);
     return 'boat';
   });
   record.views.push(view);
