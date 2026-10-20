@@ -32,3 +32,7 @@
 @media(max-width:600px){.inside-caption p.inside-line{font-size:11.5px;max-width:230px}.inside-caption p.inside-cite{font-size:10px}}
 /* On a laptop, "Choose a book" sits beside the shelf buttons so the bar stays clear of the lower shelves. */
 @media(min-width:601px){.inside-actions{display:grid;grid-template-columns:auto auto;align-items:center;column-gap:8px;bottom:34px}.inside-actions>p{grid-column:1/-1}.inside-actions .choose-book{margin-top:0}}
+/* Big enough to tap on a phone (Doomcheck 0.5, run 2026-10-20-01). */
+.landing-close{width:40px;height:40px;top:6px;right:9px}
+.shelf-titles-close{min-width:40px;min-height:40px;top:0;right:4px}
+.world-mode>a,.world-mode>span{min-height:36px;display:inline-flex;align-items:center}

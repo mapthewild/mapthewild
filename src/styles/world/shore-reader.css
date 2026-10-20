@@ -122,3 +122,6 @@
 }
 @media(pointer:coarse){.shore-mouse-hint{display:none}}
 @media(prefers-reduced-motion:reduce){.shore-reader *{animation:none!important;transition:none!important}.has-shore-reading .world-canvas{transform:none;transition:none;filter:none}}
+/* Big enough to tap on a phone (Doomcheck 0.5, run 2026-10-20-01). */
+.shore-reading-toolbar button{min-width:40px;min-height:40px;justify-content:center}
+.shore-plain-link{padding-block:10px}
