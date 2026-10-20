@@ -13,7 +13,8 @@
     "test:run": "vitest run",
     "test:coverage": "vitest --coverage",
     "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
-    "lint:fix": "eslint src --ext .ts,.tsx,.js,.jsx --fix"
+    "lint:fix": "eslint src --ext .ts,.tsx,.js,.jsx --fix",
+    "sync:shelves": "node scripts/sync-world-shelves.mjs"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.0",

@@ -2,12 +2,15 @@ import {readFile, mkdir, writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {homedir} from 'node:os';
 import {adaptWorldReader} from './adapt-world-reader.mjs';
 
 // Only the reviewed public runtime is included. Never recurse through the
 // shelf workspace: it also holds source material and private Readwise data.
 const project = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const source = resolve(project, '../nowbrary-shelf/experience');
+// The reviewed Nowbrary source is nowbrary.com's folder, named in full so the copy
+// works from any checkout of this site. NOWBRARY_SOURCE points it elsewhere.
+const source = resolve(process.env.NOWBRARY_SOURCE || resolve(homedir(), 'Documents/mapthewild/nowbrary-shelf/experience'));
 const manifest = await readFile(resolve(source, '../build/PUBLISH-MANIFEST.txt'), 'utf8');
 const entries = manifest.split('\n').filter(line => /^[a-f0-9]{64}  /.test(line)).map(line => [line.slice(0,64), line.slice(66)]);
 if (!entries.length) throw new Error('No reviewed shelf files found.');
