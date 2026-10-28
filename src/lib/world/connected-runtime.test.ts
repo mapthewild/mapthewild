@@ -40,4 +40,22 @@ describe('crossing when the other website is unavailable',()=>{
   const saved=JSON.parse(sessionStorage.getItem('journey:bookmark:'+accepted.trail[0].id)!);
   expect(saved.href).toBe(location.pathname+location.search);expect(saved.scroll).toBe(0);
  });
+ it('returns a reader who left from an article to that article at the same place',async()=>{
+  const local=structuredClone(config);local.sites.mapthewild.origin=location.origin;
+  vi.stubGlobal('fetch',vi.fn().mockResolvedValue({ok:true,json:async()=>local}));
+  const home=location.pathname;history.replaceState(null,'','/?explore=1&returnTo=%2Fposts%2Fstarting-your-nowbrary%2F&shore=nowbrary');
+  sessionStorage.setItem('mtw-read-return',JSON.stringify({href:'/posts/starting-your-nowbrary/',scroll:880}));
+  await import('../../../public/journey/native.mjs');
+  const frame=document.createElement('iframe');frame.id='sea-frame';document.body.innerHTML='<section id="explore-entry"></section>';document.body.append(frame);
+  const accepted:{source:Window|null;trail:any}={source:frame.contentWindow,trail:null};
+  document.dispatchEvent(new CustomEvent('journey:checkpoint',{detail:accepted}));
+  const saved=JSON.parse(sessionStorage.getItem('journey:bookmark:'+accepted.trail[0].id)!);
+  expect(saved.href).toBe('/posts/starting-your-nowbrary/');expect(saved.scroll).toBe(880);
+  // An address that would send the reader back into Explore is never used as the article.
+  history.replaceState(null,'','/?returnTo=%2Fexplore%2F');
+  const again:{source:Window|null;trail:any}={source:frame.contentWindow,trail:null};
+  document.dispatchEvent(new CustomEvent('journey:checkpoint',{detail:again}));
+  expect(JSON.parse(sessionStorage.getItem('journey:bookmark:'+again.trail[0].id)!).href).toBe('/?returnTo=%2Fexplore%2F');
+  history.replaceState(null,'',home);
+ });
 });

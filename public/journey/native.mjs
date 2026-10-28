@@ -1,4 +1,5 @@
 import {connectJourney} from './client.mjs';
+import {safePath} from './core.mjs';
 // The book reader is an owned same-origin iframe. Its top-layer dialog needs its own way out.
 if(parent!==window){
  const a=document.createElement('a');a.className='journey-native-explore journey-reader-link';a.href='/explore/';a.textContent='Explore';
@@ -28,6 +29,12 @@ if(parent!==window){
    let returnTo;if(frame.id==='sea-frame'&&document.querySelector('#explore-entry')){
     const u=new URL(location.href);for(const key of ['explore','shore','visit','place'])u.searchParams.delete(key);u.hash='';
     returnTo={href:u.pathname+u.search,scroll:0}; // Match the blog's existing Back to writing action.
+    // Opened from an article: Back to writing reopens that article where the reader left it.
+    const article=safePath(u.searchParams.get('returnTo'));
+    if(article&&!/^\/(mapthewild\/)?explore(\/|$)/.test(article)){
+     let scroll=0;try{const saved=JSON.parse(sessionStorage.getItem('mtw-read-return')||'null');if(saved?.href===article&&Number.isFinite(saved.scroll))scroll=saved.scroll;}catch{}
+     returnTo={href:article,scroll};
+    }
    }
    e.detail.trail=journey.checkpointTrail(returnTo);
   });
