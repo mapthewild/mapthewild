@@ -1,5 +1,6 @@
 ---
-import VoyageHeader from './voyage/VoyageHeader.astro';
+import Navigation from './journal/Navigation.astro';
+const { home = false } = Astro.props;
 ---
 
-<VoyageHeader />
+<Navigation home={home} />

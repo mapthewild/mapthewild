@@ -5,7 +5,7 @@ import {SHELF_X,type ReaderId} from './shelf-data';
 export const PAINTED_POINTS:Record<FootNode,[number,number]>={
   boat:[-370,-330],jetty:[-90,-300],steps:[-155,-125],quay:[60,-150],
   corner:[270,-125],threshold:[270,-70],shop:[270,5],hall:[0,-170],
-  garden:[600,-180],moe:[-330,-210],melville:[0,-210],montaigne:[322.5,-210],
+  yours:[610,-210],garden:[600,-180],moe:[-330,-210],melville:[0,-210],montaigne:[322.5,-210],
 };
 export const SHELF_SCALE=150;
 export const SHELF_FLOOR=-210;

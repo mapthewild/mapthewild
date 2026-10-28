@@ -336,3 +336,21 @@
     }
   }
 }
+
+/* Reading controls remain usable without changing the author's text. */
+.main-content { min-width: 0; }
+.main-content :is(main, article) { overflow-wrap: anywhere; }
+.main-content .prose :is(a, [role='button']),
+.main-content .about-prose a,
+.home-hero-link, .home-about-link a, .print-line a,
+.mtw-post-card__title a {
+  display: inline-block;
+  min-width: 32px;
+  min-height: 32px;
+  line-height: max(1.6em, 32px);
+}
+.main-content :is(main, article) :is(img, video, iframe) { max-width: 100%; }
+.post-pagination > a { min-width: 0; }
+@media (max-width: 600px) {
+  .post-pagination { flex-wrap: wrap; gap: 24px; }
+}

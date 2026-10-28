@@ -1,193 +1,32 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import PostVisualCard from '../components/PostVisualCard.astro';
-import TerritoryCard from '../components/TerritoryCard.astro';
-import { siteAssets } from '../lib/siteAssets';
-import { standaloneEssays } from '../lib/standaloneEssays';
-
-// Home shows the newest piece, whether it's a post or a standalone essay.
-const posts = await getCollection('posts');
-const latestPost = [
-  ...posts
-    .filter((post) => !post.data.draft)
-    .map((post) => ({ slug: post.slug, href: `/mapthewild/posts/${post.slug}`, data: post.data })),
-  ...standaloneEssays,
-].sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())[0];
+import { journalArt } from '../lib/journalNavigation';
+import { territories } from '../lib/territories';
+const published = (await getCollection('posts')).filter(p=>!p.data.draft);
+const posts = ['starting-your-nowbrary','claude-wrapped'].flatMap(slug=>{
+  const post=published.find(p=>p.slug===slug);
+  return post?[{href:`/mapthewild/posts/${post.slug}`,data:post.data}]:[];
+});
 ---
-
-<Layout title="Map the Wild">
-  <main class="relative z-10">
-    <section class="home-hero">
-      <img
-        class="home-hero-compass"
-        src={siteAssets.compassHero}
-        alt=""
-        aria-hidden="true"
-      />
-      <div class="home-hero-content">
-        <h1>Map the Wild</h1>
-        <p>Brain flickers, farts and finer arts from my towers of sand.</p>
-        <div class="home-hero-actions">
-          <a href="/mapthewild/explore" class="btn btn-primary">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
-              <path d="M12 8l2 4-2 4-2-4z" fill="currentColor" stroke="none"/>
-            </svg>
-            <span>Explore Map</span>
-          </a>
-          <a href="/mapthewild/posts" class="home-hero-link">View all posts &rarr;</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="home-section">
-      <h2 class="mtw-section-heading">Territories</h2>
-
-      <div class="mtw-territory-grid">
-        <TerritoryCard
-          title="Nowbrary"
-          description="A living constellation of books, notes, and active thought."
-          href="/mapthewild/islands/nowbrary"
-          image="/assets/images/territories/nowbrary-card.png"
-        />
-
-        <TerritoryCard
-          title="Map"
-          description="Working things out while the path is still muddy."
-          href="/mapthewild/islands/map"
-          image="/assets/images/territories/map-card.png"
-        />
-
-        <TerritoryCard
-          title="Sunday Ritual"
-          description="A weekly practice for reflection, repair, and intention."
-          href="/mapthewild/islands/sundayritual"
-          image="/assets/images/territories/sunday-ritual-card.png"
-        />
-
-        <TerritoryCard
-          title="Future Dads Club"
-          description="Because you want to become a present dad."
-          href="/mapthewild/islands/futuredads"
-          image="/assets/images/territories/future-dads-card.jpg"
-        />
-
-        <TerritoryCard
-          title="Soulfield Oasis"
-          description="A card game for two players."
-          href="/mapthewild/islands/soulfield"
-          image="/images/territory-soulfield.jpeg"
-        />
-
-        <TerritoryCard
-          title="Life in 5"
-          description="A conversation game for two or three people."
-          href="https://mylifein5.com"
-          image="/images/territory-lifein5.jpg"
-        />
-      </div>
-
-      {latestPost && (
-        <>
-          <h2 class="mtw-section-heading">Latest</h2>
-          <div class="home-featured-post">
-            <PostVisualCard
-              post={latestPost}
-              href={latestPost.href}
-              featured
-            />
-          </div>
-        </>
-      )}
-
-      <p class="home-about-link">
-        <a href="/mapthewild/about">What is this? &rarr;</a>
-      </p>
-    </section>
+<Layout title="Map the Wild" home>
+  <link rel="stylesheet" href="/mapthewild/journal/entrance.css" />
+  <main class="blog-opening" id="blog">
+    <section class="journal-intro"><p class="eyebrow">Writing, projects and places</p><h1 tabindex="-1" id="blog-title">Map the Wild</h1><p class="original-intro">Brain flickers, farts and finer arts from my towers of sand.</p></section>
+    <section class="journal-writing" aria-labelledby="writing-title"><div class="writing-heading"><h2 id="writing-title">Writing</h2></div><div class="journal-grid">
+      {posts.map(post=>{const key=post.data.islands?.[0]??'map';const art=journalArt[key]??journalArt.home;return <article class="journal-card"><a class="journal-picture" href={post.href} aria-label={`Read ${post.data.title}`} style={`background-image:url('${art.src}');background-position:${art.position};background-size:${art.size}`}></a><p class="eyebrow">{territories[key]?.name??'Writing'}</p><h2><a href={post.href}>{post.data.title}</a></h2><p>{post.data.description}</p><a class="read-post" href={post.href} aria-label={`Read ${post.data.title}`}>Read post <span aria-hidden="true">→</span></a></article>;})}
+    </div></section>
+    <nav class="entry-footer" aria-label="More from Map the Wild"><a href="/mapthewild/posts/">All writing →</a><a href="/mapthewild/islands/">Places →</a><a href="/mapthewild/about/">About</a></nav>
+    <div class="entry-cue"><span>Explore below <span aria-hidden="true">↓</span></span><label><input id="reduce-motion" type="checkbox"> Reduce motion</label></div>
   </main>
+  <section class="reveal-story" id="explore-entry" aria-label="Explore the sea and islands">
+    <div class="reveal-stage" data-phase="glimpse">
+      <figure class="illustrated-view"><img src="/mapthewild/journal/world-overview.png" alt="A reading house, workshop, homes, quiet court, storytelling canopy and game pavilion beside the water." width="1536" height="1024"><figcaption><span>Explore</span><span>Scroll to the sea <span aria-hidden="true">↓</span></span></figcaption></figure>
+      <div class="world-reveal" id="sea-view" inert aria-hidden="true"><div class="sea-camera"><iframe id="sea-frame" title="Explore: sail between the islands" src="/mapthewild/explore/?embedded=blog" tabindex="-1"></iframe></div><div class="explore-return"><button id="return-writing">↑ Back to writing</button><a id="return-article" href="/mapthewild/posts/" hidden>Return to your article</a></div></div>
+      <div class="spyglass" aria-hidden="true"><div class="scope-barrel"><i></i><i></i><i></i><b></b></div><div class="scope-rim"><span class="lens-light"></span></div></div>
+      <nav class="reveal-tools" aria-label="Enter Explore"><button id="back-writing">↑ Writing</button><button data-show-map class="skip-reveal">Skip to Explore</button></nav>
+      <p class="sr-only" id="entry-status" role="status">Opening Explore…</p>
+    </div>
+  </section>
+  <script is:inline type="module" src="/mapthewild/journal/entrance.js"></script>
 </Layout>
-
-<style>
-  .home-hero {
-    position: relative;
-    overflow: hidden;
-    min-height: clamp(360px, 52vw, 560px);
-    display: grid;
-    place-items: center;
-    padding: clamp(48px, 8vw, 104px) var(--space-lg) var(--space-2xl);
-    text-align: center;
-  }
-
-  .home-hero-compass {
-    position: absolute;
-    top: 48%;
-    left: 50%;
-    width: clamp(300px, 46vw, 580px);
-    transform: translate(-50%, -50%);
-    opacity: 0.08;
-    mix-blend-mode: multiply;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  .home-hero-content {
-    position: relative;
-    z-index: 1;
-    max-width: 760px;
-  }
-
-  .home-hero h1 {
-    font-size: clamp(52px, 9vw, 104px);
-    line-height: 0.98;
-    font-weight: 400;
-    color: var(--color-ink);
-  }
-
-  .home-hero p {
-    margin-top: var(--space-md);
-    color: var(--color-ink-muted);
-    font-size: clamp(18px, 2.1vw, 24px);
-    font-style: italic;
-  }
-
-  .home-hero-actions {
-    margin-top: var(--space-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-lg);
-    flex-wrap: wrap;
-  }
-
-  .home-hero-link {
-    color: var(--color-ink-muted);
-  }
-
-  .home-section {
-    width: min(1040px, calc(100vw - 32px));
-    margin: 0 auto;
-    padding: 0 0 var(--space-2xl);
-  }
-
-  .home-featured-post {
-    margin-top: var(--space-lg);
-  }
-
-  .home-about-link {
-    margin-top: var(--space-xl);
-    text-align: center;
-    font-size: 14px;
-  }
-
-  .home-about-link a {
-    color: var(--color-ink-muted);
-  }
-
-  @media (max-width: 640px) {
-    .home-hero {
-      min-height: 340px;
-    }
-  }
-</style>

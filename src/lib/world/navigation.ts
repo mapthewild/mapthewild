@@ -1,4 +1,6 @@
+import {MAP_ISLANDS,MAP_COASTS} from './map-islands';
 import {isWalkPlace,type WalkPlace} from './ashore';
+import type {PortalDestination,PortalViewState} from './portal-garden';
 export type Point = [number, number];
 
 // These coastlines also build the visible land. Navigation and geometry share a source.
@@ -7,10 +9,15 @@ export const COASTS: Point[][] = [
   [[-40,-24],[-27,-28],[-12,-22],[-6,-13],[-8,-4],[-16,0],[-30,-3],[-40,-9]],
   [[-25,10],[-21,8],[-16,11],[-15,16],[-19,20],[-25,18],[-28,14]],
 ];
+// The painted island has its own collision coast; generic land builders only
+// use COASTS above, so they cannot add a second island underneath the drawing.
+export const FUTURE_DADS_COAST:Point[]=MAP_COASTS['future-dads'];
+export const NAVIGABLE_COASTS:Point[][]=[MAP_COASTS.nowbrary,...COASTS.slice(1),FUTURE_DADS_COAST];
 export const PORTS = {
-  nowbrary: { point: [9,14] as Point, look: [14,5] as Point, title: 'Nowbrary', subtitle: 'Books kept close. Ideas carried further.' },
+  nowbrary: { point: MAP_ISLANDS.nowbrary.port, look: [22,7] as Point, title: 'Nowbrary', subtitle: 'Books kept close. Ideas carried further.' },
   together: { point: [-14,2.5] as Point, look: [-16,-8] as Point, title: 'Being together', subtitle: 'Good company. A little structure. Room to play.' },
   horizon: { point: [0,-19] as Point, look: [16,-18] as Point, title: 'The next shore', subtitle: 'There is room for what comes next.' },
+  'future-dads': {point:MAP_ISLANDS['future-dads'].port,look:[23,42] as Point,title:'Future Dads Club',subtitle:'Podcast'},
 } as const;
 export type Port = keyof typeof PORTS;
 export function isPort(value: unknown): value is Port { return typeof value === 'string' && Object.hasOwn(PORTS, value); }
@@ -29,8 +36,8 @@ function segmentDistance(p: Point,a: Point,b: Point) {
   return Math.hypot(p[0]-a[0]-t*dx,p[1]-a[1]-t*dz);
 }
 export function isWater(p: Point, clearance=.7) {
-  if (!p.every(Number.isFinite) || p[0]<-35 || p[0]>35 || p[1]<-30 || p[1]>29) return false;
-  return !COASTS.some(poly=>inside(p,poly)||poly.some((a,i)=>segmentDistance(p,a,poly[(i+1)%poly.length])<clearance));
+  if (!p.every(Number.isFinite) || p[0]<-35 || p[0]>45 || p[1]<-30 || p[1]>65) return false;
+  return !NAVIGABLE_COASTS.some(poly=>inside(p,poly)||poly.some((a,i)=>segmentDistance(p,a,poly[(i+1)%poly.length])<clearance));
 }
 export function clearSegment(a: Point,b: Point) {
   const steps=Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/.4);
@@ -73,12 +80,20 @@ export function waterRoute(start: Point,end: Point): Point[] | null {
 }
 
 export const STORAGE_KEY='mtw-world-v1';
-export type WorldMemory={ship:Point;look:Point;zoom:number;port:Port|null;entered:boolean;ashore?:WalkPlace|null};
+export type WorldMemory={ship:Point;look:Point;zoom:number;port:Port|null;entered:boolean;ashore?:WalkPlace|null;portal?:PortalViewState|null;portalDestination?:PortalDestination};
 export function parseMemory(value: string|null): WorldMemory|null {
   try {const v=JSON.parse(value||'null');
-    if(!v||!Array.isArray(v.ship)||v.ship.length!==2||!isWater(v.ship)||!Array.isArray(v.look)||v.look.length!==2||!v.look.every((n:unknown)=>typeof n==='number'&&Number.isFinite(n)&&Math.abs(n)<60)||!Number.isFinite(v.zoom)||v.zoom<.65||v.zoom>4.2||!(v.port===null||isPort(v.port)))return null;
+    // Keep an existing bookshop visit when its map landing moves to the new drawing.
+    if(v?.port==='nowbrary'&&v.ship?.[0]===9&&v.ship?.[1]===14)v.ship=[...PORTS.nowbrary.point];
+    if(v?.port==='future-dads'&&v.ship?.[0]===17&&v.ship?.[1]===46)v.ship=[...PORTS['future-dads'].point];
+    if(!v||!Array.isArray(v.ship)||v.ship.length!==2||!isWater(v.ship)||!Array.isArray(v.look)||v.look.length!==2||!v.look.every((n:unknown)=>typeof n==='number'&&Number.isFinite(n)&&Math.abs(n)<60)||!Number.isFinite(v.zoom)||v.zoom<.18||v.zoom>4.2||!(v.port===null||isPort(v.port)))return null;
     const atDock=Math.hypot(v.ship[0]-PORTS.nowbrary.point[0],v.ship[1]-PORTS.nowbrary.point[1])<.2;
-    return {...v,entered:!!v.entered,ashore:atDock&&isWalkPlace(v.ashore)?v.ashore:null};
+    const ashore=atDock&&isWalkPlace(v.ashore)?v.ashore:null,p=v.portal;
+    const portalDestination:PortalDestination=v.portalDestination==='future-dads'?'future-dads':'reading-house';
+    const knownDestination=v.portalDestination===undefined||v.portalDestination==='reading-house'||v.portalDestination==='future-dads';
+    const views=portalDestination==='reading-house'?['garden','bench','shelf','upstairs']:['garden','bench','shelf','island'];
+    const portal=knownDestination&&ashore==='yours'&&p&&views.includes(p.view)&&Number.isFinite(p.yaw)&&Math.abs(p.yaw)<=.95&&Number.isFinite(p.pitch)&&p.pitch>=-.3&&p.pitch<=.25&&Number.isFinite(p.zoom)&&p.zoom>=.65&&p.zoom<=1.8?{view:p.view,yaw:p.yaw,pitch:p.pitch,zoom:p.zoom}:null;
+    return {...v,entered:!!v.entered,ashore,portal,portalDestination};
   } catch{return null;}
 }
 export function safeReadHref(value:unknown) {

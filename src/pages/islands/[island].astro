@@ -2,28 +2,10 @@
 import { getCollection } from 'astro:content'
 import Layout from '../../layouts/Layout.astro'
 import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import { territories as islandMeta, canonicalTerritory, inTerritory } from '../../lib/territories'
 import { standaloneEssays } from '../../lib/standaloneEssays'
 import { futureDadsEpisodes, FUTURE_DADS_SITE } from '../../lib/futureDadsEpisodes'
 import { getRoutePosts, getTerritoryRouteMode } from '../../lib/voyageGraph'
-
-const islandMeta: Record<string, { name: string; description: string }> = {
-  map: {
-    name: 'Map',
-    description: 'Working things out — exploratory, unformed, questioning'
-  },
-  territory: {
-    name: 'Territory',
-    description: 'Developed work — established, complete, structured'
-  },
-  nowbrary: {
-    name: 'Nowbrary',
-    description: 'Living constellation of books'
-  },
-  futuredads: {
-    name: 'Future Dads Club',
-    description: 'Because you want to become a present dad'
-  }
-}
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts')
@@ -32,8 +14,10 @@ export async function getStaticPaths() {
   // Get all unique islands
   const islands = new Set<string>()
   publishedPosts.forEach(post => {
-    post.data.islands?.forEach(island => islands.add(island))
+    post.data.islands?.forEach(island => islands.add(canonicalTerritory(island)))
   })
+
+  standaloneEssays.forEach(essay => essay.data.islands.forEach(island => islands.add(canonicalTerritory(island))))
 
   // Future Dads Club's episodes live on their own site but get a territory page here.
   islands.add('futuredads')
@@ -49,7 +33,7 @@ const meta = islandMeta[island] || { name: island, description: '' }
 
 const posts = await getCollection('posts')
 const collectionPosts = posts
-  .filter(post => !post.data.draft && post.data.islands?.includes(island))
+  .filter(post => !post.data.draft && inTerritory(post.data.islands, island))
   .map(post => ({
     slug: post.slug,
     href: `/mapthewild/posts/${post.slug}`,
@@ -57,7 +41,7 @@ const collectionPosts = posts
   }))
 
 const standaloneForIsland = [...standaloneEssays, ...futureDadsEpisodes]
-  .filter(essay => essay.data.islands.includes(island))
+  .filter(essay => inTerritory(essay.data.islands, island))
 
 // A series reads in order (part 1 first); dated territories list newest first.
 const isSeries = getTerritoryRouteMode(island) === 'series'
@@ -79,20 +63,21 @@ function formatDate(date: Date) {
     <Breadcrumbs
       items={[
         { label: 'Home', href: '/mapthewild/' },
-        { label: 'Territories', href: '/mapthewild/islands' },
+        { label: 'Places', href: '/mapthewild/islands' },
         { label: meta.name }
       ]}
     />
 
     <header class="mb-12">
       <h1 class="text-3xl md:text-4xl font-display text-ink mb-4">
-        {meta.name} <span class="text-ink-muted">({islandPosts.length})</span>
+        {meta.name}
       </h1>
+      <p class="journal-collection-count">{islandPosts.length} {island === 'futuredads' ? 'episodes' : islandPosts.length === 1 ? 'post' : 'posts'}</p>
       {meta.description && (
         <p class="text-xl text-ink-muted">{meta.description}</p>
       )}
       {island === 'futuredads' && (
-        <p class="mt-4"><a href={FUTURE_DADS_SITE}>Listen on futuredadsclub.com →</a></p>
+        <p class="mt-4"><a class="podcast-link" href={FUTURE_DADS_SITE}>Listen on futuredadsclub.com ↗</a></p>
       )}
     </header>
 
@@ -109,7 +94,7 @@ function formatDate(date: Date) {
             {isSeries && `Part ${index + 1} of ${islandPosts.length} · `}{formatDate(post.data.date)}
           </time>
           <h2 class="post-item-title">
-            {post.data.title}
+            {post.data.title}{post.href?.startsWith('https://') && <span aria-hidden="true"> ↗</span>}
           </h2>
           <p class="post-item-excerpt">
             {post.data.description}
@@ -126,6 +111,7 @@ function formatDate(date: Date) {
 </Layout>
 
 <style>
+  .podcast-link { display: inline-flex; align-items: center; min-height: 32px; }
   /* Hover items with colored left border - from design system */
   .post-item {
     display: block;

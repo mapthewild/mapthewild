@@ -49,4 +49,15 @@ describe('Navigable first shores',()=>{
     expect(parseMemory(JSON.stringify({...memory,ship:[0,20]}))?.ashore).toBeNull();
     expect(parseMemory(JSON.stringify({...memory,ashore:'outside-the-world'}))?.ashore).toBeNull();
   });
+  it('restores the selected portal destination without reinterpreting house views as club rooms',()=>{
+    const memory={ship:[9,14],look:[15,6],zoom:1,port:'nowbrary',entered:true,ashore:'yours',portal:{view:'shelf',yaw:.3,pitch:-.1,zoom:1.2}};
+    const legacy=parseMemory(JSON.stringify(memory));expect(legacy?.portalDestination).toBe('reading-house');expect(legacy?.portal).toEqual(memory.portal);
+    const club=parseMemory(JSON.stringify({...memory,portalDestination:'future-dads'}));expect(club?.portalDestination).toBe('future-dads');expect(club?.portal).toEqual(memory.portal);
+    expect(parseMemory(JSON.stringify({...memory,portalDestination:'future-dads',portal:{...memory.portal,view:'upstairs'}}))?.portal).toBeNull();
+    expect(parseMemory(JSON.stringify({...memory,portalDestination:'future-dads',portal:{...memory.portal,view:'island'}}))?.portal?.view).toBe('island');
+    expect(parseMemory(JSON.stringify({...memory,portal:{...memory.portal,view:'island'}}))?.portal).toBeNull();
+    const unknown=parseMemory(JSON.stringify({...memory,portalDestination:'outside-site'}));expect(unknown?.portalDestination).toBe('reading-house');expect(unknown?.portal).toBeNull();
+    const closed=parseMemory(JSON.stringify({...memory,portalDestination:'future-dads',portal:null}));expect(closed?.portalDestination).toBe('future-dads');expect(closed?.portal).toBeNull();
+    expect(parseMemory(JSON.stringify({...memory,portalDestination:'future-dads',ashore:'moe'}))?.portal).toBeNull();
+  });
 });

@@ -2,37 +2,11 @@
 import { getCollection } from 'astro:content'
 import Layout from '../../layouts/Layout.astro'
 import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import { territories as islandMeta, canonicalTerritory } from '../../lib/territories'
 import { standaloneEssays } from '../../lib/standaloneEssays'
+import { journalArt } from '../../lib/journalNavigation'
+import { territoryNodes } from '../../lib/voyageGraph'
 import { futureDadsEpisodes } from '../../lib/futureDadsEpisodes'
-
-const islandMeta: Record<string, { name: string; description: string; dedicatedPage?: boolean }> = {
-  nowbrary: {
-    name: 'Nowbrary',
-    description: 'Living constellation of books'
-  },
-  map: {
-    name: 'Map',
-    description: 'Working things out — exploratory, unformed, questioning'
-  },
-  territory: {
-    name: 'Territory',
-    description: 'Developed work — established, complete, structured'
-  },
-  futuredads: {
-    name: 'Future Dads Club',
-    description: 'Because you want to become a present dad'
-  },
-  sundayritual: {
-    name: 'Sunday Ritual',
-    description: 'Weekly practice for reflection and intention',
-    dedicatedPage: true
-  },
-  soulfield: {
-    name: 'Soulfield Oasis',
-    description: 'A card game for 2 players. Play it here or print it',
-    dedicatedPage: true
-  }
-}
 
 const posts = await getCollection('posts')
 const publishedPosts = posts.filter(post => !post.data.draft)
@@ -40,16 +14,16 @@ const publishedPosts = posts.filter(post => !post.data.draft)
 // Count posts per island
 const islandCounts: Record<string, number> = {}
 publishedPosts.forEach(post => {
-  post.data.islands?.forEach(island => {
+  new Set(post.data.islands?.map(canonicalTerritory)).forEach(island => {
     islandCounts[island] = (islandCounts[island] || 0) + 1
   })
 })
 
 // Standalone essays count too, so these numbers match each territory page.
-// Only for territories that have a page (pages come from collection posts).
+// Standalone-only territories also have their own generated page.
 standaloneEssays.forEach(essay => {
-  essay.data.islands.forEach(island => {
-    if (islandCounts[island]) islandCounts[island] += 1
+  new Set(essay.data.islands.map(canonicalTerritory)).forEach(island => {
+    islandCounts[island] = (islandCounts[island] || 0) + 1
   })
 })
 
@@ -62,7 +36,7 @@ const postBasedIslands = Object.entries(islandCounts)
   .map(([id, count]) => ({
     id,
     count,
-    ...islandMeta[id] || { name: id, description: '' }
+    ...islandMeta[id] || { name: id, description: '', href: `/mapthewild/islands/${id}` }
   }))
 
 // Add dedicated territory pages (like Sunday Ritual) that aren't post collections
@@ -74,33 +48,33 @@ const dedicatedIslands = Object.entries(islandMeta)
     ...meta
   }))
 
-const activeIslands = [...postBasedIslands, ...dedicatedIslands]
+// Match the strip, so the places do not change order between views.
+const activeIslands = [...postBasedIslands, ...dedicatedIslands].sort((a,b) =>
+  territoryNodes.findIndex(place => place.id === a.id) - territoryNodes.findIndex(place => place.id === b.id))
 ---
 
-<Layout title="Territories - Map the Wild">
-  <main class="relative z-10 max-w-2xl mx-auto px-6 py-16 md:py-24">
+<Layout title="Places - Map the Wild">
+  <main class="journal-directory relative z-10 max-w-2xl mx-auto px-6 py-16 md:py-24">
     <Breadcrumbs
       items={[
         { label: 'Home', href: '/mapthewild/' },
-        { label: 'Territories' }
+        { label: 'Places' }
       ]}
     />
 
-    <h1 class="text-3xl md:text-4xl font-display text-ink mb-4">
-      Territories
+    <h1 class="text-3xl md:text-4xl font-display text-ink mb-12">
+      Places
     </h1>
-    <p class="text-ink-muted mb-12">
-      Different zones for different kinds of thinking.
-    </p>
 
-    <div class="space-y-4">
+    <div class="journal-place-grid">
       {activeIslands.map((island) => (
         <a
-          href={`/mapthewild/islands/${island.id}`}
-          class="territory-item"
+          href={island.href || `/mapthewild/islands/${island.id}`}
+          class="journal-place-card"
         >
-          <h2 class="territory-item-title">
-            {island.name}
+          <span class="journal-place-picture" style={`background-image:url('${(journalArt[island.id] ?? journalArt.home).src}');background-position:${(journalArt[island.id] ?? journalArt.home).position};background-size:${(journalArt[island.id] ?? journalArt.home).size}`} aria-hidden="true"></span>
+          <h2>
+            {island.name}{island.href?.startsWith('https://') && <span aria-hidden="true"> ↗</span>}
             {island.count !== null && (
               <span class="territory-item-count">({island.count})</span>
             )}

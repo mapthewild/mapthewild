@@ -82,7 +82,7 @@ export function Landing({ onStart }: LandingProps) {
               fontFamily: 'Libre Baskerville, serif'
             }}>
 
-            The Sunday Morning Ritual
+            Sunday Ritual
           </h1>
           <div className="w-32 h-0.5 bg-[#E07856] mx-auto"></div>
         </motion.div>

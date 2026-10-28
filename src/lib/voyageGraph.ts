@@ -41,7 +41,6 @@ export type VoyageState = {
 
 export const VOYAGE_WIDTH = 1200;
 export const VOYAGE_HEIGHT = 220;
-export const SITE_BASE = '/mapthewild';
 
 export type TerritoryRouteMode = 'series' | 'dated';
 
@@ -64,7 +63,7 @@ export const territoryNodes: VoyageNode[] = [
     id: 'nowbrary',
     kind: 'territory',
     label: 'Nowbrary',
-    href: `${SITE_BASE}/islands/nowbrary`,
+    href: '/mapthewild/islands/nowbrary',
     x: 290,
     y: 92,
     parentId: 'home',
@@ -74,7 +73,7 @@ export const territoryNodes: VoyageNode[] = [
     id: 'map',
     kind: 'territory',
     label: 'Map',
-    href: `${SITE_BASE}/islands/map`,
+    href: '/mapthewild/islands/map',
     x: 445,
     y: 132,
     parentId: 'home',
@@ -85,7 +84,7 @@ export const territoryNodes: VoyageNode[] = [
     id: 'sundayritual',
     kind: 'territory',
     label: 'Sunday Ritual',
-    href: `${SITE_BASE}/islands/sundayritual`,
+    href: '/mapthewild/islands/sundayritual',
     x: 600,
     y: 92,
     parentId: 'home',
@@ -104,7 +103,7 @@ export const territoryNodes: VoyageNode[] = [
     id: 'soulfield',
     kind: 'territory',
     label: 'Soulfield Oasis',
-    href: `${SITE_BASE}/islands/soulfield`,
+    href: '/mapthewild/islands/soulfield',
     x: 910,
     y: 92,
     parentId: 'home',
@@ -114,7 +113,7 @@ export const territoryNodes: VoyageNode[] = [
     id: 'futuredads',
     kind: 'territory',
     label: 'Future Dads Club',
-    href: `${SITE_BASE}/islands/futuredads`,
+    href: '/mapthewild/islands/futuredads',
     x: 1065,
     y: 132,
     parentId: 'home',
@@ -126,7 +125,7 @@ export const homeNode: VoyageNode = {
   id: 'home',
   kind: 'home',
   label: 'Home',
-  href: `${SITE_BASE}/`,
+  href: '/mapthewild/',
   x: 112,
   y: 126,
 };
@@ -152,10 +151,12 @@ export function getVoyageState(pathname: string, posts: VoyagePost[]): VoyageSta
     ? publishedPosts.find((post) => post.slug === currentPostSlug)
     : undefined;
 
-  const isHome = normalizedPath === SITE_BASE || normalizedPath === `${SITE_BASE}/`;
+  const isHome = `${normalizedPath}/` === '/mapthewild/';
   const pathIsland = getIslandFromPath(normalizedPath);
   const activeIsland = pathIsland || currentPost?.data.islands?.[0];
-  const activeTerritory = territoryNodes.find((node) => node.island === activeIsland);
+  const activeTerritory = activeIsland
+    ? territoryNodes.find((node) => node.island === activeIsland)
+    : undefined;
   const nodes = isHome
     ? getHomeNodes()
     : activeTerritory
@@ -329,7 +330,7 @@ function makePostNode(
     id: `post-${post.slug}`,
     kind: 'post',
     label: post.data.title,
-    href: post.href ?? `${SITE_BASE}/posts/${post.slug}`,
+    href: post.href ?? `/mapthewild/posts/${post.slug}`,
     slug: post.slug,
     ...options,
   };
@@ -358,13 +359,15 @@ function routePath(from: VoyageNode, to: VoyageNode): string {
 }
 
 function getPostSlug(pathname: string): string | undefined {
-  const match = pathname.match(/^\/mapthewild\/posts\/([^/]+)$/);
-  return match?.[1];
+  const prefix = '/mapthewild/posts/';
+  const slug = pathname.startsWith(prefix) ? pathname.slice(prefix.length) : '';
+  return slug && !slug.includes('/') ? slug : undefined;
 }
 
 function getIslandFromPath(pathname: string): string | undefined {
-  const match = pathname.match(/^\/mapthewild\/islands\/([^/]+)$/);
-  return match?.[1];
+  const prefix = '/mapthewild/islands/';
+  const island = pathname.startsWith(prefix) ? pathname.slice(prefix.length) : '';
+  return island && !island.includes('/') ? island : undefined;
 }
 
 function normalizePath(pathname: string): string {

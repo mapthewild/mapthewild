@@ -1,34 +1,12 @@
 ---
-const currentYear = new Date().getFullYear()
+const currentYear = new Date().getFullYear();
 ---
-
-<footer class="relative z-10 border-t border-grid mt-16">
-  <div class="max-w-4xl mx-auto px-6 py-8">
-    <nav class="flex flex-wrap justify-center gap-6 mb-4">
-      <a href="/mapthewild/" class="footer-link">
-        Home
-      </a>
-      <a href="/mapthewild/posts" class="footer-link">
-        Posts
-      </a>
-      <a href="/mapthewild/about" class="footer-link">
-        About
-      </a>
-    </nav>
-    <p class="text-center text-sm text-ink-muted">
-      © {currentYear} Map the Wild
-    </p>
-  </div>
+<footer class="journal-footer">
+  <nav aria-label="Site">
+    <a href="/mapthewild/">Home</a>
+    <a href="/mapthewild/posts/">Writing</a>
+    <a href="/mapthewild/islands/">Places</a>
+    <a href="/mapthewild/about/">About</a>
+  </nav>
+  <p>© {currentYear} Map the Wild</p>
 </footer>
-
-<style>
-  .footer-link {
-    color: var(--color-ink-muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
-  .footer-link:hover {
-    color: var(--color-ochre);
-  }
-</style>

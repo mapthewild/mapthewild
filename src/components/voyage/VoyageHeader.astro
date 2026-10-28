@@ -15,7 +15,8 @@ const posts = [...(await getCollection('posts')), ...standaloneEssays, ...future
 const currentPath = Astro.url.pathname;
 const voyage = getVoyageState(currentPath, posts);
 const { nodes, routes, currentNode } = voyage;
-const isPostPage = /^\/mapthewild\/posts\/[^/]+\/?$/.test(currentPath);
+const isPostPage = currentPath.startsWith('/mapthewild/posts/') && currentPath.slice('/mapthewild/posts/'.length).replace(/\/$/, '').length > 0;
+const hasCurrentStop = nodes.some(node => node.href.replace(/\/$/, '') === currentPath.replace(/\/$/, ''));
 const aboutIsActive = currentPath === '/mapthewild/about' || currentPath === '/mapthewild/about/';
 ---
 
@@ -23,12 +24,16 @@ const aboutIsActive = currentPath === '/mapthewild/about' || currentPath === '/m
   <div class="voyage-header__shell">
     <div class="voyage-header__meta">
       <a class="voyage-header__brand" href="/mapthewild/">Map the Wild</a>
-      <a class={`voyage-header__utility ${aboutIsActive ? 'is-active' : ''}`} href="/mapthewild/about">
+      <nav class="voyage-header__pages" aria-label="Site pages">
+      <a class="voyage-header__utility" href="/mapthewild/posts" aria-current={currentPath.replace(/\/$/, '') === '/mapthewild/posts' ? 'page' : undefined}>Posts</a>
+      <a class="voyage-header__utility" href="/mapthewild/islands" aria-current={currentPath.replace(/\/$/, '') === '/mapthewild/islands' ? 'page' : undefined}>Territories</a>
+      <a class={`voyage-header__utility ${aboutIsActive ? 'is-active' : ''}`} href="/mapthewild/about" aria-current={aboutIsActive ? 'page' : undefined}>
         About
       </a>
+      </nav>
     </div>
 
-    <nav class="voyage-header__scroller" aria-label="Primary voyage navigation">
+    <nav class="voyage-header__scroller" aria-label="Territories and posts">
       <div class="voyage-header__inner">
         <svg
           class="voyage-map-base"
@@ -61,11 +66,11 @@ const aboutIsActive = currentPath === '/mapthewild/about' || currentPath === '/m
           ))}
         </svg>
 
-        <VoyageShip currentNode={currentNode} client:load />
-        <VoyageRuntime currentNode={currentNode} client:load />
+        {hasCurrentStop && <VoyageShip currentNode={currentNode} client:load />}
+        {hasCurrentStop && <VoyageRuntime currentNode={currentNode} client:load />}
 
         {nodes.map((node) => {
-          const isCurrent = node.id === currentNode.id && !aboutIsActive;
+          const isCurrent = hasCurrentStop && node.id === currentNode.id && !aboutIsActive;
           const iconName = iconNameForVoyageKind(node.kind);
           return (
             <a
@@ -75,7 +80,7 @@ const aboutIsActive = currentPath === '/mapthewild/about' || currentPath === '/m
               aria-current={isCurrent ? 'page' : undefined}
               data-kind={node.kind}
               data-icon={iconName}
-              data-status={node.status || 'future'}
+              data-status={hasCurrentStop ? node.status || 'future' : 'future'}
               data-node-id={node.id}
               data-x={node.x}
               data-y={node.y}
@@ -88,7 +93,7 @@ const aboutIsActive = currentPath === '/mapthewild/about' || currentPath === '/m
                 <span class="voyage-port__mark"></span>
               </span>
               <span class="voyage-port__label" title={node.label}>
-                <span class="voyage-port__title">{node.label}</span>
+                <span class="voyage-port__title">{node.label}{node.href.startsWith('https://') && <span aria-hidden="true"> ↗</span>}</span>
                 {node.meta && <span class="voyage-port__meta">{node.meta}</span>}
               </span>
             </a>

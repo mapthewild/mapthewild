@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>Return to your place</title><link rel="stylesheet" href="style.css"><body class="journey-fallback"><main><h1>Return to your place</h1><p id="message" role="status">Opening your saved place…</p><a id="home" href="/">Open the website</a></main><script type="module">
+import {connectJourney} from './client.mjs';import {readBookmark,safePath} from './core.mjs';
+const journey=await connectJourney();
+if(journey){document.querySelector('#home').href=journey.config.sites[journey.site].home;const id=journey.ticket?.resume,b=readBookmark(journey.storage,id);if(b&&safePath(b.href)){const u=new URL(b.href,location.origin);u.searchParams.set('resume',id);location.replace(u.href);}else document.querySelector('#message').textContent='This tab no longer has your saved position. You can still open the website.';}
+else document.querySelector('#message').textContent='The saved place could not open. You can still open the website.';
+</script></body></html>

@@ -328,12 +328,16 @@
     .essay-footer .next { text-align: left; }
   }
 </style>
+<link rel="stylesheet" href="/mapthewild/reading-mode.css">
+<link rel="stylesheet" href="/mapthewild/essay-navigation.css">
+<script src="/mapthewild/reading-memory.js" defer></script>
+<link rel="stylesheet" href="/mapthewild/journal/journal.css">
 </head>
-<body>
+<body data-journal-essay>
 
 <nav class="essay-nav">
-  <a href="/mapthewild/posts">← Map the Wild</a>
-  <a href="/mapthewild/posts">All Posts</a>
+  <a href="/mapthewild/">← Map the Wild</a>
+  <a href="/mapthewild/posts">Posts</a>
 </nav>
 
 <div class="header">
@@ -825,12 +829,14 @@
     <span class="essay-footer-label">← Previous</span>
     <span class="essay-footer-title">The Sorting Class</span>
   </a>
-  <a href="/mapthewild/posts" class="all-posts">All Posts</a>
+  <a href="/mapthewild/posts" class="all-posts">Posts</a>
   <a href="/mapthewild/the-mapping-problem.html" class="next">
     <span class="essay-footer-label">Next →</span>
     <span class="essay-footer-title">The Mapping Problem</span>
   </a>
 </nav>
 
+<nav class="reading-world-mode" aria-label="View mode"><span aria-current="page">Read</span><a href="/mapthewild/explore" data-world-mode>Explore</a></nav>
+<script type="module" src="/mapthewild/journal/journal.js"></script>
 </body>
 </html>

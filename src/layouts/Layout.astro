@@ -8,9 +8,11 @@ import ReadingMemory from '../components/world/ReadingMemory.astro';
 interface Props {
 	title?: string;
 	description?: string;
+	reading?: boolean;
+	home?: boolean;
 }
 
-const { title = 'Map the Wild', description } = Astro.props;
+const { title = 'Map the Wild', description, reading = false, home = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -24,14 +26,17 @@ const { title = 'Map the Wild', description } = Astro.props;
 		{description && <meta name="description" content={description} />}
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<link rel="stylesheet" href="/mapthewild/journal/journal.css" />
 	</head>
-	<body class="split-layout">
+	<body class:list={['split-layout', 'journal-site', reading && 'journal-reading', home && 'journal-home']}>
 		<div id="main-content" class="main-content">
-			<Header />
-			<slot />
+			<Header home={home} />
+			{reading ? <div class="journal-reading-layout"><aside class="journal-companion" aria-label="Your place in the article"><div id="journal-side-slot"></div><div id="journal-guide"></div></aside><div id="journal-content" class="journal-reading-content" tabindex="-1"><slot /></div></div> : <div id="journal-content" tabindex="-1"><slot /></div>}
+			{reading && <div id="journal-departure-slot"></div>}
 			<Footer />
 		</div>
 		<StackingPanes client:load />
-		<ReadingMemory />
+		<ReadingMemory showMode={false} />
+		<script is:inline type="module" src="/mapthewild/journal/journal.js"></script>
 	</body>
 </html>

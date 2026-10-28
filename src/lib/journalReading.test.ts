@@ -1,0 +1,48 @@
+import { it, expect, vi } from 'vitest';
+import { journalNavigation } from './journalNavigation';
+import { voyageMarkup } from '../../public/journal/markup.mjs';
+
+it('keeps one usable voyage beside the article, in the phone panel, and at the end', async () => {
+  const data=journalNavigation('/mapthewild/posts/part1',[{slug:'part1',data:{title:'Part one',date:new Date('2026-01-01'),islands:['nowbrary']}}]);
+  document.body.className='journal-site journal-reading';
+  document.body.innerHTML=`<script id="journal-data" type="application/json">${JSON.stringify(data)}</script><div id="journal-top-slot">${voyageMarkup(data)}</div><div class="journal-reading-layout"><aside class="journal-companion"><div id="journal-side-slot"></div><div id="journal-guide"></div></aside><article id="journal-content"><div class="prose"><h2>First section</h2><p>${'A sentence worth keeping. '.repeat(150)}</p><h2>Second section</h2><h2>Third section</h2></div></article></div><div id="journal-departure-slot"></div>`;
+  const authored=document.querySelector('.prose')!.textContent;
+  let pastTop=false,atEnd=false;
+  vi.stubGlobal('innerWidth',1280);vi.stubGlobal('innerHeight',800);
+  vi.stubGlobal('matchMedia',()=>({matches:true}));
+  vi.stubGlobal('IntersectionObserver',class {observe(){} disconnect(){}});
+  Object.defineProperty(document,'fonts',{value:{ready:Promise.resolve()},configurable:true});
+  const rectangle=(top:number,height:number,width=900)=>({top,bottom:top+height,left:0,right:width,width,height,x:0,y:top,toJSON(){return this;}});
+  vi.spyOn(Element.prototype,'getBoundingClientRect').mockImplementation(function(this: Element){
+    if(this.id==='journal-top-slot')return rectangle(pastTop?-250:80,224);
+    if(this.id==='journal-end-slot')return rectangle(atEnd?450:4000,224);
+    return rectangle(0,224);
+  });
+  HTMLDialogElement.prototype.showModal=function(){this.setAttribute('open','');};
+  HTMLDialogElement.prototype.close=function(){this.removeAttribute('open');this.dispatchEvent(new Event('close'));};
+  await import('../../public/journal/journal.js');
+  await Promise.resolve();
+  const voyage=document.querySelector('.journal-voyage')!;
+  expect(voyage.parentElement?.id).toBe('journal-top-slot');
+  expect(document.querySelectorAll('.journal-toc a')).toHaveLength(3);
+  const focusedLink=voyage.querySelector<HTMLAnchorElement>('.journal-window')!;focusedLink.focus();
+  pastTop=true;window.dispatchEvent(new Event('scroll'));
+  expect(voyage.parentElement?.id).toBe('journal-side-slot');
+  expect(document.activeElement).toBe(focusedLink);
+  vi.stubGlobal('innerWidth',390);window.dispatchEvent(new Event('resize'));
+  expect((document.querySelector('.journal-mobile') as HTMLElement).hidden).toBe(false);
+  document.querySelector<HTMLButtonElement>('#journal-open-voyage')!.click();
+  expect(document.querySelector('dialog')!.open).toBe(true);
+  expect(document.querySelector('dialog')!.getAttribute('aria-labelledby')).toBe('journal-voyage-title');
+  expect(voyage.parentElement?.id).toBe('journal-dialog-slot');
+  document.querySelector<HTMLButtonElement>('#journal-close-voyage')!.click();
+  expect(document.querySelector('dialog')!.open).toBe(false);
+  atEnd=true;window.dispatchEvent(new Event('scroll'));
+  expect(voyage.parentElement?.id).toBe('journal-end-slot');
+  expect((document.querySelector('.journal-mobile') as HTMLElement).hidden).toBe(true);
+  atEnd=false;pastTop=false;window.dispatchEvent(new Event('scroll'));
+  expect(voyage.parentElement?.id).toBe('journal-top-slot');
+  expect(document.querySelectorAll('.journal-voyage')).toHaveLength(1);
+  expect(document.querySelector('.prose')!.textContent).toBe(authored);
+  vi.restoreAllMocks();vi.unstubAllGlobals();
+});
