@@ -19,7 +19,7 @@ if(seaEmbed){document.body.classList.add('sea-visit');const back=document.queryS
 const tellSea=data=>{if(seaEmbed)parent.postMessage(data,location.origin);};
 let position=ownSite?(journey.restored?.custom?.position??(journey.entry==='radio'?STOPS.listen:journey.entry==='sea'?STOPS.sea:STOPS.ashore)):location.hash==='#radio'?STOPS.listen:0,target=position,running=false,direction=1,last=performance.now(),frameId=0,frameDelta=0,boatYaw;
 const renderer=new T.WebGLRenderer({alpha:true,antialias:true});
-renderer.setSize(W,H);renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setClearColor(0,0);
+renderer.setSize(W,H);renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0,0);
 renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
 renderer.domElement.setAttribute('aria-label','The illustrated boat and traveller moving along the route');$('actors').append(renderer.domElement);
 const scene=new T.Scene(),camera=new T.OrthographicCamera(-W/PPM/2,W/PPM/2,H/PPM/2,-H/PPM/2,.1,300);
