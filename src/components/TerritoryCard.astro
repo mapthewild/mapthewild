@@ -10,9 +10,10 @@ type Props = {
 };
 
 const { title, description, href, image, selected = false } = Astro.props;
+const imagePath = image.startsWith('/mapthewild/') ? image.slice('/mapthewild/'.length) : image;
 const src = image.startsWith('http')
   ? image
-  : assetPath(image.replace(/^\/mapthewild\//, '').replace(/^\//, ''));
+  : assetPath(imagePath.replace(/^\//, ''));
 ---
 
 <a class:list={['mtw-territory-card', selected && 'is-selected']} href={href}>
@@ -21,7 +22,7 @@ const src = image.startsWith('http')
   </span>
 
   <span class="mtw-territory-card__body">
-    <span class="mtw-territory-card__title">{title}</span>
+    <span class="mtw-territory-card__title">{title}{href.startsWith('https://') && <span aria-hidden="true"> ↗</span>}</span>
     <span class="mtw-territory-card__ornament" aria-hidden="true"></span>
     <span class="mtw-territory-card__description">{description}</span>
   </span>

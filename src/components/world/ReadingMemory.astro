@@ -1,39 +1,7 @@
 ---
-interface Props { showMode?: boolean }
-const { showMode = true } = Astro.props;
+interface Props { showMode?: boolean; topLevel?: boolean }
+const { showMode = true, topLevel = false } = Astro.props;
 ---
-{showMode && <nav class="reading-world-mode" aria-label="View mode"><span aria-current="page">Read</span><a href="/mapthewild/explore" data-world-mode>Explore</a></nav>}
-<style>
-.reading-world-mode{position:fixed;right:22px;bottom:22px;z-index:60;display:flex;gap:3px;padding:4px;border:1px solid #ccc9af;border-radius:5px;background:#f4efdfed;backdrop-filter:blur(12px);box-shadow:0 3px 16px #243f3520;font:12px/1.4 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
-.reading-world-mode span,.reading-world-mode a{padding:9px 15px;border-radius:3px;text-decoration:none;color:#35564a}.reading-world-mode span{background:#31564b;color:#f7efdc}.reading-world-mode a:hover{background:#e2e5d1}.reading-world-mode a:focus-visible{outline:2px solid #ad8340;outline-offset:2px}@media(max-width:600px){.reading-world-mode{right:12px;bottom:12px}.reading-world-mode a,.reading-world-mode span{padding:8px 12px}}
-</style>
-<script>
-  import {safeReadHref,parseMemory,STORAGE_KEY} from '../../lib/world/navigation';
-  // Capture the ordinary reading view only when the reader chooses Explore.
-  document.addEventListener('click',(event)=>{
-    const link=(event.target as Element)?.closest?.('a');
-    if(!link || event.defaultPrevented || event instanceof MouseEvent && (event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||event.button!==0))return;
-    const target=new URL(link.href,location.href);
-    if(target.origin!==location.origin||target.pathname.replace(/\/$/,'')+'/'!=='/mapthewild/explore/')return;
-    const path=location.pathname+location.search+location.hash;
-    try{
-      sessionStorage.setItem('mtw-read-return',JSON.stringify({href:safeReadHref(path),scroll:window.scrollY}));
-      // A mode switch resumes the visit even when the ordinary page is about another shore.
-      if(link.hasAttribute('data-world-mode')&&parseMemory(sessionStorage.getItem(STORAGE_KEY))?.entered){target.searchParams.delete('port');link.href=target.href;return;}
-    }catch{}
-    if(!target.searchParams.has('port')){
-      const port=path.includes('nowbrary')?'nowbrary':path.includes('sundayritual')||path.includes('from-chatbot-to-ceremony')?'together':null;
-      if(port){target.searchParams.set('port',port);link.href=target.href;}
-    }
-  });
-  try{
-    const requested=sessionStorage.getItem('mtw-restore-reading');
-    const record=JSON.parse(sessionStorage.getItem('mtw-read-return')||'null');
-    if(requested){sessionStorage.removeItem('mtw-restore-reading');
-      if(record&&safeReadHref(record.href)===location.pathname+location.search+location.hash&&Number.isFinite(record.scroll)){
-        const restore=()=>requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:Math.max(0,record.scroll),behavior:'instant'})));
-        if(document.readyState==='complete')restore();else window.addEventListener('load',restore,{once:true});
-      }
-    }
-  }catch{}
-</script>
+<link rel="stylesheet" href="/mapthewild/reading-mode.css" />
+{showMode && <nav class="reading-world-mode" aria-label="View mode"><span aria-current="page">Read</span><a href="/mapthewild/explore" target={topLevel ? '_top' : undefined} data-world-mode>Explore</a></nav>}
+<script is:inline src="/mapthewild/reading-memory.js" defer></script>

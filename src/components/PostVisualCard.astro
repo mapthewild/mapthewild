@@ -32,7 +32,7 @@ const visual = getPostVisual(post.data);
 
 const title = post.data.title;
 const description = post.data.description ?? post.data.excerpt ?? '';
-const postHref = href ?? `/posts/${post.slug ?? post.id ?? ''}/`;
+const postHref = href ?? `/mapthewild/posts/${post.slug ?? post.id ?? ''}/`;
 const date = post.data.date ? new Date(post.data.date) : null;
 const dateLabel = date
   ? date.toLocaleDateString('en-US', {
@@ -74,7 +74,7 @@ const dateLabel = date
     {description && <p class="mtw-post-card__excerpt">{description}</p>}
 
     <span class="mtw-post-card__read-more" aria-hidden="true">
-      Read more &rarr;
+      Read post &rarr;
     </span>
   </div>
 </article>

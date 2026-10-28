@@ -184,39 +184,43 @@ export function createModels(onTexture:()=>void=()=>{}) {
     mesh(parent,planeShape(inner,.035,true),0x9b9f72,0,1.07,0);
     for(let i=0;i<points.length;i++){const a=points[i],b=points[(i+1)%points.length];for(let j=1;j<4;j++){const f=j/4;const x=a[0]+(b[0]-a[0])*f,z=a[1]+(b[1]-a[1])*f;ball(parent,x,-.04,z,.65+(i+j)%3*.25,(i+j)%2?0xb2af96:0xc4baa0,1.2,.5,.8);}}
   }
+  let nowbraryLandscape:T.Group|null=null;
   function buildWorld(){
-    const root=new T.Group();COASTS.forEach(poly=>land(root,poly));
+    const root=new T.Group(),quarter=new T.Group();nowbraryLandscape=quarter;
+    land(quarter,COASTS[0]);COASTS.slice(1).forEach(poly=>land(root,poly));
     // The reading quarter: a coherent courtyard, a tall book room and a smaller house.
-    house(root,15,5,6.6,4.1,3.7,palette.lime,true);
-    house(root,20.5,-1.2,4.5,4,4.5,0xefdcb3);
-    house(root,20.5,-1.2,3.8,3.3,2.7,0xf2e5c4).position.y=5.6;
-    house(root,10.7,-2.5,3.3,3.6,3.1,0xe4d6ac);
-    house(root,25,8,4.4,4,3.5,0xeed9ad);
-    house(root,29,1.6,3.5,3.6,2.7,0xd9c896);
+    house(quarter,15,5,6.6,4.1,3.7,palette.lime,true);
+    house(quarter,20.5,-1.2,4.5,4,4.5,0xefdcb3);
+    house(quarter,20.5,-1.2,3.8,3.3,2.7,0xf2e5c4).position.y=5.6;
+    house(quarter,10.7,-2.5,3.3,3.6,3.1,0xe4d6ac);
+    house(quarter,25,8,4.4,4,3.5,0xeed9ad);
+    house(quarter,29,1.6,3.5,3.6,2.7,0xd9c896);
     // Quay, stairs and a simple paved path into the courtyard.
-    box(root,15,1.12,9,9,.25,2.5,0xe8d6ad);
-    for(let i=0;i<4;i++)box(root,9,1.02-i*.14,9.5+i*.45,2.5,.25,.5,0xe8d6ad);
-    dock(root,9,10.4,3.1);lamp(root,8,10.1);lamp(root,10,10.1);
-    for(let i=0;i<9;i++)box(root,15.5,.99,9-i*.7,1.4,.08,.55,0xece1c4);
-    box(root,15.3,1.09,1.8,6.8,.08,8.8,0xded0af);tree(root,16,-1,1.2);palm(root,24,4,1.1);palm(root,9,-6,.85,true);tree(root,29,11,1.1);
-    bench(root,17,1,3,2.3);table(root,14,1,1.1);person(root,17,1,7.7,0x256e73);person(root,13.5,1,1.4,0xc78055);
-    for(let i=0;i<3;i++)fern(root,12+i*.9,1,8.6,.43+(i%2)*.06);
-    fern(root,18.6,1,7.9,.72);flowers(root,18.35,1.4,7.1,2.6);
+    box(quarter,15,1.12,9,9,.25,2.5,0xe8d6ad);
+    for(let i=0;i<4;i++)box(quarter,9,1.02-i*.14,9.5+i*.45,2.5,.25,.5,0xe8d6ad);
+    dock(quarter,9,10.4,3.1);lamp(quarter,8,10.1);lamp(quarter,10,10.1);
+    for(let i=0;i<9;i++)box(quarter,15.5,.99,9-i*.7,1.4,.08,.55,0xece1c4);
+    box(quarter,15.3,1.09,1.8,6.8,.08,8.8,0xded0af);tree(quarter,16,-1,1.2);palm(quarter,24,4,1.1);palm(quarter,9,-6,.85,true);tree(quarter,29,11,1.1);
+    bench(quarter,17,1,3,2.3);table(quarter,14,1,1.1);person(quarter,17,1,7.7,0x256e73);person(quarter,13.5,1,1.4,0xc78055);
+    for(let i=0;i<3;i++)fern(quarter,12+i*.9,1,8.6,.43+(i%2)*.06);
+    fern(quarter,18.6,1,7.9,.72);flowers(quarter,18.35,1.4,7.1,2.6);
     // A small planted place to linger between the shop and the water.
-    box(root,20.3,1.1,10.2,2.8,.12,3.4,0xe4d7b8);bench(root,20.5,1.2,11.1,2.3);
-    tree(root,20.5,9.5,.68);pot(root,19.2,1.2,11.3,.65);pot(root,21.5,1.2,8.5,.7);
-    flowers(root,21.5,1.5,8.5,1.1);
-    for(let i=0;i<7;i++)ball(root,29+(i%3)*2,1.4,-8-i*2,2,0x5d7b49,1,.35,1);
+    box(quarter,20.3,1.1,10.2,2.8,.12,3.4,0xe4d7b8);bench(quarter,20.5,1.2,11.1,2.3);
+    tree(quarter,20.5,9.5,.68);pot(quarter,19.2,1.2,11.3,.65);pot(quarter,21.5,1.2,8.5,.7);
+    flowers(quarter,21.5,1.5,8.5,1.1);
+    for(let i=0;i<7;i++)ball(quarter,29+(i%3)*2,1.4,-8-i*2,2,0x5d7b49,1,.35,1);
     // Blue hillside gardens hint at another neighbourhood without a locked gate.
     for(let i=0;i<4;i++){
       const x=19+i*3.7,z=-12-(i%2)*2;
-      house(root,x,z,2.8,2.9,2.6+(i%2),i%2?0x5e98b6:0x97c4ce);
-      tree(root,x+1,z-3,.7);pot(root,x-1,1,z+1.7,.65);
+      house(quarter,x,z,2.8,2.9,2.6+(i%2),i%2?0x5e98b6:0x97c4ce);
+      tree(quarter,x+1,z-3,.7);pot(quarter,x-1,1,z+1.7,.65);
     }
-    palm(root,34,-10,1.1);tree(root,31,-15,1.4);
-    for(const [x,z,scale] of [[33,7,1.5],[36,12,1.2],[29,16,1.25],[22,13,1],[35,-2,1.4],[37,4,.9],[29,-5,1.1],[16,-9,.85],[33,-14,1.1],[25,-17,.8],[31,10,.7]])tree(root,x,z,scale);
-    palm(root,30,14,1.3,true);palm(root,34,1,1);palm(root,20,10,.8);
-    for(let i=0;i<45;i++){const x=22+Math.sin(i*12.91)*12,z=4+Math.cos(i*8.71)*11;if(x>29||z>11){for(let j=0;j<3;j++){const m=mesh(root,new T.ConeGeometry(.12,.6+(j%2)*.25,3),i%3?0x6b8052:0xa6a171,x+j*.15,1.4,z);m.rotation.z=(j-1)*.23;}}}
+    palm(quarter,34,-10,1.1);tree(quarter,31,-15,1.4);
+    for(const [x,z,scale] of [[33,7,1.5],[36,12,1.2],[29,16,1.25],[22,13,1],[35,-2,1.4],[37,4,.9],[29,-5,1.1],[16,-9,.85],[33,-14,1.1],[25,-17,.8],[31,10,.7]])tree(quarter,x,z,scale);
+    palm(quarter,30,14,1.3,true);palm(quarter,34,1,1);palm(quarter,20,10,.8);
+    for(let i=0;i<45;i++){const x=22+Math.sin(i*12.91)*12,z=4+Math.cos(i*8.71)*11;if(x>29||z>11){for(let j=0;j<3;j++){const m=mesh(quarter,new T.ConeGeometry(.12,.6+(j%2)*.25,3),i%3?0x6b8052:0xa6a171,x+j*.15,1.4,z);m.rotation.z=(j-1)*.23;}}}
+
+    compact(quarter);quarter.userData.unmerged=true;root.add(quarter);
 
     // Three different places to gather around one shared court.
     house(root,-20,-9,4.8,3.5,3.3,0xead7ae);
@@ -234,7 +238,6 @@ export function createModels(onTexture:()=>void=()=>{}) {
     for(let i=0;i<12;i++){const x=-33+(i%4)*2.5,z=-20-Math.floor(i/4)*2;tree(root,x,z,.7+(i%3)*.18);}
     // Mangrove roots make a recognisable, separate foreground landscape.
     for(let i=0;i<13;i++){const a=i*2.4,r=2.1+(i%3)*1.4;mangrove(root,-21+Math.cos(a)*r,14+Math.sin(a)*r,.7+(i%3)*.15);}
-    for(let i=0;i<9;i++){const a=i*2.4;ball(root,5+Math.cos(a)*1.6,-.12,4+Math.sin(a)*3,.6+(i%3)*.3,0xc9c0a5,1,.7,1);}
     return root;
   }
   function boat(ferry=false){
@@ -270,5 +273,5 @@ export function createModels(onTexture:()=>void=()=>{}) {
     for(const [material,list] of buckets){const geometry=mergeGeometries(list,false);list.forEach(g=>g.dispose());if(geometry){const m=new T.Mesh(geometry,material);m.castShadow=m.receiveShadow=true;group.add(m);const edges=new T.LineSegments(new T.EdgesGeometry(geometry,42),new T.LineBasicMaterial({color:0x263f38,transparent:true,opacity:.23}));group.add(edges);}}
     return group;
   }
-  return {world:()=>compact(buildWorld()),boat:(ferry=false)=>compact(boat(ferry)),visitor,readingRoomRoof,storm,gradient};
+  return {world:()=>compact(buildWorld()),setIllustratedNowbrary(visible:boolean){if(nowbraryLandscape)nowbraryLandscape.visible=!visible;},boat:(ferry=false)=>compact(boat(ferry)),visitor,readingRoomRoof,storm,gradient};
 }

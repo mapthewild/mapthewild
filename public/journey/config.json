@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "sites": {
+    "mapthewild": {"name":"Map the Wild","origin":"http://127.0.0.1:4340","home":"/","explore":"/explore/","return":"/journey/return.html"},
+    "nowbrary": {"name":"Nowbrary","origin":"http://127.0.0.1:4341","home":"/gallery.html#all","explore":"/explore/","return":"/journey/return.html"},
+    "future-dads": {"name":"Future Dads Club","origin":"http://127.0.0.1:4342","home":"/","explore":"/explore/","room":"/explore/room/","return":"/journey/return.html"}
+  }
+}

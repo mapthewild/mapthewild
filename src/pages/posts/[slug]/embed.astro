@@ -1,5 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
+import ReadingMemory from '../../../components/world/ReadingMemory.astro';
+import StackingPanes from '../../../components/StackingPanes';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -19,8 +21,9 @@ const { Content } = await post.render();
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>{post.data.title}</title>
-    <style>
+    <link rel="stylesheet" href="/mapthewild/journal/embed.css" />
+    <title>{post.data.title} - Map the Wild</title>
+    <style is:global>
       /* Design System Tokens */
       :root {
         --color-parchment: #f5f0e6;
@@ -40,9 +43,15 @@ const { Content } = await post.render();
         box-sizing: border-box;
       }
 
+      .embed-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 24px; font: 13px/1.5 Georgia, serif; }
+      .embed-nav a { display: inline-flex; align-items: center; min-height: 32px; color: var(--color-ink); }
+      .prose :is(a, [role="button"]) { display: inline-block; min-width: 32px; min-height: 32px; line-height: max(1.7em, 32px); }
+      .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      .prose { overflow-wrap: anywhere; }
+      .prose :is(img, video, iframe) { max-width: 100%; }
       body {
         margin: 0;
-        padding: 1.5rem;
+        padding: 1.5rem 1.5rem 6rem;
         font-family: Georgia, 'Times New Roman', serif;
         background: var(--color-parchment);
         color: var(--color-ink-light);
@@ -182,7 +191,11 @@ const { Content } = await post.render();
       }
     </style>
   </head>
-  <body>
+  <body class="journal-embed" data-reading-href={`/mapthewild/posts/${post.slug}`}>
+    <nav class="embed-nav" aria-label="Post navigation">
+      <a href="/mapthewild/" target="_top">Map the Wild</a>
+      <a href={`/mapthewild/posts/${post.slug}`} target="_top">Open as a blog post</a>
+    </nav>
     <article>
       <header>
         <time>
@@ -207,32 +220,21 @@ const { Content } = await post.render();
         <Content />
       </div>
     </article>
+    <ReadingMemory topLevel />
+    <StackingPanes client:load />
     <script is:inline>
+      // Direct visits use the complete reading page. Embedded references stay compact.
+      if (window.parent === window) location.replace(document.body.dataset.readingHref + location.hash);
       // Intercept clicks and send to parent for stacking panes
       document.addEventListener('click', (e) => {
         const target = e.target;
 
-        // Handle bracket-link clicks
-        if (target.classList && target.classList.contains('bracket-link')) {
-          e.preventDefault();
-          e.stopPropagation();
-
-          const content = target.getAttribute('data-content');
-          const trigger = target.getAttribute('data-trigger') || target.textContent;
-
-          if (content && window.parent && window.parent !== window) {
-            window.parent.postMessage({
-              type: 'stackingPanes:navigate',
-              content: content,
-              trigger: trigger,
-            }, '*');
-          }
-          return;
-        }
+        // Directly opened embeds use normal links and their own pane controls.
+        if (window.parent === window) return;
 
         // Handle regular anchor links
         const link = target.closest('a');
-        if (!link) return;
+        if (!link || link.closest('.embed-nav')) return;
 
         const href = link.getAttribute('href');
         if (!href) return;

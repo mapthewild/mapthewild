@@ -9,13 +9,12 @@ import '../styles/global.css'
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sunday Ritual - The Sunday Morning Ritual</title>
-    <meta name="description" content="A 30-minute couples ritual to reconnect and build your relationship manual together." />
+    <title>Sunday Ritual - Map the Wild</title>
+    <meta name="description" content="Questions for couples to answer and discuss." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
-      .sr-world-link { position: absolute; top: 12px; right: 16px; z-index: 50; font: 13px Georgia, serif; color: #526551; text-decoration: none; }
       /* Override mapthewild's base styles for Sunday Ritual */
       body {
         background-color: #FAF7F2 !important;
@@ -27,10 +26,10 @@ import '../styles/global.css'
 
       /* The app has no site header, so give readers a way back. */
       .sr-site-link {
-        position: absolute;
-        top: 12px;
-        left: 16px;
-        z-index: 50;
+        display: inline-flex;
+        align-items: center;
+        min-height: 32px;
+        margin: 12px 16px 0;
         color: #6b5d4d;
         font-family: 'Libre Baskerville', Georgia, serif;
         font-size: 13px;
@@ -44,9 +43,8 @@ import '../styles/global.css'
     </style>
   </head>
   <body class="min-h-screen bg-[#FAF7F2]">
-    <a class="sr-site-link" href="/mapthewild/islands/sundayritual">&larr; Map the Wild</a>
-    <a class="sr-world-link" href="/mapthewild/explore?port=together" data-world-mode>Explore ↗</a>
+    <a class="sr-site-link" href="/mapthewild/islands/sundayritual">&larr; Sunday Ritual</a>
     <App client:only="react" />
-    <ReadingMemory showMode={false} />
+    <ReadingMemory />
   </body>
 </html>

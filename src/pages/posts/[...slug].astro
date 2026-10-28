@@ -2,13 +2,13 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { canonicalTerritory, inTerritory } from '../../lib/territories';
 import { standaloneEssays } from '../../lib/standaloneEssays';
 import { getRoutePosts, getTerritoryRouteMode } from '../../lib/voyageGraph';
 
 export async function getStaticPaths() {
   const islandMeta: Record<string, string> = {
     map: 'Map',
-    territory: 'Territory',
     nowbrary: 'Nowbrary',
     sundayritual: 'Sunday Ritual',
   }
@@ -24,7 +24,7 @@ export async function getStaticPaths() {
   });
 
   return publishedPosts.map((post) => {
-    const primaryIsland = post.data.islands?.[0]
+    const primaryIsland = post.data.islands?.[0] ? canonicalTerritory(post.data.islands[0]) : undefined
 
     let previousPost = null
     let nextPost = null
@@ -34,8 +34,8 @@ export async function getStaticPaths() {
     if (primaryIsland) {
       // Same order as the voyage header: oldest first, standalone essays included.
       const route = getRoutePosts([
-        ...publishedPosts.filter(p => p.data.islands?.includes(primaryIsland)),
-        ...standaloneEssays.filter(e => e.data.islands.includes(primaryIsland)),
+        ...publishedPosts.filter(p => inTerritory(p.data.islands, primaryIsland)),
+        ...standaloneEssays.filter(e => inTerritory(e.data.islands, primaryIsland)),
       ])
       const currentIndex = route.findIndex(p => p.slug === post.slug)
 
@@ -72,7 +72,7 @@ const { post, previousPost, nextPost, islandLink, seriesPart } = Astro.props;
 const { Content } = await post.render();
 ---
 
-<Layout title={`${post.data.title} - Map the Wild`} description={post.data.description}>
+<Layout title={`${post.data.title} - Map the Wild`} description={post.data.description} reading>
   <article class="max-w-3xl mx-auto px-6 md:px-8 pt-10 pb-16 md:pt-12 md:pb-24">
     <Breadcrumbs
       items={[
@@ -111,25 +111,15 @@ const { Content } = await post.render();
       <Content />
     </div>
 
-    <nav class="flex justify-between items-start gap-8 mt-16 pt-8 border-t border-grid">
+    <nav aria-label="Posts" class="post-pagination flex justify-between items-start gap-8 mt-16 pt-8 border-t border-grid">
       {previousPost ? (
         <a
           href={previousPost.href}
           class="flex-1 group text-left hover-shift hover-shift-ochre p-3 -m-3 rounded-md"
         >
           <div class="text-sm text-ink-muted mb-2">← Previous</div>
-          <div class="text-lg text-ink-light group-hover:text-ochre transition-colors line-clamp-2">
+          <div class="text-lg text-ink-light group-hover:text-ochre transition-colors">
             {previousPost.title}
-          </div>
-        </a>
-      ) : islandLink ? (
-        <a
-          href={islandLink.href}
-          class="flex-1 group text-left hover-shift hover-shift-verdigris p-3 -m-3 rounded-md"
-        >
-          <div class="text-sm text-ink-muted mb-2">← All</div>
-          <div class="text-lg text-ink-light group-hover:text-verdigris transition-colors">
-            {islandLink.name} posts
           </div>
         </a>
       ) : (
@@ -142,18 +132,8 @@ const { Content } = await post.render();
           class="flex-1 group text-right hover-shift hover-shift-ochre p-3 -m-3 rounded-md"
         >
           <div class="text-sm text-ink-muted mb-2">Next →</div>
-          <div class="text-lg text-ink-light group-hover:text-ochre transition-colors line-clamp-2">
+          <div class="text-lg text-ink-light group-hover:text-ochre transition-colors">
             {nextPost.title}
-          </div>
-        </a>
-      ) : islandLink ? (
-        <a
-          href={islandLink.href}
-          class="flex-1 group text-right hover-shift hover-shift-verdigris p-3 -m-3 rounded-md"
-        >
-          <div class="text-sm text-ink-muted mb-2">All →</div>
-          <div class="text-lg text-ink-light group-hover:text-verdigris transition-colors">
-            {islandLink.name} posts
           </div>
         </a>
       ) : (

@@ -1,0 +1,4 @@
+.reading-world-mode{position:fixed;right:22px;bottom:max(22px,env(safe-area-inset-bottom));z-index:60;display:flex;gap:3px;padding:4px;border:1px solid #ccc9af;border-radius:5px;background:#f4efdfed;backdrop-filter:blur(12px);box-shadow:0 3px 16px #243f3520;font:12px/1.4 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.reading-world-mode span,.reading-world-mode a{box-sizing:border-box;display:inline-flex;align-items:center;min-width:32px;min-height:36px;padding:9px 15px;border-radius:3px;text-decoration:none;color:#35564a}
+.reading-world-mode span{background:#31564b;color:#f7efdc}.reading-world-mode a:hover{background:#e2e5d1}.reading-world-mode a:focus-visible{outline:2px solid #ad8340;outline-offset:2px}
+@media(max-width:600px){.reading-world-mode{right:12px;bottom:max(12px,env(safe-area-inset-bottom))}.reading-world-mode a,.reading-world-mode span{padding:8px 12px}}

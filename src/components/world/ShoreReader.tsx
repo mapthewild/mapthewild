@@ -8,11 +8,11 @@ export function SpyglassIcon(){
 
 type Props={
   selected:ShoreEssaySlug|null;essays:ShoreEssay[];bodies:Record<ShoreEssaySlug,ReactNode>;
-  origin:LensOrigin;motion:boolean;ashore:boolean;
+  origin:LensOrigin;motion:boolean;ashore:boolean;returnLabel?:string;
   onSelect:(slug:ShoreEssaySlug)=>void;onClose:()=>void;onStepAshore:()=>void;
 };
 
-export default function ShoreReader({selected,essays,bodies,origin,motion,ashore,onSelect,onClose,onStepAshore}:Props){
+export default function ShoreReader({selected,essays,bodies,origin,motion,ashore,returnLabel,onSelect,onClose,onStepAshore}:Props){
   const dialog=useRef<HTMLDialogElement>(null),scroller=useRef<HTMLDivElement>(null);
   const stage=useRef<HTMLDivElement>(null);
   const optics=useRef({width:0,height:0,diameter:0});
@@ -159,7 +159,7 @@ export default function ShoreReader({selected,essays,bodies,origin,motion,ashore
       </div>
       </div>
       <footer className="shore-reading-footer">
-        <button onClick={()=>close()}><span aria-hidden="true">←</span> {ashore?'Back to Nowbrary':'Back to the boat'}</button>
+        <button onClick={()=>close()}><span aria-hidden="true">←</span> {returnLabel||(ashore?'Back to Nowbrary':'Back to the boat')}</button>
         <span>{fullPage?'Scroll to read':<>{motion&&<span className="shore-mouse-hint">Move the glass · </span>}Scroll to read</>}</span>
         {!ashore&&<button className="shore-step-ashore" onClick={()=>close(true)}>Step ashore</button>}
       </footer>

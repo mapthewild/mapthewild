@@ -588,7 +588,7 @@ export default function StackingPanes() {
                           color: page.type === 'post' ? COLORS.rose.dark : page.type === 'site' ? COLORS.verdigris.DEFAULT : COLORS.ochre.dark,
                         }}
                       >
-                        {page.type === 'post' ? 'NOTE' : page.type === 'site' ? 'SITE' : 'ARTIFACT'}
+                        {page.type === 'post' ? 'POST' : page.type === 'site' ? 'SITE' : 'ARTIFACT'}
                       </span>
                     </div>
 
@@ -599,8 +599,9 @@ export default function StackingPanes() {
                       }}
                       className="flex items-center justify-center rounded transition-colors"
                       style={{
-                        width: '28px',
-                        height: '28px',
+                        width: '32px',
+                        height: '32px',
+                        flexShrink: 0,
                         color: COLORS.ink.muted,
                         borderRadius: '4px',
                       }}
@@ -639,7 +640,7 @@ export default function StackingPanes() {
             onClick={closeAllPages}
             className="fixed z-[60] flex items-center transition-colors"
             style={{
-              bottom: '16px',
+              bottom: '76px',
               right: '16px',
               gap: '8px',
               padding: '10px 20px',

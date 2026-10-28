@@ -87,7 +87,8 @@
 }
 
 .mtw-territory-card__body {
-  padding: var(--space-lg, 24px);
+  min-width: 0;
+  padding: 24px 16px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -96,7 +97,7 @@
 }
 
 .mtw-territory-card__title {
-  font-size: clamp(24px, 2.7vw, 34px);
+  font-size: clamp(24px, 2.2vw, 30px);
   line-height: 1.1;
   font-weight: 400;
   color: var(--color-ink, #4a3f35);

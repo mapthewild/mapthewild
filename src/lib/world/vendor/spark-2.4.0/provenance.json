@@ -1,0 +1,16 @@
+{
+  "name": "@sparkjsdev/spark",
+  "version": "2.4.0",
+  "license": "MIT",
+  "source": "https://registry.npmjs.org/@sparkjsdev/spark/-/spark-2.4.0.tgz",
+  "registryIntegrity": "sha512-aUjgBfhwDRcF3nUwiAD6Nh7IwvxEmW9liz2qrAXIm2BlPYBmn81QbXIpGFLBSr/o0TKGvEXbNIsKujgPGV/7QQ==",
+  "moduleBytes": 2997944,
+  "moduleGzipBytes": 995235,
+  "moduleSha256": "5ae86ab35d4ceb655db486dcc336299775bb314c280d7e5b39f64e4539f8e0e9",
+  "peerDependency": {
+    "three": ">=0.180.0"
+  },
+  "note": "Vendored public ESM and declarations only. No install scripts, account, credentials, or remote runtime imports; Three resolves to the existing project dependency.",
+  "sourceMapBytes": 1288737,
+  "sourceMapSha256": "c40990df57f127f5dbbcd9749425b882ec4539935ee845788ced2a8b347728da"
+}

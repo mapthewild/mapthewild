@@ -19,10 +19,10 @@ const allPosts = [
 const sortedPosts = allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
-<Layout title="Posts - Map the Wild">
-  <main class="relative z-10 max-w-5xl mx-auto px-6 py-16 md:py-24">
+<Layout title="Writing - Map the Wild">
+  <main class="relative z-10 max-w-3xl mx-auto px-6 py-16 md:py-24">
     <h1 class="text-3xl md:text-4xl font-display text-ink mb-12">
-      All Posts <span class="text-ink-muted">({sortedPosts.length})</span>
+      Writing <span class="text-ink-muted">({sortedPosts.length})</span>
     </h1>
 
     <div class="post-card-stack">

@@ -1,0 +1,13 @@
+---
+import { getCollection } from 'astro:content';
+import { standaloneEssays } from '../../lib/standaloneEssays';
+import { futureDadsEpisodes } from '../../lib/futureDadsEpisodes';
+import { journalNavigation } from '../../lib/journalNavigation';
+import { headerMarkup, voyageMarkup } from '../../../public/journal/markup.mjs';
+const entries = [...await getCollection('posts'), ...standaloneEssays, ...futureDadsEpisodes];
+const data = journalNavigation(Astro.url.pathname, entries);
+const { home = false } = Astro.props;
+---
+<Fragment set:html={headerMarkup(data)} />
+{!home && <div id="journal-top-slot" set:html={voyageMarkup(data)} />}
+<script type="application/json" id="journal-data" set:html={JSON.stringify(data).replace(/</g,'\\u003c')} />

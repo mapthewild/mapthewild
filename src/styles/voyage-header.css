@@ -30,6 +30,9 @@
 
 .voyage-header__brand,
 .voyage-header__utility {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
   color: var(--color-ink);
   text-decoration: none;
 }
@@ -355,10 +358,8 @@
 
 /* Full names, up to two lines; the whole name stays in the tooltip and aria-label. */
 .voyage-port__title {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  display: block;
+  overflow-wrap: anywhere;
 }
 
 .voyage-port__meta {
@@ -475,4 +476,14 @@
   .voyage-header--compact .voyage-header__inner {
     min-width: 860px;
   }
+}
+
+/* Current-page indicators and phone access to the existing route. */
+.voyage-header__pages { display: flex; flex-wrap: wrap; gap: 2px; }
+.voyage-header__utility[aria-current='page'] { text-decoration: underline; }
+.voyage-header__brand { flex-shrink: 0; }
+@media (max-width: 760px) {
+  .voyage-header__meta { flex-wrap: wrap; gap: 0 8px; }
+  .voyage-port--post .voyage-port__label { font-size: 11px; max-width: 150px; }
+  .voyage-header__scroller { padding-bottom: 32px; }
 }

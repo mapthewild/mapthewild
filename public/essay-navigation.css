@@ -1,0 +1,16 @@
+/* Navigation only. Each standalone essay keeps its typography and authored copy. */
+body { padding-bottom: 80px; overflow-wrap: anywhere; }
+.essay-nav { flex-wrap: wrap; gap: 12px 24px; }
+.essay-nav a, .essay-footer a { display: inline-flex; align-items: center; min-width: 32px; min-height: 32px; }
+.essay-footer a { flex-direction: column; align-items: flex-start; justify-content: center; }
+.essay-footer .next { align-items: flex-end; }
+.essay-footer .all-posts { align-items: center; }
+article a, .context a, .sources a, .footnotes a, .embed-container a, .preface a, .afterword a { display: inline-block; min-width: 32px; min-height: 32px; line-height: max(1.5em, 32px); }
+.fn a { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; min-height: 32px; }
+@media (max-width: 600px) {
+  .essay-footer { flex-wrap: wrap; gap: 20px; }
+  .essay-footer a { max-width: 100%; }
+}
+
+body a { min-width: 32px; min-height: 32px; }
+body:not(.journal-site) a:not(.reading-world-mode a):not(.essay-nav a):not(.essay-footer a):not(.fn a) { display: inline-block; line-height: max(1.5em, 32px); }

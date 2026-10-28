@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Future Dads · Come ashore</title><link rel="stylesheet" href="visit.css"></head>
+<body>
+<header><a href="../../../journey-storyboard/#step-future-dads">← The full journey</a><span>Future Dads Club</span><button id="sound" aria-pressed="false">Enable sound</button></header>
+<main>
+ <section class="visit" aria-label="Visit the Future Dads island">
+  <div id="viewport" class="viewport">
+  <div id="painting" class="painting"><img src="../two-styles/art/comic-island-v1.png" width="1536" height="1024" alt="An orange rock island, with a wooden jetty and a path to a radio under a tree."><div id="actors"></div></div>
+   <div id="listening-view" class="listening-view" aria-hidden="true"><img src="../two-styles/art/comic-radio-v1.png" alt=""></div>
+   <button id="radio-object" class="radio-object" hidden aria-label="Listen to the radio">Listen</button>
+   <div id="radio-knob" class="radio-knob" role="slider" tabindex="0" hidden aria-label="Radio tuning dial" aria-valuemin="1" aria-valuemax="16" aria-valuenow="15" aria-valuetext="Episode 15: What's in a song?" aria-describedby="dial-help"><span class="dial-marker" aria-hidden="true"></span><span class="dial-hint" aria-hidden="true">Drag to tune</span></div>
+   <span id="radio-needle" class="radio-needle" hidden aria-hidden="true"></span>
+   <div class="caption"><span class="eyebrow">Future Dads Club</span><h1 id="place">At sea</h1></div>
+  </div>
+  <div class="journey-bar">
+   <div class="journey-copy"><p id="status" role="status">Loading the boat and traveller…</p><span id="sound-state">Sound is off.</span></div>
+   <div class="actions"><button id="return" disabled>Back to sea</button><button id="pause-motion" disabled>Pause movement</button><button id="continue" class="primary" disabled>Come ashore</button></div>
+  </div>
+ </section>
+ <section class="listening" aria-label="Episode controls">
+  <div class="episode-card"><p class="eyebrow" id="episode-number">Episode 15 of 16</p><h2><a id="episode-page" href="https://futuredadsclub.com/episodes/15-what-s-in-a-song/" target="_blank" rel="noopener noreferrer">What's in a song? <span aria-hidden="true">↗</span></a></h2><p id="episode-meta">12 May 2020 · 7 min</p></div>
+  <div class="tuner"><div class="tuner-label"><label for="tuning">Tune the radio</label><span id="tuning-state" role="status">Episode 15</span></div><div class="station-band"><div class="station-numbers" aria-hidden="true"><span>01</span><span>04</span><span>08</span><span>12</span><span>16</span></div><input id="tuning" type="range" min="1" max="16" step=".05" value="15" aria-label="Tune the radio" aria-valuetext="Episode 15: What's in a song?"></div><div class="tuning-buttons"><button id="previous-episode">← Previous episode</button><button id="next-episode">Next episode →</button></div></div>
+  <div class="audio-actions"><button id="pause-audio">Turn radio on</button><label for="volume">Volume <output id="volume-value">25%</output><input id="volume" type="range" min="0" max="100" value="25"></label></div>
+  <div class="seek-row"><meter id="signal" min="0" max="1" value="0" aria-label="Sound level" title="Sound level"></meter><span id="time">0:00</span><input id="seek" type="range" min="0" max="420" value="0" step="1" aria-label="Episode position" disabled><span id="duration">7:00</span></div>
+ </section>
+ <details class="review"><summary>Look at a particular part of the visit</summary><label for="position">Journey position</label><input id="position" type="range" min="0" max="100" step=".1" value="0" disabled><div class="stops"><button data-stop="0" disabled>At sea</button><button data-stop="28" disabled>Beside the jetty</button><button data-stop="40" disabled>Stepping ashore</button><button data-stop="42" disabled>On the jetty</button><button data-stop="66" disabled>On the path</button><button data-stop="85" disabled>At the radio</button></div><label class="clear"><input type="checkbox" id="clear"> Hear clearly from the landing</label></details>
+ <footer><p id="dial-help">Drag around the knob to tune in either direction. From its centre, you can also drag up or right to go forward, down or left to go back. Arrow keys and Previous/Next work too. The episode title opens its page. Tuning is silent when sound is off or the episode is paused.</p><p>You can now <a href="../../../world-g/blog.html?explore=1">sail here from Explore</a> and return to the sea. The radio on the proposed Yours? shelf still needs building. The sound’s sense of distance still needs work.</p><a href="../radio-approach/">Earlier sound check</a> · <a href="../two-styles/">The two art styles</a> · <a href="../character-study/">Character studies</a></footer>
+</main>
+<audio id="episode" preload="metadata" src="../radio-approach/audio/whats-in-a-song.m4a"></audio>
+<script type="module">import('./visit.js').catch(error=>{document.querySelector('#status').textContent='The movement could not load. The island picture is still available.';console.error(error);});</script>
+</body></html>
