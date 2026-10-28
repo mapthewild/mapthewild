@@ -24,3 +24,6 @@ html{scroll-behavior:auto}.journal-site{--color-parchment:#f5f2e9;--color-ink:#3
 @media(max-width:760px){.journal-route-heading nav{gap:0 15px}.journal-route-heading{padding-right:4px}.journal-stop-title{max-width:160px}}
 
 .journal-collection-count{font:12px/1.5 system-ui;color:#697163;margin:-4px 0 16px}
+/* The ship, Map the Wild's mark (Astra's icon set), replaced the asterisk on 28 Oct. */
+.journal-brand .journal-mark{width:34px;height:34px;flex:none}
+@media(max-width:760px){.journal-brand .journal-mark{width:28px;height:28px}}

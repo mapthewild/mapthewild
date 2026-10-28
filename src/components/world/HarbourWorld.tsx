@@ -47,7 +47,7 @@ export default function HarbourWorld({essays,nowbraryPost,startingPost,owner='ma
     if(j){
       j.register(owner==='mapthewild'?'sea':'place',()=>{engine.current?.save();try{return {world:JSON.parse(sessionStorage.getItem(STORAGE_KEY)||'null')};}catch{return {};}});
       const activity=j.activity;
-      setConnection({title:j.config.sites[owner].name,home:j.config.sites[owner].home,backLabel:activity?({episode:'Back to your episode',shelf:'Back to your shelf',writing:'Back to writing'} as any)[activity.kind]:owner==='nowbrary'?'Open Nowbrary':'Episodes'});
+      setConnection({title:j.config.sites[owner].name,home:j.config.sites[owner].home,backLabel:activity?({episode:'Back to the episode',episodes:'Back to the episodes',shelf:'Back to the shelf',gallery:'Back to the gallery',article:'Back to the article',writing:'Back to Map the Wild'} as any)[activity.kind]:owner==='nowbrary'?'Open Nowbrary':'Episodes'});
     }
     const embedded=isBlogEmbed(location.href,window.parent!==window);setEmbeddedBlog(embedded);
     let pageVisible=!embedded;
@@ -121,11 +121,11 @@ export default function HarbourWorld({essays,nowbraryPost,startingPost,owner='ma
     <div className="world-canvas" ref={mount}/>
     <div className="world-edge" aria-hidden="true"/>
     <header className="world-header">
-      <a className="world-brand" aria-label={`${connection?.title||'Map the Wild'} home`} href={owned?connection?.home||'/':'/mapthewild/'}><span className="world-emblem" aria-hidden="true">✳</span><span>{connection?.title||'Map the Wild'}</span></a>
+      <a className="world-brand" aria-label={`${connection?.title||'Map the Wild'} home`} href={owned?connection?.home||'/':'/mapthewild/'}><img className="world-emblem" src={`/mapthewild/world/marks/${owner}.png`} alt="" width="34" height="34"/><span>{connection?.title||'Map the Wild'}</span></a>
       {!owned&&<a className="world-places" href="/mapthewild/islands/" onClick={read}>Places</a>}
-      <nav className="world-mode" aria-label="View mode">{owned?<button onClick={backToActivity}>{connection?.backLabel||"Open the website"}</button>:<a href={readHref} onClick={event=>{const j=journey.current;if(!embeddedBlog&&j?.activity?.site==='mapthewild'&&j.activity.kind==='writing'&&!event.metaKey&&!event.ctrlKey&&!event.shiftKey&&!event.altKey){event.preventDefault();engine.current?.save();j.resume(j.activity);}else read();}}>Read</a>}<span aria-current="page">Explore</span></nav>
+      <nav className="world-mode" aria-label="View mode">{owned?<button onClick={backToActivity}>{connection?.backLabel||"Open the website"}</button>:<a href={readHref} onClick={event=>{const j=journey.current;if(!embeddedBlog&&j?.activity?.site==='mapthewild'&&['writing','article'].includes(j.activity.kind)&&!event.metaKey&&!event.ctrlKey&&!event.shiftKey&&!event.altKey){event.preventDefault();engine.current?.save();j.resume(j.activity);}else read();}}>Read</a>}<span aria-current="page">Explore</span></nav>
     </header>
-    {!ready&&!failed&&<div className="world-loading" role="status"><span className="loading-sun" aria-hidden="true">✳</span><p>{owned?`Opening ${owner==='nowbrary'?'Nowbrary':'the listening room'}…`:'Finding the first shore…'}</p></div>}
+    {!ready&&!failed&&<div className="world-loading" role="status"><img className="loading-sun" src={`/mapthewild/world/marks/${owner}.png`} alt="" width="64" height="64"/><p>{owned?`Opening ${owner==='nowbrary'?'Nowbrary':'the listening room'}…`:'Finding the first shore…'}</p></div>}
     {!owned&&showIntro&&<section className="world-intro" aria-labelledby="world-title">
       <p className="world-kicker"><span/> The first shores</p>
       <h1 id="world-title">A world,<br/>still <em>unfolding.</em></h1>

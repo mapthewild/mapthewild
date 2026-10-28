@@ -47,7 +47,13 @@ if site == 'nowbrary':
     write(root / 'explore/index.html', (shared / 'connected/nowbrary/index.html').read_text())
 if site == 'future-dads':
     text = (root / VISIT / 'index.html').read_text()
-    write(root / 'explore/index.html', text.replace('<head>', f'<head><base href="/{VISIT}"><meta name="referrer" content="no-referrer">', 1))
+    text = text.replace('<head>', f'<head><base href="/{VISIT}"><meta name="referrer" content="no-referrer">', 1)
+    # Full-screen from the first paint, so the study's working panel never shows while the island loads.
+    text = text.replace('<body>', '<body class="sea-visit owned-visit">', 1)
+    # The study's link back to its storyboard becomes the site's own episode list.
+    text = re.sub(r'<header><a href="[^"]*journey-storyboard[^"]*">[^<]*</a>', '<header><a href="/">Episodes</a>', text, count=1)
+    write(root / 'explore/index.html', text)
+    (root / VISIT / 'index.html').unlink()  # The study page itself is not part of the site.
     write(root / 'explore/room/index.html', (shared / 'connected/future-dads-room/index.html').read_text())
 if (root / 'connected').exists():
     shutil.rmtree(root / 'connected')  # Intermediate pages; they now live on their own sites.

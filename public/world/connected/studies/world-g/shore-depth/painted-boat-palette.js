@@ -58,8 +58,8 @@ export function createPaintPalette(atlas=null,face=null){
 export function loadPaintPalette(onReady){
  const loader=new T.TextureLoader();
  const ready=()=>{palette.refresh();onReady();};
- const image=loader.load('../assets/boat-painted-materials-v1.png',ready);
- const face=loader.load('../assets/traveller-painted-face-v1.png',ready);
+ const image=loader.load('../assets/boat-painted-materials-v1.webp',ready);
+ const face=loader.load('../assets/traveller-painted-face-v1.webp',ready);
  image.colorSpace=T.SRGBColorSpace;
  const palette=createPaintPalette(image,face);return palette;
 }

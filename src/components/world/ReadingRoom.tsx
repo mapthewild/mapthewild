@@ -21,7 +21,7 @@ export default function ReadingRoom({open,onClose,readHref,onRead}:{open:boolean
     </header>
     <div className="reading-room-content">
       {open&&<iframe key={revision} ref={frame} src={gallery+hash} title="Nowbrary shelves and books" onLoad={()=>setLoaded(true)} allow="fullscreen"/>}
-      {!loaded&&<div className="reading-room-loading" role="status"><span aria-hidden="true">✳</span><p>Opening the reading room…</p><a href={gallery+hash} target="_blank" rel="noopener">Open the shelves in their own window ↗</a><button onClick={()=>setRevision(n=>n+1)}>Try again</button></div>}
+      {!loaded&&<div className="reading-room-loading" role="status"><img src="/mapthewild/world/marks/nowbrary.png" alt="" width="56" height="56"/><p>Opening the reading room…</p><a href={gallery+hash} target="_blank" rel="noopener">Open the shelves in their own window ↗</a><button onClick={()=>setRevision(n=>n+1)}>Try again</button></div>}
     </div>
   </dialog>;
 }

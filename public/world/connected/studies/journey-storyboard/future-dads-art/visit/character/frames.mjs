@@ -1,9 +1,9 @@
 // UV windows into the original, unmodified PNGs. Anchors mark contact with the deck/path.
 export const characterId='future-dads-02';
 export const sheets={
- walking:{url:'./character/art/walking-front-back-v4.png',size:[1024,1536]},
- returning:{url:'./character/art/walking-v2.png',size:[1536,1024]},
- boarding:{url:'./character/art/boarding-v1.png',size:[1536,1024]}
+ walking:{url:'./character/art/walking-front-back-v4.webp',size:[1024,1536]},
+ returning:{url:'./character/art/walking-v2.webp',size:[1536,1024]},
+ boarding:{url:'./character/art/boarding-v1.webp',size:[1536,1024]}
 };
 // sheet, bounds, foot anchor, displayed body height in world units, mirror
 // Use only back and rear-three-quarter drawings. The visitor is not a face-on portrait.

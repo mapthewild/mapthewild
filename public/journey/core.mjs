@@ -1,6 +1,8 @@
 // Only fixed site IDs and opaque, per-tab bookmark IDs cross the domain boundary.
 export const SITES=['mapthewild','nowbrary','future-dads'];
 export const ENTRIES=['sea','jetty','radio','room','content'];
+// What a visitor can go back to. The button names the thing; none of it is the visitor's own.
+export const KINDS=['episode','episodes','shelf','gallery','article','writing','place','sea'];
 const TOKEN=/^[a-zA-Z0-9_-]{12,64}$/;
 export function safePath(value){
  if(typeof value!=='string'||!value.startsWith('/')||value.startsWith('//')||/[\\\r\n]/.test(value))return null;
@@ -18,7 +20,7 @@ export function decodeTicket(value){
   if(v.v!==1||!SITES.includes(v.to)||!ENTRIES.includes(v.entry)||!Array.isArray(v.trail)||v.trail.length>12)return null;
   if(v.resume!==undefined&&!TOKEN.test(v.resume))return null;
   if(v.from!==undefined&&!SITES.includes(v.from))return null;
-  if(!v.trail.every(c=>SITES.includes(c.site)&&TOKEN.test(c.id)&&['episode','shelf','writing','place','sea'].includes(c.kind)))return null;
+  if(!v.trail.every(c=>SITES.includes(c.site)&&TOKEN.test(c.id)&&KINDS.includes(c.kind)))return null;
   return {v:1,to:v.to,entry:v.entry,from:v.from,resume:v.resume,trail:v.trail.map(({site,id,kind})=>({site,id,kind}))};
  }catch{return null;}
 }
@@ -34,4 +36,5 @@ export function readBookmark(storage,id,now=Date.now()){
  if(!TOKEN.test(id||''))return null;
  try{const b=JSON.parse(storage.getItem('journey:bookmark:'+id)||'null');if(!b||!safePath(b.href)||!Number.isFinite(b.at)||now-b.at>86400000||b.at>now+60000)return null;return b;}catch{return null;}
 }
-export function returnLabel(kind){return {episode:'Back to your episode',shelf:'Back to your shelf',writing:'Back to writing',place:'Back to the landing',sea:'Back to sea'}[kind]||'Back';}
+export const RETURN_LABELS={episode:'Back to the episode',episodes:'Back to the episodes',shelf:'Back to the shelf',gallery:'Back to the gallery',article:'Back to the article',writing:'Back to Map the Wild',place:'Back to the landing',sea:'Back to sea'};
+export function returnLabel(kind){return RETURN_LABELS[kind]||'Back';}

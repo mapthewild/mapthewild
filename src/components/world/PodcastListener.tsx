@@ -2,11 +2,17 @@ import React,{useEffect,useRef,useState} from 'react';
 import {FUTURE_DADS_EPISODES} from '../../lib/world/future-dads-episodes';
 import '../../styles/world/podcast-listener.css';
 
+// The radio on the island and this room share one note in the tab: which episode, where, and whether it was on.
+type Heard={slug:string;time:number;on:boolean;at:number};
+function heardNote():Heard|null{try{const n=JSON.parse(sessionStorage.getItem('fd-listening')||'null');return n&&Date.now()-n.at<86400000&&FUTURE_DADS_EPISODES.some(e=>e.id===n.slug)?n:null;}catch{return null;}}
+function writeNote(slug:string,time:number,on:boolean){if(document.body.classList.contains('journey-leaving'))return;try{sessionStorage.setItem('fd-listening',JSON.stringify({slug,time,on,at:Date.now()}));}catch{}}
+
 function clock(seconds:number){const n=Math.max(0,Math.floor(seconds||0));return `${Math.floor(n/60)}:${String(n%60).padStart(2,'0')}`;}
 
 /** One player stays mounted while the episode list opens and closes. */
 export default function PodcastListener({open,active,onClose,onWebsite}:{open:boolean;active:boolean;onClose:()=>void;onWebsite?:()=>void}){
   const dialog=useRef<HTMLDialogElement>(null),audio=useRef<HTMLAudioElement>(null),title=useRef<HTMLHeadingElement>(null);
+  const carried=useRef<Heard|null>(null),noted=useRef(0);
   const positions=useRef<Record<string,number>>({});
   const [episodeId,setEpisodeId]=useState(FUTURE_DADS_EPISODES[0].id),[failed,setFailed]=useState(false);
   const [visited,setVisited]=useState(false),[playing,setPlaying]=useState(false);
@@ -17,6 +23,10 @@ export default function PodcastListener({open,active,onClose,onWebsite}:{open:bo
     else if(!open&&dialog.current?.open)dialog.current.close();
   },[open]);
   useEffect(()=>{if(!active)audio.current?.pause();},[active]);
+  // Read the note once the page is running (the server-built page can't know it), then pick up that episode.
+  useEffect(()=>{const n=heardNote();if(!n)return;carried.current=n;positions.current[n.slug]=n.time;setEpisodeId(n.slug);setTime(n.time);setVisited(true);},[]);
+  // Arriving with the radio on: carry on playing here, or wait for Play if the browser needs a click.
+  useEffect(()=>{const n=carried.current;if(active&&n?.on&&episodeId===n.slug&&audio.current){carried.current={...n,on:false};void audio.current.play().catch(()=>{});}},[active,episodeId]);
   useEffect(()=>{if(audio.current)audio.current.volume=volume;},[episodeId,volume]);
   useEffect(()=>{const player=audio.current;return()=>player?.pause();},[episodeId]);
   function choose(id:string){
@@ -41,8 +51,8 @@ export default function PodcastListener({open,active,onClose,onWebsite}:{open:bo
   </div>;}
   return <>
     <audio ref={audio} key={episode.id} hidden preload="none" src={episode.audioUrl}
-      onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)} onEnded={()=>setPlaying(false)} onError={()=>setFailed(true)}
-      onTimeUpdate={e=>{positions.current[episodeId]=e.currentTarget.currentTime;setTime(e.currentTarget.currentTime);}}
+      onPlay={e=>{setPlaying(true);writeNote(episodeId,e.currentTarget.currentTime,true);}} onPause={e=>{setPlaying(false);writeNote(episodeId,e.currentTarget.currentTime,false);}} onEnded={()=>setPlaying(false)} onError={()=>setFailed(true)}
+      onTimeUpdate={e=>{const now=e.currentTarget.currentTime;positions.current[episodeId]=now;setTime(now);if(Date.now()-noted.current>1000){noted.current=Date.now();writeNote(episodeId,now,!e.currentTarget.paused);}}}
       onVolumeChange={e=>setVolume(e.currentTarget.volume)}
       onLoadedMetadata={e=>{const player=e.currentTarget,saved=positions.current[episodeId];setDuration(Number.isFinite(player.duration)?player.duration:0);if(saved&&saved<player.duration)player.currentTime=saved;setTime(player.currentTime);}}/>
     {active&&visited&&!open&&<section className="podcast-player" aria-label="Episode player">
