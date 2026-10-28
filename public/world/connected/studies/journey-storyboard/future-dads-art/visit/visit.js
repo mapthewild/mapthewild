@@ -3,6 +3,7 @@ import {buildPaintedBoat,setBoatOccupied} from '../../asset-study/shore-layout/m
 import {createPaintPalette} from '../../../world-g/shore-depth/painted-boat-palette.js';
 import {clamp,mix,smooth,boatPoint,walkPoint,soundDistance,stage,STOPS,LANDING} from './route.mjs';
 import {createRadio} from './sound.js';
+import {episodes} from './episodes.mjs';
 import {characterId,sheets,frames,POSE,walkingPose} from './character/frames.mjs';
 import {setBoatDepth} from './character/boat-depth.mjs';
 
@@ -26,8 +27,8 @@ camera.position.set(0,60,80);camera.lookAt(0,0,0);camera.updateMatrixWorld();
 scene.add(new T.HemisphereLight(0xffefcc,0x367681,1.5));const sun=new T.DirectionalLight(0xffecc6,2.3);sun.position.set(-5,9,6);scene.add(sun);
 const loader=new T.TextureLoader();
 const [atlas,face,island,characterSheets]=await Promise.all([
- loader.loadAsync('../../../world-g/assets/boat-painted-materials-v1.png'),loader.loadAsync('../../../world-g/assets/traveller-painted-face-v1.png'),
- loader.loadAsync('../two-styles/art/comic-island-v1.png'),
+ loader.loadAsync('../../../world-g/assets/boat-painted-materials-v1.webp'),loader.loadAsync('../../../world-g/assets/traveller-painted-face-v1.webp'),
+ loader.loadAsync('../two-styles/art/comic-island-v1.webp'),
  Promise.all(Object.entries(sheets).map(async([name,sheet])=>[name,await loader.loadAsync(sheet.url)])).then(Object.fromEntries)
 ]);
 for(const texture of [atlas,face,island,...Object.values(characterSheets)])texture.colorSpace=T.SRGBColorSpace;
@@ -117,7 +118,7 @@ function render(){
  document.body.classList.toggle('beside-radio',position>=85);
  const s=stage(position);painting.dataset.position=position.toFixed(2);painting.dataset.pose=String(pose);painting.dataset.character=characterId;painting.dataset.view=pose<4?'back':'rear-three-quarter';painting.dataset.travellers=String(poses.filter(p=>p.visible).length);painting.dataset.boat=JSON.stringify(bp);
  viewport.dataset.stage=s;$('position').value=String(position);$('position').setAttribute('aria-valuetext',description());
- const desc=description();if($('status').textContent!==desc)$('status').textContent=desc;
+ document.body.classList.add('visit-ready');const desc=description();if($('status').textContent!==desc)$('status').textContent=desc;
  $('place').textContent=position<28?'At sea':position<48?'The jetty':position<85?'The path':'The radio';
  $('continue').textContent=position<28?'Come ashore':position<85?'Walk to the radio':position<100?'Listen here':'Listening here';
  $('continue').disabled=running&&direction>0||position>=100;
@@ -174,8 +175,20 @@ if(seaEmbed){
 if(ownSite){
  document.body.classList.add('sea-visit','owned-visit');
  journey.register('place',()=>({position:Math.round(position*10)/10,radio:radio.snapshot()}));
- radio.restore(journey.restored?.custom?.radio||radio.snapshot());
- const back=document.querySelector('header>a');back.textContent=journey.activity?'Back to your '+(journey.activity.kind==='episode'?'episode':journey.activity.kind==='shelf'?'shelf':'writing'):'Episodes';back.href='/';
+ const {returnLabel}=await import('/mapthewild/journey/core.mjs');
+ // Pick up what the visitor was hearing: the room's or radio's latest note on the way back, or the
+ // episode page they left playing. Otherwise the radio keeps its own last place.
+ let heard=null;try{heard=JSON.parse(sessionStorage.getItem('fd-listening')||'null');}catch{}
+ const station=slug=>episodes.findIndex(e=>e.slug===slug),kept=journey.restored?.custom?.radio;
+ const page=!journey.restored&&journey.entry==='radio'&&journey.previous?.kind==='episode'?journey.bookmark(journey.previous.id):null;
+ const pageAudio=page?.audio?.find(a=>a.playing||a.time>0),pageSlug=page?.href.split('/').filter(Boolean).pop();
+ const recent=heard&&station(heard.slug)>=0&&Date.now()-heard.at<7200000?heard:null;
+ let tuned=kept||radio.snapshot();
+ if(pageAudio&&station(pageSlug)>=0)tuned={index:station(pageSlug),time:pageAudio.time,volume:Math.round((pageAudio.volume??.25)*100),on:pageAudio.playing};
+ else if(recent&&(!kept||recent.at>(journey.restored.at||0))&&(kept||journey.entry==='radio'))tuned={...tuned,index:station(recent.slug),time:recent.time,on:recent.on};
+ radio.restore(tuned);if(tuned.on)radio.enable();
+ const back=document.querySelector('header>a');back.textContent=journey.activity?returnLabel(journey.activity.kind):'Episodes';back.href='/';
+ if(journey.activity&&journey.activity.kind!=='episodes'){const all=document.createElement('a');all.className='visit-episodes';all.href='/';all.textContent='Episodes';back.after(all);}
  back.addEventListener('click',e=>{if(e.button||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();if(journey.activity)journey.resume(journey.activity);else journey.go('future-dads','content');});
  $('episode-page').removeAttribute('target');$('episode-page').addEventListener('click',e=>{if(e.button||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();const u=new URL(e.currentTarget.href);journey.contentLink(u.pathname);});
  const room=document.createElement('a');room.className='listening-room-door';room.textContent='Listening room';room.href=journey.url('future-dads','room');room.addEventListener('click',e=>{if(e.button||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();journey.go('future-dads','room');});document.querySelector('.listening').append(room);

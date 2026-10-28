@@ -11,8 +11,11 @@ if(parent!==window){
  if(journey){
   const domains={'mapthewild.xyz':'mapthewild','nowbrary.com':'nowbrary','futuredadsclub.com':'future-dads'};
   for(const link of document.querySelectorAll('a[href]')){try{const u=new URL(link.href),owner=domains[u.hostname];if(owner)link.href=new URL(u.pathname+u.search+u.hash,journey.config.sites[owner].origin).href;}catch{}}
-  journey.register(journey.site==='future-dads'?'episode':journey.site==='nowbrary'?'shelf':'writing');
-  const start=()=>journey.go(journey.site,journey.site==='mapthewild'?'sea':'jetty');
+  const kind=()=>journey.site==='future-dads'?(location.pathname.startsWith('/episodes/')?'episode':'episodes'):journey.site==='nowbrary'?(/^#?(all)?$/.test(location.hash)&&!location.pathname.startsWith('/reader/')?'gallery':'shelf'):(location.pathname.startsWith('/posts/')||location.pathname.startsWith('/mapthewild/posts/')||document.body.hasAttribute('data-journal-essay')?'article':'writing');
+ journey.register(kind());addEventListener('hashchange',()=>journey.register(kind()));
+  const playing=()=>[...document.querySelectorAll('audio')].some(a=>!a.paused&&!a.ended);
+  // Explore from an episode that is playing opens the island's radio, still on that episode.
+  const start=()=>journey.go(journey.site,journey.site==='mapthewild'?'sea':journey.site==='future-dads'&&playing()?'radio':'jetty');
   let a=document.querySelector('[data-journey-explore]');
   if(!a&&journey.site!=='mapthewild'){
    a=document.createElement('a');a.className='journey-native-explore';a.textContent='Explore';a.dataset.journeyExplore='';
@@ -33,7 +36,7 @@ if(parent!==window){
     const article=safePath(u.searchParams.get('returnTo'));
     if(article&&!/^\/(mapthewild\/)?explore(\/|$)/.test(article)){
      let scroll=0;try{const saved=JSON.parse(sessionStorage.getItem('mtw-read-return')||'null');if(saved?.href===article&&Number.isFinite(saved.scroll))scroll=saved.scroll;}catch{}
-     returnTo={href:article,scroll};
+     returnTo={href:article,scroll,kind:'article'};
     }
    }
    e.detail.trail=journey.checkpointTrail(returnTo);
@@ -42,7 +45,7 @@ if(parent!==window){
   document.querySelectorAll('audio').forEach(a=>a.volume=.25);
   document.dispatchEvent(new Event('journey:restore-ready'));
   if(journey.restored?.audio?.some(a=>a.playing)){
-   const p=document.createElement('p');p.className='journey-resume-note';p.textContent='Your episode is at the place you left it. Press Play to continue.';p.setAttribute('role','status');document.querySelector('audio')?.after(p);
+   const p=document.createElement('p');p.className='journey-resume-note';p.textContent='The episode is where you left it. Press Play to continue.';p.setAttribute('role','status');document.querySelector('audio')?.after(p);
   }
  }
 }

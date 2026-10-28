@@ -63,3 +63,10 @@
 .world-pin-number{display:none}
 @media(max-width:600px){.world-pin{width:38px;height:38px;padding:0;border-radius:50%;display:grid;place-items:center}.world-pin .world-pin-name,.world-pin small{display:none}.world-pin .world-pin-number{display:block;font:13px Georgia,serif}.world-tools{bottom:152px}}
 @media(max-width:650px){.world-destinations button{padding:9px 11px;font-size:12px}.world-destinations{gap:0}}
+/* Each site's own mark (ship, book climber, Future Dads cover) replaced the asterisk on 28 Oct. */
+img.world-emblem{width:34px;height:34px;border-radius:6px;object-fit:cover}
+img.loading-sun{width:64px;height:64px;border-radius:10px;animation:mark-breathe 2.4s ease-in-out infinite}
+.reading-room-loading>img{border-radius:8px;animation:mark-breathe 2.4s ease-in-out infinite}
+@keyframes mark-breathe{50%{opacity:.55}}
+@media(max-width:700px){img.world-emblem{width:28px;height:28px}}
+@media(prefers-reduced-motion:reduce){img.loading-sun,.reading-room-loading>img{animation:none}}

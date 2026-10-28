@@ -5,6 +5,12 @@ import {connectDial} from './rotary-dial.mjs';
 
 export function createRadio(){
  const $=id=>document.getElementById(id),audio=$('episode'),saved=new Map();
+ // The radio and the listening room share one note in this tab: which episode, where, and whether it was on.
+ let noted=0;
+ function note(force){
+  if(document.body.classList.contains('journey-leaving')||(!force&&Date.now()-noted<1000))return;noted=Date.now();
+  try{sessionStorage.setItem('fd-listening',JSON.stringify({slug:episodes[index].slug,time:audio.currentTime||saved.get(index)||0,on:enabled&&!manualPause&&!ended,at:Date.now()}));}catch{}
+ }
  let context,filter,voiceGain,master,pan,analyser,receiver,meterFrame=0;
  let enabled=false,manualPause=false,ended=false,distance=0,request=null,generation=0,failed=false;
  let index=14,candidate=14,tuning=false,commitTimer=0,settleTimer=0,pendingSeek=null,lastTune=0,lastStation=15,tuningSpeed=0;
@@ -124,12 +130,14 @@ export function createRadio(){
    // Both calls happen in the explicit click handler, including when offshore.
    // The gain remains zero outside hearing range while the element is primed.
    const resume=context.resume(),play=audio.play();
-   try{await Promise.all([resume,play]);if(request===pending&&!wanted())audio.pause();}
-   catch(error){if(request===pending&&error.name!=='AbortError')failed=true;}
-   finally{if(request===pending)request=null;apply();sync();startMeter();}
+   // Without a click on this page a browser may refuse sound: then the radio stays off and waits.
+   const refused=new Promise((_,no)=>setTimeout(()=>{if(context.state!=='running')no(Object.assign(Error('Sound needs a click'),{name:'NotAllowedError'}));},1500));
+   try{await Promise.race([Promise.all([resume,play]),refused]);if(request===pending&&!wanted())audio.pause();}
+   catch(error){if(request===pending&&error.name==='NotAllowedError'){enabled=false;audio.pause();}else if(request===pending&&error.name!=='AbortError')failed=true;}
+   finally{if(request===pending)request=null;apply();sync();startMeter();render();note(true);}
   }catch{failed=true;enabled=false;render();}
  }
- function disable(){enabled=false;settle();invalidate();stopNoise();apply();render();$('signal').value=0;$('signal').title='Sound level: 0%';}
+ function disable(){enabled=false;settle();invalidate();stopNoise();apply();render();note(true);$('signal').value=0;$('signal').title='Sound level: 0%';}
  $('sound').addEventListener('click',()=>enabled?disable():enable());
  $('pause-audio').addEventListener('click',()=>{
   if(!enabled||failed||context?.state!=='running'){enable();return;}
@@ -146,8 +154,9 @@ export function createRadio(){
   if(pendingSeek!==null){audio.currentTime=pendingSeek< audio.duration-.25?pendingSeek:0;pendingSeek=null;}
   $('duration').textContent=format(audio.duration);$('seek').max=String(Math.floor(audio.duration));render();
  });
- audio.addEventListener('timeupdate',()=>{$('time').textContent=format(audio.currentTime);$('seek').value=String(Math.floor(audio.currentTime));$('seek').setAttribute('aria-valuetext',format(audio.currentTime));});
- audio.addEventListener('playing',render);
+ audio.addEventListener('timeupdate',()=>{note();$('time').textContent=format(audio.currentTime);$('seek').value=String(Math.floor(audio.currentTime));$('seek').setAttribute('aria-valuetext',format(audio.currentTime));});
+ audio.addEventListener('playing',()=>{render();note(true);});
+ audio.addEventListener('pause',()=>note(true));
  audio.addEventListener('ended',()=>{ended=true;stopNoise();render();});
  audio.addEventListener('error',()=>{failed=true;stopNoise();apply();render();});
  document.addEventListener('visibilitychange',()=>{if(document.hidden){settle();stopNoise();}apply();sync();startMeter();});
@@ -155,7 +164,7 @@ export function createRadio(){
  window.addEventListener('pageshow',()=>{apply();sync();});
  showEpisode();connectDial($('radio-knob'),$('tuning'));render();return{
   enable,
-  snapshot(){remember();return {index,time:audio.currentTime,volume:Number($('volume').value),positions:[...saved]};},
+  snapshot(){remember();return {index,time:audio.currentTime,volume:Number($('volume').value),positions:[...saved],on:enabled&&!manualPause&&!ended};},
   restore(state){
    if(!state||!Number.isInteger(state.index)||state.index<0||state.index>=episodes.length)return;
    index=candidate=state.index;pendingSeek=Number.isFinite(state.time)?Math.max(0,state.time):0;

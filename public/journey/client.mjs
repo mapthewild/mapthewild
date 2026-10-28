@@ -1,4 +1,4 @@
-import {validConfig,decodeTicket,destination,pushTrail,readBookmark,safePath,returnLabel} from './core.mjs';
+import {validConfig,decodeTicket,destination,pushTrail,readBookmark,safePath,returnLabel,KINDS} from './core.mjs';
 let singleton;
 export function connectJourney(){return singleton??=(async()=>{
  let config;try{config=await fetch(new URL('config.json',import.meta.url),{cache:'no-store'}).then(r=>r.ok?r.json():null);}catch{return null;}
@@ -10,12 +10,14 @@ export function connectJourney(){return singleton??=(async()=>{
  let trail=ticket?.trail||[],capture=()=>({}),kind=site==='future-dads'?'episode':site==='nowbrary'?'shelf':'writing';
  const storage={getItem:key=>{try{return sessionStorage.getItem(key);}catch{return null;}},setItem:(key,value)=>{try{sessionStorage.setItem(key,value);return true;}catch{return false;}}};
  const resumeId=address.searchParams.get('resume');
- const viewURL=new URL(address);viewURL.searchParams.delete('resume');viewURL.hash='';
- const viewKey='journey:view:'+viewURL.pathname+viewURL.search;
+ // The address keeps only the page: the trip record is read once, then cleared from view.
+ const clean=new URL(address);for(const key of ['resume','journey','entry'])clean.searchParams.delete(key);
+ if(clean.href!==address.href)history.replaceState(history.state,'',clean.pathname+clean.search+clean.hash);
+ const viewKey='journey:view:'+clean.pathname+clean.search;
  let view=null;try{view=JSON.parse(storage.getItem(viewKey)||'null');if(!view||Date.now()-view.at>86400000)view=null;}catch{}
- const restored=readBookmark(storage,resumeId)||view;
+ // A reload or Back reopens this tab's last view; a new arrival starts fresh.
+ const restored=readBookmark(storage,resumeId)||(ticket?null:view);
  if(restored&&Array.isArray(restored.trail))trail=restored.trail;
- if(resumeId){const clean=new URL(location.href);clean.searchParams.delete('resume');history.replaceState(history.state,'',clean.pathname+clean.search+clean.hash);}
  function cleanHref(){const u=new URL(location.href);u.searchParams.delete('resume');return u.pathname+u.search+u.hash;}
  function snapshot(){
   const detail={};document.dispatchEvent(new CustomEvent('journey:save',{detail}));
@@ -30,15 +32,15 @@ export function connectJourney(){return singleton??=(async()=>{
   storage.setItem('journey:bookmark:'+id,JSON.stringify(saved));
   // Prune this module's own expired bookmarks only; never inspect another application's storage.
   try{const keys=Object.keys(sessionStorage).filter(k=>k.startsWith('journey:bookmark:'));for(const key of keys.slice(0,Math.max(0,keys.length-40)))sessionStorage.removeItem(key);}catch{}
-  return {site,id,kind};
+  return {site,id,kind:KINDS.includes(returnTo?.kind)?returnTo.kind:kind};
  }
  function inheritReadingPage(){
   if(parent===window)return;
   try{if(parent.location.origin!==location.origin)return;const detail={source:window,trail:null};parent.document.dispatchEvent(new CustomEvent('journey:checkpoint',{detail}));if(Array.isArray(detail.trail))trail=detail.trail;}catch{}
  }
  function leave(url){
-  document.querySelectorAll('audio,video').forEach(a=>a.pause());
-  document.body.classList.add('journey-leaving');(window.top===window?window:window.top).location.assign(url);
+  document.body.classList.add('journey-leaving');
+  document.querySelectorAll('audio,video').forEach(a=>a.pause());(window.top===window?window:window.top).location.assign(url);
  }
  async function cross(url){
   const target=new URL(url);
@@ -63,8 +65,9 @@ export function connectJourney(){return singleton??=(async()=>{
   go(to,entry='jetty'){inheritReadingPage();return cross(destination(config,to,entry,{trail:pushTrail(trail,checkpoint()),from:site}));},
   resume(crumb){const index=trail.findLastIndex(c=>c.id===crumb.id&&c.site===crumb.site);return cross(destination(config,crumb.site,'jetty',{resume:crumb.id,from:site,trail:index>=0?trail.slice(0,index):[]}));},
   page(to,path){inheritReadingPage();if(!config.sites[to]||!safePath(path))return;const u=new URL(path,config.sites[to].origin);u.searchParams.set('journey',JSON.stringify({v:1,to,entry:'content',from:site,trail:pushTrail(trail,checkpoint())}));return cross(u.href);},
-  get activity(){const activities=[...trail].reverse().filter(c=>['episode','shelf','writing'].includes(c.kind));return ticket?.entry==='radio'?activities[0]:activities.find(c=>c.site===site)||activities[0];},
+  get activity(){const activities=[...trail].reverse().filter(c=>!['place','sea'].includes(c.kind));return ticket?.entry==='radio'?activities[0]:activities.find(c=>c.site===site)||activities[0];},
   get previous(){return trail.at(-1);},
+ bookmark(id){return readBookmark(storage,id);},
   returnButton(host){const crumb=api.activity;if(!crumb)return null;const a=document.createElement('a');a.className='journey-return';a.href=destination(config,crumb.site,'jetty',{resume:crumb.id,from:site,trail:trail.slice(0,trail.indexOf(crumb))});a.textContent=returnLabel(crumb.kind);host.append(a);return a;},
   contentLink(href){const u=new URL(href,location.origin);if(u.origin!==location.origin||!safePath(u.pathname+u.search+u.hash))return;const crumb=checkpoint();u.searchParams.set('journey',JSON.stringify({v:1,to:site,entry:'content',from:site,trail:pushTrail(trail,crumb)}));leave(u.href);}
  };

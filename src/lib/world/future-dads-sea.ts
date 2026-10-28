@@ -11,8 +11,8 @@ export function createSeaIllustrations(scene:T.Scene,ship:T.Group,onReady:()=>vo
  const landmarks=createMapLandmarks();
  landmarks.islands.forEach(island=>scene.add(island));onReady();
  const loading=Promise.all([
-  loader.loadAsync(STUDIES+'world-g/assets/boat-painted-materials-v1.png'),
-  loader.loadAsync(STUDIES+'world-g/assets/traveller-painted-face-v1.png')
+  loader.loadAsync(STUDIES+'world-g/assets/boat-painted-materials-v1.webp'),
+  loader.loadAsync(STUDIES+'world-g/assets/traveller-painted-face-v1.webp')
  ]).then(textures=>{
   if(disposed){textures.forEach(t=>t.dispose());return;}
   textures.forEach(t=>{t.colorSpace=T.SRGBColorSpace;t.anisotropy=4;});

@@ -7,7 +7,7 @@ const linkTitle = (title, href) => {
 };
 export function headerMarkup(data) {
   const selected = href => data.path === href.replace(/\/$/,'') ? ' aria-current="page"' : '';
-  return `<a class="journal-skip" href="#journal-content">Skip to content</a><header class="journal-header"><a class="journal-brand" href="/mapthewild/">Map the Wild <span aria-hidden="true">✳</span></a><nav aria-label="Main"><a href="/mapthewild/posts/"${selected('/mapthewild/posts/')}>Writing</a><a href="/mapthewild/islands/"${selected('/mapthewild/islands/')}>Places</a><a href="/mapthewild/?explore=1#explore-entry" data-journal-explore>Explore</a></nav></header>`;
+  return `<a class="journal-skip" href="#journal-content">Skip to content</a><header class="journal-header"><a class="journal-brand" href="/mapthewild/"><img class="journal-mark" src="/mapthewild/world/marks/mapthewild.png" alt="" width="34" height="34">Map the Wild</a><nav aria-label="Main"><a href="/mapthewild/posts/"${selected('/mapthewild/posts/')}>Writing</a><a href="/mapthewild/islands/"${selected('/mapthewild/islands/')}>Places</a><a href="/mapthewild/?explore=1#explore-entry" data-journal-explore>Explore</a></nav></header>`;
 }
 export function voyageMarkup(data) {
   const collectionLink = data.isArticle ? `<a href="${esc(data.collection.href)}">${esc(data.collection.title)}</a>` : '';

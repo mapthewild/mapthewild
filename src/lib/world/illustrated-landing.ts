@@ -22,7 +22,7 @@ export function createIllustratedLanding(onReady:()=>void){
   [77,15,308,391,178,387,1.72],[440,15,657,391,548,387,1.72],[815,15,1009,385,915,381,1.72],[1156,13,1384,392,1265,387,1.72],
   [114,798,305,1058,270,1055,1.25],[446,748,616,1065,547,1061,1.48],[819,742,952,1071,888,1067,1.72],[1180,746,1382,1069,1220,1065,1.72]
  ];
- Promise.all([loader.loadAsync(base+'world-g/assets/boat-painted-materials-v1.png'),loader.loadAsync(base+'world-g/assets/traveller-painted-face-v1.png'),loader.loadAsync(art+'traveller-poses-v1.png'),loader.loadAsync(art+'shore-empty-v1.png')]).then(([atlas,face,sheet,shore])=>{
+ Promise.all([loader.loadAsync(base+'world-g/assets/boat-painted-materials-v1.webp'),loader.loadAsync(base+'world-g/assets/traveller-painted-face-v1.webp'),loader.loadAsync(art+'traveller-poses-v1.png'),loader.loadAsync(art+'shore-empty-v1.png')]).then(([atlas,face,sheet,shore])=>{
   if(dead){[atlas,face,sheet,shore].forEach(t=>t.dispose());return;}
   textures.push(atlas,face,sheet,shore);textures.forEach(t=>t.colorSpace=T.SRGBColorSpace);
   const plate=new T.Mesh(new T.PlaneGeometry(W/PPM,H/PPM),new T.MeshBasicMaterial({map:shore,toneMapped:false}));

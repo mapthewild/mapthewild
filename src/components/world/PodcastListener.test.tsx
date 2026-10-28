@@ -6,6 +6,7 @@ import {FUTURE_DADS_EPISODES} from '../../lib/world/future-dads-episodes';
 
 const paused=new WeakMap<HTMLMediaElement,boolean>();
 beforeEach(()=>{
+  sessionStorage.clear();
   HTMLDialogElement.prototype.showModal=function(){this.open=true;};
   HTMLDialogElement.prototype.close=function(){this.open=false;};
   vi.spyOn(HTMLMediaElement.prototype,'paused','get').mockImplementation(function(){return paused.get(this)??true;});
@@ -15,6 +16,18 @@ beforeEach(()=>{
 afterEach(()=>{cleanup();vi.restoreAllMocks();Reflect.deleteProperty(HTMLDialogElement.prototype,'showModal');Reflect.deleteProperty(HTMLDialogElement.prototype,'close');});
 
 describe('listening-place playback',()=>{
+  it('opens on the episode and moment the island radio was playing',()=>{
+    const song=FUTURE_DADS_EPISODES[1];
+    sessionStorage.setItem('fd-listening',JSON.stringify({slug:song.id,time:42,on:true,at:Date.now()}));
+    const view=render(<PodcastListener active open={false} onClose={()=>{}}/>);
+    const room=within(view.getByRole('region',{name:'Episode player'}));
+    expect(room.getByRole('heading').textContent).toBe(song.title);
+    const player=view.container.querySelector('audio')!;
+    expect(player.paused).toBe(false);
+    Object.defineProperty(player,'duration',{value:300,configurable:true});
+    fireEvent.loadedMetadata(player);
+    expect(player.currentTime).toBe(42);
+  });
   it('keeps the same audio playing when the list closes or reopens, with usable room controls',()=>{
     const onClose=vi.fn();
     const view=render(<PodcastListener active open onClose={onClose}/>);
