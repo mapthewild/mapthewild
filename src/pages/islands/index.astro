@@ -72,7 +72,7 @@ const activeIslands = [...postBasedIslands, ...dedicatedIslands].sort((a,b) =>
           href={island.href || `/mapthewild/islands/${island.id}`}
           class="journal-place-card"
         >
-          <span class="journal-place-picture" style={`background-image:url('${(journalArt[island.id] ?? journalArt.home).src}');background-position:${(journalArt[island.id] ?? journalArt.home).position};background-size:${(journalArt[island.id] ?? journalArt.home).size}`} aria-hidden="true"></span>
+          <span class="journal-place-picture" data-crop={(journalArt[island.id] ?? journalArt.home).crop} style={`background-image:url('${(journalArt[island.id] ?? journalArt.home).src}');background-position:${(journalArt[island.id] ?? journalArt.home).position};background-size:${(journalArt[island.id] ?? journalArt.home).size}`} aria-hidden="true"></span>
           <h2>
             {island.name}{island.href?.startsWith('https://') && <span aria-hidden="true"> ↗</span>}
             {island.count !== null && (

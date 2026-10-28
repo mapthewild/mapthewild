@@ -149,3 +149,16 @@ if(data) {
 }
 
 if(document.body.hasAttribute('data-journal-essay')){document.body.dataset.journalReady='true';document.dispatchEvent(new Event('mtw:journal-ready'));}
+
+// A painted crop keeps its place's scene in the middle of every frame, as in Astra's world-g
+// study (detailCrop): the frame's shape sets the offset, and the painting never slides past its edges.
+function frameCrops(){
+  for(const frame of document.querySelectorAll('[data-crop]')){
+    const [x,y,aspect]=frame.dataset.crop.split(' ').map(Number),zoom=parseFloat(getComputedStyle(frame).backgroundSize)/100,box=frame.getBoundingClientRect();
+    if(!box.width||!box.height||!(zoom>1)||!aspect)continue;
+    const height=zoom*100*box.width/box.height/aspect;
+    const left=Math.min(0,Math.max(100-zoom*100,50-x*zoom)),top=Math.min(0,Math.max(100-height,50-y*height/100));
+    frame.style.backgroundPosition=`${left/(100-zoom*100)*100}% ${height>100?top/(100-height)*100:50}%`;
+  }
+}
+frameCrops();addEventListener('resize',frameCrops);document.fonts.ready.then(frameCrops);
