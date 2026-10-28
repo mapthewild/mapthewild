@@ -2,10 +2,12 @@ import { territories, canonicalTerritory, inTerritory } from './territories';
 import { territoryNodes, getRoutePosts, getTerritoryRouteMode } from './voyageGraph';
 
 type Post = { slug: string; href?: string; data: { title: string; date: Date; draft?: boolean; islands?: string[] } };
-export const journalArt: Record<string, { src: string; position: string; size?: string }> = {
+// crop: the scene's centre in the painting (% across, % down) and the painting's width/height,
+// from Astra's world-g study (places.js framing); journal.js keeps that point centred in any frame.
+export const journalArt: Record<string, { src: string; position: string; size?: string; crop?: string }> = {
   home: { src: '/mapthewild/journal/world-overview.png', position: 'center', size: 'cover' },
   nowbrary: { src: '/mapthewild/world/connected/studies/journey-storyboard/asset-study/shore-layout/motion/art/shore-empty-v1.png', position: '50% 38%', size: 'cover' },
-  map: { src: '/mapthewild/journal/world-overview.png', position: '8% 85%', size: '250%' },
+  map: { src: '/mapthewild/journal/world-overview.png', position: '0% 72%', size: '250%', crop: '19 68 1.5' },
   sundayritual: { src: '/mapthewild/images/territory-sundayritual.jpeg', position: 'center', size: 'cover' },
   soulfield: { src: '/mapthewild/images/territory-soulfield.jpeg', position: 'center', size: 'cover' },
   lifein5: { src: '/mapthewild/images/territory-lifein5.jpg', position: 'center', size: 'cover' },

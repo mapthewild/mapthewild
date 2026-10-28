@@ -12,7 +12,7 @@ export function headerMarkup(data) {
 export function voyageMarkup(data) {
   const collectionLink = data.isArticle ? `<a href="${esc(data.collection.href)}">${esc(data.collection.title)}</a>` : '';
   return `<section class="journal-voyage" aria-label="Places and writing">
-    <a class="journal-window" href="${esc(data.artHref)}" style="background-image:url('${esc(data.art.src)}');background-position:${esc(data.art.position)};background-size:${esc(data.art.size)}"><span>${esc(data.artTitle)} <span aria-hidden="true">→</span></span></a>
+    <a class="journal-window" href="${esc(data.artHref)}"${data.art.crop?` data-crop="${esc(data.art.crop)}"`:''} style="background-image:url('${esc(data.art.src)}');background-position:${esc(data.art.position)};background-size:${esc(data.art.size)}"><span>${esc(data.artTitle)} <span aria-hidden="true">→</span></span></a>
     <div class="journal-route">
       <div class="journal-route-heading">
         <nav aria-label="From this place"><a href="/mapthewild/">Home</a><a href="/mapthewild/islands/">Places</a>${collectionLink}</nav>
