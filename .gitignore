@@ -40,3 +40,8 @@ pnpm-debug.log*
 TODO.md
 docs/
 dist-xyz/
+
+# Future Dads recordings: kept out of this public repo. Only futuredadsclub.com serves them,
+# for the island radio; its publish.sh copies them from ~/Documents/futuredads/source/.
+public/world/connected/studies/journey-storyboard/future-dads-art/visit/audio/
+public/world/connected/studies/journey-storyboard/future-dads-art/radio-approach/audio/
