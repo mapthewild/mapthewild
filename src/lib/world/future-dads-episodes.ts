@@ -1,6 +1,6 @@
 /**
  * Published Future Dads Club episodes, copied from the existing public site.
- * Source: /Users/focus/Documents/futuredads/site/episodes/<id>/index.html
+ * Source: ~/Documents/futuredads/site/episodes/<id>/index.html
  * Titles, dates, durations and audio addresses match those pages. Descriptions
  * preserve the show notes' words as plain text, with paragraph breaks.
  * This local snapshot does not fetch a feed or start audio playback.

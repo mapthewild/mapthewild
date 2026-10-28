@@ -1,6 +1,6 @@
 # Future Dads Club cover
 
-Original local source: `/Users/focus/Documents/futuredads/source/artwork/cover-1200.jpg`.
+Original local source: `~/Documents/futuredads/source/artwork/cover-1200.jpg`.
 
 Copied byte for byte to `future-dads-cover.jpg` on 23 October 2026 for the local connected-places study. No crop, recolouring, generated replacement, or other alteration.
 
