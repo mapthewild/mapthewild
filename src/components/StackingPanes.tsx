@@ -99,11 +99,8 @@ const INTERNAL_POSTS = [
   'sharing-your-nowbrary',
   // Map territory
   'beyond-the-boxes',
-  'candor-conversation-flow',
   'digital-hoarding-intelligence',
-  'evolution-of-surveillance',
   'my-ai-struggle',
-  'well-log-poc',
 ];
 
 interface StackedPage {

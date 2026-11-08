@@ -145,7 +145,7 @@ Use this workflow to publish NotebookLM research queries, AI-generated images, a
    - **PDFs**: `<iframe src="/mapthewild/images/notebooklm-[topic]/document.pdf" width="100%" height="700px"></iframe>`
 
 **File naming convention:**
-- Folder: lowercase with hyphens (e.g., `notebooklm-islamic-narrative`)
+- Folder: lowercase with hyphens (e.g., `notebooklm-topic-name`)
 - PDFs/images: descriptive, lowercase (e.g., `narrative-structures.pdf`, `character-development.jpeg`)
 - Avoid spaces and special characters
 
@@ -165,7 +165,6 @@ Then in your MDX:
 <ZoomImage client:load src="/mapthewild/images/notebooklm-topic/insight-1.jpeg" alt="Key insight from analysis" />
 ```
 
-**Reference post:** See `src/content/posts/notebooklm-islamic-narrative-traditions.mdx` for a full example.
 
 ### Modifying Bracket Syntax Parsing
 **Files to check first:**
